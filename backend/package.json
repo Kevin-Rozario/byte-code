@@ -29,6 +29,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.29",
     "nodemailer": "^7.0.3",
-    "prisma": "^6.7.0"
+    "prisma": "^6.7.0",
+    "zod": "^3.25.7"
   }
 }

@@ -11,12 +11,17 @@ import {
   verifyUser,
   resendVerificationEmail,
 } from "../controllers/auth.controller.js";
+import { registerSchema } from "../validators/registerSchema.js";
+import { loginSchema } from "../validators/loginSchema.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
+import { validateMiddleware } from "../middlewares/validate.middleware.js";
 
 const router = Router();
 
-router.route("/login").post(loginUser);
-router.route("/register").post(registerUser);
+router.route("/login").post(validateMiddleware(loginSchema), loginUser);
+router
+  .route("/register")
+  .post(validateMiddleware(registerSchema), registerUser);
 router.route("/verify").get(verifyUser);
 router.route("/resend-verification").post(resendVerificationEmail);
 router.route("/refresh-token").get(renewRefreshToken);
