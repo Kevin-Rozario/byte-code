@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Code, Mail, Eye, EyeOff, Lock, Loader2 } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { signupSchema } from "@/lib/validations/signupSchema";
 import {
   Form,
@@ -21,20 +21,22 @@ type FormFields = z.infer<typeof signupSchema>;
 
 const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const form = useForm<FormFields>({
     resolver: zodResolver(signupSchema),
+    defaultValues: {
+      userName: "",
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
   });
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     console.log(data);
-  };
-
-  const mockData = {
-    userName: "johndoe",
-    name: "John Doe",
-    email: "johndoe@me.com",
-    password: "••••••••",
+    // Handle form submission here
   };
 
   return (
@@ -48,7 +50,7 @@ const SignUpPage = () => {
               <FormItem>
                 <FormLabel>Username</FormLabel>
                 <FormControl>
-                  <Input placeholder={mockData.userName} {...field} />
+                  <Input placeholder="johndoe" {...field} />
                 </FormControl>
                 <FormDescription>
                   This is your public display name.
@@ -57,19 +59,21 @@ const SignUpPage = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>Full Name</FormLabel>
                 <FormControl>
-                  <Input placeholder={mockData.name} {...field} />
+                  <Input placeholder="John Doe" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="email"
@@ -77,12 +81,17 @@ const SignUpPage = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder={mockData.email} {...field} />
+                  <Input
+                    type="email"
+                    placeholder="johndoe@example.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="password"
@@ -90,19 +99,36 @@ const SignUpPage = () => {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={mockData.password}
-                    {...field}
-                    type="password"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormDescription>
-                  This is your public display name.
+                  Password must be at least 8 characters long.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="confirmPassword"
@@ -110,21 +136,46 @@ const SignUpPage = () => {
               <FormItem>
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder={mockData.password}
-                    {...field}
-                    type="password"
-                  />
+                  <div className="relative">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm your password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+
+          <Button type="submit" className="w-full">
+            Create Account
+          </Button>
         </form>
       </Form>
-      <p>
-        Already have an account? <Link to="/auth/login">Sign In</Link>
+
+      <p className="text-center mt-4">
+        Already have an account?{" "}
+        <Link to="/auth/sign-in" className="text-primary hover:underline">
+          Sign In
+        </Link>
       </p>
     </>
   );
