@@ -8,151 +8,151 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as ProblemsIndexImport } from './routes/problems/index'
-import { Route as PlaylistsIndexImport } from './routes/playlists/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as ProblemsIndexImport } from "./routes/problems/index";
+import { Route as PlaylistsIndexImport } from "./routes/playlists/index";
 
 // Create Virtual Routes
 
-const IndexLazyImport = createFileRoute('/')()
-const AuthSignUpIndexLazyImport = createFileRoute('/auth/sign-up/')()
-const AuthSignInIndexLazyImport = createFileRoute('/auth/sign-in/')()
+const IndexLazyImport = createFileRoute("/")();
+const AuthSignUpIndexLazyImport = createFileRoute("/auth/sign-up/")();
+const AuthSignInIndexLazyImport = createFileRoute("/auth/sign-in/")();
 
 // Create/Update Routes
 
 const IndexLazyRoute = IndexLazyImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import("./routes/index.lazy").then((d) => d.Route));
 
 const ProblemsIndexRoute = ProblemsIndexImport.update({
-  id: '/problems/',
-  path: '/problems/',
+  id: "/problems/",
+  path: "/problems/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PlaylistsIndexRoute = PlaylistsIndexImport.update({
-  id: '/playlists/',
-  path: '/playlists/',
+  id: "/playlists/",
+  path: "/playlists/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AuthSignUpIndexLazyRoute = AuthSignUpIndexLazyImport.update({
-  id: '/auth/sign-up/',
-  path: '/auth/sign-up/',
+  id: "/auth/sign-up/",
+  path: "/auth/sign-up/",
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./routes/auth/sign-up/index.lazy').then((d) => d.Route),
-)
+  import("./routes/auth/sign-up/index.lazy").then((d) => d.Route),
+);
 
 const AuthSignInIndexLazyRoute = AuthSignInIndexLazyImport.update({
-  id: '/auth/sign-in/',
-  path: '/auth/sign-in/',
+  id: "/auth/sign-in/",
+  path: "/auth/sign-in/",
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./routes/auth/sign-in/index.lazy').then((d) => d.Route),
-)
+  import("./routes/auth/sign-in/index.lazy").then((d) => d.Route),
+);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/playlists/': {
-      id: '/playlists/'
-      path: '/playlists'
-      fullPath: '/playlists'
-      preLoaderRoute: typeof PlaylistsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/problems/': {
-      id: '/problems/'
-      path: '/problems'
-      fullPath: '/problems'
-      preLoaderRoute: typeof ProblemsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/sign-in/': {
-      id: '/auth/sign-in/'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthSignInIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/auth/sign-up/': {
-      id: '/auth/sign-up/'
-      path: '/auth/sign-up'
-      fullPath: '/auth/sign-up'
-      preLoaderRoute: typeof AuthSignUpIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/playlists/": {
+      id: "/playlists/";
+      path: "/playlists";
+      fullPath: "/playlists";
+      preLoaderRoute: typeof PlaylistsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/problems/": {
+      id: "/problems/";
+      path: "/problems";
+      fullPath: "/problems";
+      preLoaderRoute: typeof ProblemsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/sign-in/": {
+      id: "/auth/sign-in/";
+      path: "/auth/sign-in";
+      fullPath: "/auth/sign-in";
+      preLoaderRoute: typeof AuthSignInIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/sign-up/": {
+      id: "/auth/sign-up/";
+      path: "/auth/sign-up";
+      fullPath: "/auth/sign-up";
+      preLoaderRoute: typeof AuthSignUpIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/playlists': typeof PlaylistsIndexRoute
-  '/problems': typeof ProblemsIndexRoute
-  '/auth/sign-in': typeof AuthSignInIndexLazyRoute
-  '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/playlists": typeof PlaylistsIndexRoute;
+  "/problems": typeof ProblemsIndexRoute;
+  "/auth/sign-in": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/playlists': typeof PlaylistsIndexRoute
-  '/problems': typeof ProblemsIndexRoute
-  '/auth/sign-in': typeof AuthSignInIndexLazyRoute
-  '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/playlists": typeof PlaylistsIndexRoute;
+  "/problems": typeof ProblemsIndexRoute;
+  "/auth/sign-in": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/playlists/': typeof PlaylistsIndexRoute
-  '/problems/': typeof ProblemsIndexRoute
-  '/auth/sign-in/': typeof AuthSignInIndexLazyRoute
-  '/auth/sign-up/': typeof AuthSignUpIndexLazyRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexLazyRoute;
+  "/playlists/": typeof PlaylistsIndexRoute;
+  "/problems/": typeof ProblemsIndexRoute;
+  "/auth/sign-in/": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up/": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/playlists'
-    | '/problems'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/playlists' | '/problems' | '/auth/sign-in' | '/auth/sign-up'
+    | "/"
+    | "/playlists"
+    | "/problems"
+    | "/auth/sign-in"
+    | "/auth/sign-up";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/playlists" | "/problems" | "/auth/sign-in" | "/auth/sign-up";
   id:
-    | '__root__'
-    | '/'
-    | '/playlists/'
-    | '/problems/'
-    | '/auth/sign-in/'
-    | '/auth/sign-up/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/playlists/"
+    | "/problems/"
+    | "/auth/sign-in/"
+    | "/auth/sign-up/";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  PlaylistsIndexRoute: typeof PlaylistsIndexRoute
-  ProblemsIndexRoute: typeof ProblemsIndexRoute
-  AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute
-  AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute
+  IndexLazyRoute: typeof IndexLazyRoute;
+  PlaylistsIndexRoute: typeof PlaylistsIndexRoute;
+  ProblemsIndexRoute: typeof ProblemsIndexRoute;
+  AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute;
+  AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -161,11 +161,11 @@ const rootRouteChildren: RootRouteChildren = {
   ProblemsIndexRoute: ProblemsIndexRoute,
   AuthSignInIndexLazyRoute: AuthSignInIndexLazyRoute,
   AuthSignUpIndexLazyRoute: AuthSignUpIndexLazyRoute,
-}
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
