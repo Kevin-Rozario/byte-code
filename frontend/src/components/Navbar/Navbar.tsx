@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import React from "react";
 import { Button } from "../ui/button";
 
 function Navbar() {
@@ -26,10 +25,10 @@ function Navbar() {
       </nav>
       <div>
         <Button>
-          <Link to="/auth/login">Login</Link>
+          <Link to="/auth/sign-in">Login</Link>
         </Button>
         <Button>
-          <Link to="/auth/signup">Sign Up</Link>
+          <Link to="/auth/sign-up">Sign Up</Link>
         </Button>
       </div>
     </header>

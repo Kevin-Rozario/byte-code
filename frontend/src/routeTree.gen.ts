@@ -15,14 +15,22 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as ProblemsIndexImport } from './routes/problems/index'
 import { Route as PlaylistsIndexImport } from './routes/playlists/index'
+import { Route as AuthAuthLayoutImport } from './routes/auth/_authLayout'
 
 // Create Virtual Routes
 
+const AuthImport = createFileRoute('/auth')()
 const IndexLazyImport = createFileRoute('/')()
-const AuthSignupIndexLazyImport = createFileRoute('/auth/signup/')()
-const AuthLoginIndexLazyImport = createFileRoute('/auth/login/')()
+const AuthSignUpIndexLazyImport = createFileRoute('/auth/sign-up/')()
+const AuthSignInIndexLazyImport = createFileRoute('/auth/sign-in/')()
 
 // Create/Update Routes
+
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   id: '/',
@@ -42,20 +50,25 @@ const PlaylistsIndexRoute = PlaylistsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthSignupIndexLazyRoute = AuthSignupIndexLazyImport.update({
-  id: '/auth/signup/',
-  path: '/auth/signup/',
-  getParentRoute: () => rootRoute,
+const AuthAuthLayoutRoute = AuthAuthLayoutImport.update({
+  id: '/_authLayout',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthSignUpIndexLazyRoute = AuthSignUpIndexLazyImport.update({
+  id: '/sign-up/',
+  path: '/sign-up/',
+  getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
-  import('./routes/auth/signup/index.lazy').then((d) => d.Route),
+  import('./routes/auth/sign-up/index.lazy').then((d) => d.Route),
 )
 
-const AuthLoginIndexLazyRoute = AuthLoginIndexLazyImport.update({
-  id: '/auth/login/',
-  path: '/auth/login/',
-  getParentRoute: () => rootRoute,
+const AuthSignInIndexLazyRoute = AuthSignInIndexLazyImport.update({
+  id: '/sign-in/',
+  path: '/sign-in/',
+  getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
-  import('./routes/auth/login/index.lazy').then((d) => d.Route),
+  import('./routes/auth/sign-in/index.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -68,6 +81,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/_authLayout': {
+      id: '/auth/_authLayout'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthAuthLayoutImport
+      parentRoute: typeof AuthRoute
     }
     '/playlists/': {
       id: '/playlists/'
@@ -83,79 +110,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProblemsIndexImport
       parentRoute: typeof rootRoute
     }
-    '/auth/login/': {
-      id: '/auth/login/'
-      path: '/auth/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginIndexLazyImport
-      parentRoute: typeof rootRoute
+    '/auth/sign-in/': {
+      id: '/auth/sign-in/'
+      path: '/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInIndexLazyImport
+      parentRoute: typeof AuthImport
     }
-    '/auth/signup/': {
-      id: '/auth/signup/'
-      path: '/auth/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupIndexLazyImport
-      parentRoute: typeof rootRoute
+    '/auth/sign-up/': {
+      id: '/auth/sign-up/'
+      path: '/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpIndexLazyImport
+      parentRoute: typeof AuthImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthAuthLayoutRoute: typeof AuthAuthLayoutRoute
+  AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute
+  AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAuthLayoutRoute: AuthAuthLayoutRoute,
+  AuthSignInIndexLazyRoute: AuthSignInIndexLazyRoute,
+  AuthSignUpIndexLazyRoute: AuthSignUpIndexLazyRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/auth': typeof AuthAuthLayoutRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/problems': typeof ProblemsIndexRoute
-  '/auth/login': typeof AuthLoginIndexLazyRoute
-  '/auth/signup': typeof AuthSignupIndexLazyRoute
+  '/auth/sign-in': typeof AuthSignInIndexLazyRoute
+  '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/auth': typeof AuthAuthLayoutRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/problems': typeof ProblemsIndexRoute
-  '/auth/login': typeof AuthLoginIndexLazyRoute
-  '/auth/signup': typeof AuthSignupIndexLazyRoute
+  '/auth/sign-in': typeof AuthSignInIndexLazyRoute
+  '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_authLayout': typeof AuthAuthLayoutRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/problems/': typeof ProblemsIndexRoute
-  '/auth/login/': typeof AuthLoginIndexLazyRoute
-  '/auth/signup/': typeof AuthSignupIndexLazyRoute
+  '/auth/sign-in/': typeof AuthSignInIndexLazyRoute
+  '/auth/sign-up/': typeof AuthSignUpIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/playlists' | '/problems' | '/auth/login' | '/auth/signup'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/playlists'
+    | '/problems'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/playlists' | '/problems' | '/auth/login' | '/auth/signup'
+  to:
+    | '/'
+    | '/auth'
+    | '/playlists'
+    | '/problems'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
   id:
     | '__root__'
     | '/'
+    | '/auth'
+    | '/auth/_authLayout'
     | '/playlists/'
     | '/problems/'
-    | '/auth/login/'
-    | '/auth/signup/'
+    | '/auth/sign-in/'
+    | '/auth/sign-up/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  AuthRoute: typeof AuthRouteWithChildren
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   ProblemsIndexRoute: typeof ProblemsIndexRoute
-  AuthLoginIndexLazyRoute: typeof AuthLoginIndexLazyRoute
-  AuthSignupIndexLazyRoute: typeof AuthSignupIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  AuthRoute: AuthRouteWithChildren,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   ProblemsIndexRoute: ProblemsIndexRoute,
-  AuthLoginIndexLazyRoute: AuthLoginIndexLazyRoute,
-  AuthSignupIndexLazyRoute: AuthSignupIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -169,14 +226,25 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/auth",
         "/playlists/",
-        "/problems/",
-        "/auth/login/",
-        "/auth/signup/"
+        "/problems/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/auth": {
+      "filePath": "auth",
+      "children": [
+        "/auth/_authLayout",
+        "/auth/sign-in/",
+        "/auth/sign-up/"
+      ]
+    },
+    "/auth/_authLayout": {
+      "filePath": "auth/_authLayout.tsx",
+      "parent": "/auth"
     },
     "/playlists/": {
       "filePath": "playlists/index.tsx"
@@ -184,11 +252,13 @@ export const routeTree = rootRoute
     "/problems/": {
       "filePath": "problems/index.tsx"
     },
-    "/auth/login/": {
-      "filePath": "auth/login/index.lazy.tsx"
+    "/auth/sign-in/": {
+      "filePath": "auth/sign-in/index.lazy.tsx",
+      "parent": "/auth"
     },
-    "/auth/signup/": {
-      "filePath": "auth/signup/index.lazy.tsx"
+    "/auth/sign-up/": {
+      "filePath": "auth/sign-up/index.lazy.tsx",
+      "parent": "/auth"
     }
   }
 }
