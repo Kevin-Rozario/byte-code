@@ -53,6 +53,7 @@ const SignUpPage = () => {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex items-center justify-center p-4 relative overflow-hidden">
+        {/* Background decorative elements */}
         <div className="absolute inset-0">
           <div className="absolute top-20 left-10 text-purple-400/10 transform rotate-12">
             <Code2 className="h-24 w-24" />
@@ -68,14 +69,22 @@ const SignUpPage = () => {
           </div>
         </div>
 
+        {/* Grid background pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#8b5cf620_1px,transparent_1px),linear-gradient(to_bottom,#8b5cf620_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
+        {/* Main Card Container */}
         <div className="w-full max-w-lg relative z-10">
+          {/* Animated blur border */}
           <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/30 via-blue-500/30 to-cyan-500/30 rounded-3xl blur-xl animate-pulse"></div>
 
-          <div className="relative bg-slate-900/80 backdrop-blur-2xl border border-slate-700/50 rounded-3xl p-10 shadow-2xl">
-            <div className="text-center mb-8">
-              <div className="flex items-center justify-center mb-6">
+          <div className="relative bg-slate-900/80 backdrop-blur-2xl border border-slate-700/50 rounded-3xl p-8 shadow-2xl">
+            {" "}
+            {/* Reduced padding from p-10 to p-8 */}
+            <div className="text-center mb-5">
+              {" "}
+              {/* Reduced mb-8 to mb-5 */}
+              {/* Logo/Icon at the top */}
+              <div className="flex items-center justify-center mb-4">
                 <div className="relative">
                   <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl blur opacity-75"></div>
                   <div className="relative bg-gradient-to-br from-purple-500 to-blue-600 p-4 rounded-2xl">
@@ -83,25 +92,28 @@ const SignUpPage = () => {
                   </div>
                 </div>
               </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-1">
                 Join ByteCode
               </h1>
               <p className="text-slate-400 text-lg">
                 Start your coding journey today
               </p>
             </div>
-
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
+                className="space-y-4" // Main spacing between form fields
               >
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {" "}
+                  {/* Gap between username and full name */}
                   <FormField
                     control={form.control}
                     name="userName"
                     render={({ field, fieldState }) => (
-                      <FormItem className="space-y-2">
+                      <FormItem className="space-y-1">
+                        {" "}
+                        {/* Spacing for label and input */}
                         <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                           <User className="h-4 w-4 text-purple-400" />
                           Username
@@ -111,7 +123,7 @@ const SignUpPage = () => {
                             <Input
                               placeholder="johndoe"
                               {...field}
-                              className={`w-full px-4 py-3 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
+                              className={`w-full px-4 py-2.5 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                                 fieldState.error
                                   ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                                   : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
@@ -131,12 +143,11 @@ const SignUpPage = () => {
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field, fieldState }) => (
-                      <FormItem className="space-y-2">
+                      <FormItem className="space-y-1">
                         <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                           <UserCheck className="h-4 w-4 text-purple-400" />
                           Full Name
@@ -146,7 +157,7 @@ const SignUpPage = () => {
                             <Input
                               placeholder="John Doe"
                               {...field}
-                              className={`w-full px-4 py-3 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
+                              className={`w-full px-4 py-2.5 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                                 fieldState.error
                                   ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                                   : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
@@ -172,7 +183,7 @@ const SignUpPage = () => {
                   control={form.control}
                   name="email"
                   render={({ field, fieldState }) => (
-                    <FormItem className="space-y-2">
+                    <FormItem className="space-y-1">
                       <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                         <Mail className="h-4 w-4 text-purple-400" />
                         Email Address
@@ -183,7 +194,7 @@ const SignUpPage = () => {
                             type="email"
                             placeholder="johndoe@example.com"
                             {...field}
-                            className={`w-full px-5 py-4 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
+                            className={`w-full px-5 py-2.5 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                               fieldState.error
                                 ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                                 : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
@@ -195,7 +206,7 @@ const SignUpPage = () => {
                         </div>
                       </FormControl>
                       {fieldState.error && (
-                        <p className="text-red-400 text-sm mt-2 flex items-center gap-1">
+                        <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
                           <span className="w-1 h-1 bg-red-400 rounded-full"></span>
                           {fieldState.error.message}
                         </p>
@@ -208,7 +219,7 @@ const SignUpPage = () => {
                   control={form.control}
                   name="password"
                   render={({ field, fieldState }) => (
-                    <FormItem className="space-y-2">
+                    <FormItem className="space-y-1">
                       <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                         <Lock className="h-4 w-4 text-purple-400" />
                         Password
@@ -219,7 +230,7 @@ const SignUpPage = () => {
                             type={showPassword ? "text" : "password"}
                             placeholder="Enter your password"
                             {...field}
-                            className={`w-full px-5 py-4 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
+                            className={`w-full px-5 py-2.5 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                               fieldState.error
                                 ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                                 : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
@@ -258,7 +269,7 @@ const SignUpPage = () => {
                   control={form.control}
                   name="confirmPassword"
                   render={({ field, fieldState }) => (
-                    <FormItem className="space-y-2">
+                    <FormItem className="space-y-1">
                       <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                         <Lock className="h-4 w-4 text-purple-400" />
                         Confirm Password
@@ -269,7 +280,7 @@ const SignUpPage = () => {
                             type={showConfirmPassword ? "text" : "password"}
                             placeholder="Confirm your password"
                             {...field}
-                            className={`w-full px-5 py-4 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
+                            className={`w-full px-5 py-2.5 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                               fieldState.error
                                 ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                                 : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
@@ -294,7 +305,7 @@ const SignUpPage = () => {
                         </div>
                       </FormControl>
                       {fieldState.error && (
-                        <p className="text-red-400 text-sm mt-2 flex items-center gap-1">
+                        <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
                           <span className="w-1 h-1 bg-red-400 rounded-full"></span>
                           {fieldState.error.message}
                         </p>
@@ -306,7 +317,7 @@ const SignUpPage = () => {
                 <Button
                   type="submit"
                   disabled={form.formState.isSubmitting}
-                  className="w-full relative py-4 px-6 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 hover:from-purple-500 hover:via-blue-500 hover:to-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden mt-8"
+                  className="w-full relative py-3 px-6 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 hover:from-purple-500 hover:via-blue-500 hover:to-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden mt-6" // Reduced mt-8 to mt-6
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
@@ -322,19 +333,20 @@ const SignUpPage = () => {
                 </Button>
               </form>
             </Form>
-
-            <div className="my-8 flex items-center">
+            <div className="my-6 flex items-center">
+              {" "}
+              {/* Reduced my-8 to my-6 */}
               <div className="flex-1 border-t border-slate-700"></div>
               <div className="px-4 text-slate-400 text-sm">or</div>
               <div className="flex-1 border-t border-slate-700"></div>
             </div>
-
             <button className="w-full py-3 px-6 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 hover:border-slate-500 text-slate-200 font-medium rounded-2xl transition-all duration-300 transform hover:scale-[1.01] flex items-center justify-center gap-3">
               <Github className="h-5 w-5" />
               Continue with GitHub
             </button>
-
-            <div className="text-center mt-8 pt-6 border-t border-slate-700/50">
+            <div className="text-center mt-6 pt-4 border-t border-slate-700/50">
+              {" "}
+              {/* Reduced mt-8 to mt-6, pt-6 to pt-4 */}
               <p className="text-slate-400">
                 Already have an account?{" "}
                 <Link
