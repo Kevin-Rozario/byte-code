@@ -616,3 +616,24 @@ export const resetPassword = asyncHandler(async (req, res) => {
       new ApiResponse(200, { message: "Password reset successfully!" }, null),
     );
 });
+
+export const checkUser = asyncHandler(async (req, res) => {
+  const userId = req.user?.id;
+  if (!userId) {
+    throw new ApiError(401, "Unauthorised request");
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      userName: true,
+      email: true,
+      fullName: true,
+    },
+  });
+  if (!user) {
+    throw new ApiError(404, "User not found!");
+  }
+  res.status(200).json(new ApiResponse(200, { message: "User found!" }, user));
+});
