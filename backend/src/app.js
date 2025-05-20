@@ -5,7 +5,7 @@ import codeExecuteRoutes from "./routes/codeExecute.route.js";
 import submissionRoutes from "./routes/submission.route.js";
 import playListRoutes from "./routes/playList.route.js";
 import cookieParser from "cookie-parser";
-import "cors";
+import cors from "cors";
 
 const app = express();
 
