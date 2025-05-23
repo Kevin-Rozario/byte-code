@@ -97,7 +97,6 @@ const Navbar = () => {
                   align="end"
                   sideOffset={5}
                   avoidCollisions={true}
-                  onOpenAutoFocus={(e) => e.preventDefault()}
                   onCloseAutoFocus={(e) => e.preventDefault()}
                 >
                   <DropdownMenuLabel className="font-normal text-slate-200">
@@ -112,8 +111,10 @@ const Navbar = () => {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="bg-slate-700/50" />
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
+                    <Link to="/auth/profile" className=" flex w-full">
+                      <User className="mr-4 h-4 w-4" />
+                      Profile
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
