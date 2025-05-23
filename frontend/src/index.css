@@ -7,6 +7,10 @@ body {
   height: 100%;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

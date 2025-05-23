@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { toast } from "sonner";
 
 type FormFields = z.infer<typeof signupSchema>;
 
@@ -51,10 +51,7 @@ const SignUpPage = () => {
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     if (data.password !== data.confirmPassword) {
-      <Alert>
-        <AlertTitle>Invalid Password</AlertTitle>
-        <AlertDescription>Passwords do not match</AlertDescription>
-      </Alert>;
+      toast.error("Passwords do not match.");
       return;
     }
 
@@ -65,10 +62,14 @@ const SignUpPage = () => {
       password: data.password,
     };
 
-    await signUp(finalData);
-    console.log(finalData); // test purpose only
-    form.reset();
-    navigate({ to: "/auth/sign-in" });
+    try {
+      await signUp(finalData);
+      form.reset();
+      navigate({ to: "/auth/sign-in" });
+      toast.success("Account created and signed in successfully!");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to sign up.");
+    }
   };
 
   return (
@@ -76,9 +77,7 @@ const SignUpPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex items-center justify-center p-4 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 text-purple-400/10 transform rotate-12">
-            <Code2 className="h-24 w-24" />
-          </div>
+          <div className="absolute top-20 left-10 text-purple-400/10 transform rotate-12"></div>
           <div className="absolute top-32 right-20 text-blue-400/10 transform -rotate-45">
             <Star className="h-16 w-16" />
           </div>

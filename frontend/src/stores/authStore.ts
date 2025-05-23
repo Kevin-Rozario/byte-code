@@ -153,7 +153,7 @@ const useAuthStore = create<IUserState>()(
         try {
           const response = await axiosInstance.get("/api/v1/auth/profile");
           if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data.user });
+            set({ isAuthenticated: true, user: response.data });
           } else {
             set({ isAuthenticated: false, user: null });
           }

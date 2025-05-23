@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
+import { toast } from "sonner";
 
 type FormFields = z.infer<typeof signinSchema>;
 
@@ -43,10 +44,15 @@ const SignInPage = () => {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    await signIn(data);
-    console.log(data); // test purpose only
-    form.reset();
-    navigate({ to: "/" });
+    try {
+      await signIn(data);
+      console.log(data); // test purpose only
+      form.reset();
+      navigate({ to: "/" });
+      toast.success("Signed in successfully!");
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to sign in.");
+    }
   };
 
   return (
