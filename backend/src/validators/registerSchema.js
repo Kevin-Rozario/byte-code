@@ -12,7 +12,7 @@ export const registerSchema = z.object({
     message: "Name must be at least 2 characters",
     min: 2,
   }),
-  username: z.string().min({
+  userName: z.string().min({
     message: "Username must be at least 2 characters",
     min: 2,
   }),

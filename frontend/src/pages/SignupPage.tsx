@@ -59,14 +59,14 @@ const SignUpPage = () => {
 
     const finalData = {
       userName: data.userName,
-      name: data.name,
+      fullName: data.name,
       email: data.email,
       password: data.password,
     };
-    
+
     await signUp(finalData);
     console.log(finalData); // test purpose only
-    form.reset();
+    // form.reset();
     return <Navigate to="/auth/sign-in" />;
   };
 

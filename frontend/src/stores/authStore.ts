@@ -7,8 +7,7 @@ interface IUser {
   id: string;
   email: string;
   userName: string;
-  name: string;
-  // Add any other user properties your backend returns
+  fullName: string;
 }
 
 interface IUserState {
@@ -33,13 +32,14 @@ interface ISignup {
   email: string;
   password: string;
   userName: string;
-  name: string;
+  fullName: string;
 }
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URI!,
   headers: {
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   withCredentials: true,
 });
@@ -94,7 +94,7 @@ const useAuthStore = create<IUserState>()(
             data,
           );
           if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data.user });
+            set({ isAuthenticated: true, user: response.data });
             toast.success("Account created and signed in successfully!");
           }
         } catch (error) {

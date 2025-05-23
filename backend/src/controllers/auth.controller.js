@@ -77,7 +77,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 export const registerUser = asyncHandler(async (req, res) => {
   // get data
   const { email, userName, fullName, password } = req.body;
-
+  console.log(req.body); // test purpose
   // validate data
   if (!email || !userName || !fullName || !password) {
     throw new ApiError(400, "All fields are required!");
