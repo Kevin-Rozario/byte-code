@@ -11,6 +11,7 @@ interface IUserState {
   signin: (data: ISignin) => Promise<void>;
   signup: (data: ISignup) => Promise<void>;
   signout: () => Promise<void>;
+  getCurrentUser: () => Promise<void>;
 }
 
 interface ISignin {
