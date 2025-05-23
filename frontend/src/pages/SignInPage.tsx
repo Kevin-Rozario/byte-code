@@ -25,10 +25,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useAuthStore } from "@/stores/authStore";
 
 type FormFields = z.infer<typeof signinSchema>;
 
 const SignInPage = () => {
+  const signIn = useAuthStore((state) => state.signin);
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<FormFields>({
@@ -40,9 +42,9 @@ const SignInPage = () => {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log(data);
-    // Handle sign in submission here
+    await signIn(data);
+    console.log(data); // test purpose only
+    form.reset();
   };
 
   return (
