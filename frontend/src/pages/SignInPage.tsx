@@ -24,7 +24,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, Navigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 
 type FormFields = z.infer<typeof signinSchema>;
@@ -45,6 +45,7 @@ const SignInPage = () => {
     await signIn(data);
     console.log(data); // test purpose only
     form.reset();
+    return <Navigate to="/" />;
   };
 
   return (

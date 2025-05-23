@@ -26,7 +26,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, Navigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 
 type FormFields = z.infer<typeof signupSchema>;
@@ -51,6 +51,7 @@ const SignUpPage = () => {
     await signUp(data);
     console.log(data); // test purpose only
     form.reset();
+    return <Navigate to="/auth/sign-in" />;
   };
 
   return (
