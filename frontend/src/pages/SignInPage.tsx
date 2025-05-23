@@ -24,7 +24,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Link, Navigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 
 type FormFields = z.infer<typeof signinSchema>;
@@ -32,6 +32,7 @@ type FormFields = z.infer<typeof signinSchema>;
 const SignInPage = () => {
   const signIn = useAuthStore((state) => state.signin);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(signinSchema),
@@ -45,7 +46,7 @@ const SignInPage = () => {
     await signIn(data);
     console.log(data); // test purpose only
     form.reset();
-    return <Navigate to="/" />;
+    navigate({ to: "/" });
   };
 
   return (
