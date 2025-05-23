@@ -7,7 +7,6 @@ import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useAuthStore } from "@/stores/authStore";
 
 const Navbar = () => {
-
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (

@@ -8,182 +8,164 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as ProblemsIndexImport } from './routes/problems/index'
-import { Route as PlaylistsIndexImport } from './routes/playlists/index'
-import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as rootRoute } from "./routes/__root";
+import { Route as ProblemsIndexImport } from "./routes/problems/index";
+import { Route as PlaylistsIndexImport } from "./routes/playlists/index";
 
 // Create Virtual Routes
 
-const IndexLazyImport = createFileRoute('/')()
-const AuthAuthSignUpIndexLazyImport = createFileRoute('/_auth/auth/sign-up/')()
-const AuthAuthSignInIndexLazyImport = createFileRoute('/_auth/auth/sign-in/')()
+const IndexLazyImport = createFileRoute("/")();
+const AuthSignUpIndexLazyImport = createFileRoute("/auth/sign-up/")();
+const AuthSignInIndexLazyImport = createFileRoute("/auth/sign-in/")();
 
 // Create/Update Routes
 
 const IndexLazyRoute = IndexLazyImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import("./routes/index.lazy").then((d) => d.Route));
 
 const ProblemsIndexRoute = ProblemsIndexImport.update({
-  id: '/problems/',
-  path: '/problems/',
+  id: "/problems/",
+  path: "/problems/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const PlaylistsIndexRoute = PlaylistsIndexImport.update({
-  id: '/playlists/',
-  path: '/playlists/',
+  id: "/playlists/",
+  path: "/playlists/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
-const AuthIndexRoute = AuthIndexImport.update({
-  id: '/_auth/',
-  path: '/',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AuthAuthSignUpIndexLazyRoute = AuthAuthSignUpIndexLazyImport.update({
-  id: '/_auth/auth/sign-up/',
-  path: '/auth/sign-up/',
+const AuthSignUpIndexLazyRoute = AuthSignUpIndexLazyImport.update({
+  id: "/auth/sign-up/",
+  path: "/auth/sign-up/",
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./routes/auth/sign-up/index.lazy').then((d) => d.Route),
-)
+  import("./routes/auth/sign-up/index.lazy").then((d) => d.Route),
+);
 
-const AuthAuthSignInIndexLazyRoute = AuthAuthSignInIndexLazyImport.update({
-  id: '/_auth/auth/sign-in/',
-  path: '/auth/sign-in/',
+const AuthSignInIndexLazyRoute = AuthSignInIndexLazyImport.update({
+  id: "/auth/sign-in/",
+  path: "/auth/sign-in/",
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./routes/auth/sign-in/index.lazy').then((d) => d.Route),
-)
+  import("./routes/auth/sign-in/index.lazy").then((d) => d.Route),
+);
 
 // Populate the FileRoutesByPath interface
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/': {
-      id: '/_auth/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AuthIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/playlists/': {
-      id: '/playlists/'
-      path: '/playlists'
-      fullPath: '/playlists'
-      preLoaderRoute: typeof PlaylistsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/problems/': {
-      id: '/problems/'
-      path: '/problems'
-      fullPath: '/problems'
-      preLoaderRoute: typeof ProblemsIndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/auth/sign-in/': {
-      id: '/_auth/auth/sign-in/'
-      path: '/auth/sign-in'
-      fullPath: '/auth/sign-in'
-      preLoaderRoute: typeof AuthAuthSignInIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/_auth/auth/sign-up/': {
-      id: '/_auth/auth/sign-up/'
-      path: '/auth/sign-up'
-      fullPath: '/auth/sign-up'
-      preLoaderRoute: typeof AuthAuthSignUpIndexLazyImport
-      parentRoute: typeof rootRoute
-    }
+    "/": {
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/playlists/": {
+      id: "/playlists/";
+      path: "/playlists";
+      fullPath: "/playlists";
+      preLoaderRoute: typeof PlaylistsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/problems/": {
+      id: "/problems/";
+      path: "/problems";
+      fullPath: "/problems";
+      preLoaderRoute: typeof ProblemsIndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/sign-in/": {
+      id: "/auth/sign-in/";
+      path: "/auth/sign-in";
+      fullPath: "/auth/sign-in";
+      preLoaderRoute: typeof AuthSignInIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    "/auth/sign-up/": {
+      id: "/auth/sign-up/";
+      path: "/auth/sign-up";
+      fullPath: "/auth/sign-up";
+      preLoaderRoute: typeof AuthSignUpIndexLazyImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthIndexRoute
-  '/playlists': typeof PlaylistsIndexRoute
-  '/problems': typeof ProblemsIndexRoute
-  '/auth/sign-in': typeof AuthAuthSignInIndexLazyRoute
-  '/auth/sign-up': typeof AuthAuthSignUpIndexLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/playlists": typeof PlaylistsIndexRoute;
+  "/problems": typeof ProblemsIndexRoute;
+  "/auth/sign-in": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof AuthIndexRoute
-  '/playlists': typeof PlaylistsIndexRoute
-  '/problems': typeof ProblemsIndexRoute
-  '/auth/sign-in': typeof AuthAuthSignInIndexLazyRoute
-  '/auth/sign-up': typeof AuthAuthSignUpIndexLazyRoute
+  "/": typeof IndexLazyRoute;
+  "/playlists": typeof PlaylistsIndexRoute;
+  "/problems": typeof ProblemsIndexRoute;
+  "/auth/sign-in": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRoutesById {
-  __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/_auth/': typeof AuthIndexRoute
-  '/playlists/': typeof PlaylistsIndexRoute
-  '/problems/': typeof ProblemsIndexRoute
-  '/_auth/auth/sign-in/': typeof AuthAuthSignInIndexLazyRoute
-  '/_auth/auth/sign-up/': typeof AuthAuthSignUpIndexLazyRoute
+  __root__: typeof rootRoute;
+  "/": typeof IndexLazyRoute;
+  "/playlists/": typeof PlaylistsIndexRoute;
+  "/problems/": typeof ProblemsIndexRoute;
+  "/auth/sign-in/": typeof AuthSignInIndexLazyRoute;
+  "/auth/sign-up/": typeof AuthSignUpIndexLazyRoute;
 }
 
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath
+  fileRoutesByFullPath: FileRoutesByFullPath;
   fullPaths:
-    | '/'
-    | '/playlists'
-    | '/problems'
-    | '/auth/sign-in'
-    | '/auth/sign-up'
-  fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/playlists' | '/problems' | '/auth/sign-in' | '/auth/sign-up'
+    | "/"
+    | "/playlists"
+    | "/problems"
+    | "/auth/sign-in"
+    | "/auth/sign-up";
+  fileRoutesByTo: FileRoutesByTo;
+  to: "/" | "/playlists" | "/problems" | "/auth/sign-in" | "/auth/sign-up";
   id:
-    | '__root__'
-    | '/'
-    | '/_auth/'
-    | '/playlists/'
-    | '/problems/'
-    | '/_auth/auth/sign-in/'
-    | '/_auth/auth/sign-up/'
-  fileRoutesById: FileRoutesById
+    | "__root__"
+    | "/"
+    | "/playlists/"
+    | "/problems/"
+    | "/auth/sign-in/"
+    | "/auth/sign-up/";
+  fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  AuthIndexRoute: typeof AuthIndexRoute
-  PlaylistsIndexRoute: typeof PlaylistsIndexRoute
-  ProblemsIndexRoute: typeof ProblemsIndexRoute
-  AuthAuthSignInIndexLazyRoute: typeof AuthAuthSignInIndexLazyRoute
-  AuthAuthSignUpIndexLazyRoute: typeof AuthAuthSignUpIndexLazyRoute
+  IndexLazyRoute: typeof IndexLazyRoute;
+  PlaylistsIndexRoute: typeof PlaylistsIndexRoute;
+  ProblemsIndexRoute: typeof ProblemsIndexRoute;
+  AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute;
+  AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
-  AuthIndexRoute: AuthIndexRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   ProblemsIndexRoute: ProblemsIndexRoute,
-  AuthAuthSignInIndexLazyRoute: AuthAuthSignInIndexLazyRoute,
-  AuthAuthSignUpIndexLazyRoute: AuthAuthSignUpIndexLazyRoute,
-}
+  AuthSignInIndexLazyRoute: AuthSignInIndexLazyRoute,
+  AuthSignUpIndexLazyRoute: AuthSignUpIndexLazyRoute,
+};
 
 export const routeTree = rootRoute
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+  ._addFileTypes<FileRouteTypes>();
 
 /* ROUTE_MANIFEST_START
 {
@@ -192,18 +174,14 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/_auth/",
         "/playlists/",
         "/problems/",
-        "/_auth/auth/sign-in/",
-        "/_auth/auth/sign-up/"
+        "/auth/sign-in/",
+        "/auth/sign-up/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
-    },
-    "/_auth/": {
-      "filePath": "_auth/index.tsx"
     },
     "/playlists/": {
       "filePath": "playlists/index.tsx"
@@ -211,11 +189,11 @@ export const routeTree = rootRoute
     "/problems/": {
       "filePath": "problems/index.tsx"
     },
-    "/_auth/auth/sign-in/": {
-      "filePath": "_auth/auth/sign-in/index.lazy.tsx"
+    "/auth/sign-in/": {
+      "filePath": "auth/sign-in/index.lazy.tsx"
     },
-    "/_auth/auth/sign-up/": {
-      "filePath": "_auth/auth/sign-up/index.lazy.tsx"
+    "/auth/sign-up/": {
+      "filePath": "auth/sign-up/index.lazy.tsx"
     }
   }
 }

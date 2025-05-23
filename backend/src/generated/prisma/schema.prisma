@@ -72,7 +72,7 @@ model Problem {
 
 enum Status {
   ACCEPTED
-  WORNG_ANSWER
+  WRONG_ANSWER
 }
 
 model Submission {

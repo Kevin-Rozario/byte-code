@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, Navigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type FormFields = z.infer<typeof signupSchema>;
 
@@ -48,8 +49,23 @@ const SignUpPage = () => {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    await signUp(data);
-    console.log(data); // test purpose only
+    if (data.password !== data.confirmPassword) {
+      <Alert>
+        <AlertTitle>Invalid Password</AlertTitle>
+        <AlertDescription>Passwords do not match</AlertDescription>
+      </Alert>;
+      return;
+    }
+
+    const finalData = {
+      userName: data.userName,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
+    
+    await signUp(finalData);
+    console.log(finalData); // test purpose only
     form.reset();
     return <Navigate to="/auth/sign-in" />;
   };
