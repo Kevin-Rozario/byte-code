@@ -81,22 +81,6 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({
   return (
     <div className="flex-shrink-0 w-80 mx-4">
       <div className="bg-slate-900/80 backdrop-blur-sm border border-slate-700 rounded-xl p-6 h-full">
-        {/* Rating Stars */}
-        <div className="flex gap-1 mb-4">
-          {[...Array(testimonial.rating)].map((_, i) => (
-            <Star
-              key={i}
-              className="text-yellow-400 fill-yellow-400"
-              size={16}
-            />
-          ))}
-        </div>
-
-        {/* Content */}
-        <p className="text-slate-200 mb-6 leading-relaxed">
-          "{testimonial.content}"
-        </p>
-
         {/* User Info */}
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
@@ -109,6 +93,22 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({
             </p>
           </div>
         </div>
+
+        {/* Rating Stars */}
+        <div className="flex gap-1 mt-5">
+          {[...Array(testimonial.rating)].map((_, i) => (
+            <Star
+              key={i}
+              className="text-yellow-400 fill-yellow-400"
+              size={16}
+            />
+          ))}
+        </div>
+
+        {/* Content */}
+        <p className="text-slate-200 mt-5 leading-relaxed">
+          "{testimonial.content}"
+        </p>
       </div>
     </div>
   );
