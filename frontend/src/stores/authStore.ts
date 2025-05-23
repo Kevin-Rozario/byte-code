@@ -24,7 +24,7 @@ interface IUserState {
 }
 
 interface ISignin {
-  email: string;
+  identifier: string;
   password: string;
 }
 

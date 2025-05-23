@@ -36,7 +36,7 @@ const SignInPage = () => {
   const form = useForm<FormFields>({
     resolver: zodResolver(signinSchema),
     defaultValues: {
-      email: "",
+      identifier: "",
       password: "",
     },
   });
@@ -95,7 +95,7 @@ const SignInPage = () => {
               >
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="identifier"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
@@ -107,7 +107,7 @@ const SignInPage = () => {
                           type="email"
                           placeholder="johndoe@example.com"
                           className={`w-full px-5 py-4 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
-                            form.formState.errors.email
+                            form.formState.errors.identifier
                               ? "border-red-500/50 focus:ring-red-500/50 focus:border-red-500"
                               : "border-slate-600/50 focus:ring-purple-500/50 focus:border-purple-500 group-hover:border-slate-500"
                           }`}

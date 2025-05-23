@@ -26,7 +26,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Link, Navigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -36,12 +36,13 @@ const SignUpPage = () => {
   const signUp = useAuthStore((state) => state.signup);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<FormFields>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
       userName: "",
-      name: "",
+      fullName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -59,15 +60,15 @@ const SignUpPage = () => {
 
     const finalData = {
       userName: data.userName,
-      fullName: data.name,
+      fullName: data.fullName,
       email: data.email,
       password: data.password,
     };
 
     await signUp(finalData);
     console.log(finalData); // test purpose only
-    // form.reset();
-    return <Navigate to="/auth/sign-in" />;
+    form.reset();
+    navigate({ to: "/auth/sign-in" });
   };
 
   return (
@@ -165,7 +166,7 @@ const SignUpPage = () => {
                   />
                   <FormField
                     control={form.control}
-                    name="name"
+                    name="fullName"
                     render={({ field, fieldState }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-sm font-semibold text-slate-200 flex items-center gap-2">
