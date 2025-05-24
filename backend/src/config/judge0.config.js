@@ -4,14 +4,14 @@ import ApiError from "../utils/apiError.util.js";
 
 export const getSupportedLanguagesId = (languageName) => {
   const languages = {
-    python3: 71,
+    python: 71,
     java: 62,
     javascript: 63,
     cpp: 54,
     c: 50,
   };
 
-  return languages[languageName] || "unkwnown";
+  return languages[languageName];
 };
 
 export const getSupportedLanguagesName = (languageId) => {
@@ -23,7 +23,7 @@ export const getSupportedLanguagesName = (languageId) => {
     50: "c",
   };
 
-  return languages[languageId] || "unkwnown";
+  return languages[languageId];
 };
 
 export const submitCodeInBatch = async (submissions) => {
@@ -34,9 +34,16 @@ export const submitCodeInBatch = async (submissions) => {
   }
 
   try {
-    const response = await axios.post(`${judge0Url}/submissions/batch?`, {
-      submissions,
-    });
+    const response = await axios.post(
+      `${judge0Url}/submissions/batch`,
+      { submissions },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.JUDGE0_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
     console.log("Submissions sent successfully");
     return response.data.map((submission) => submission.token);
   } catch (error) {
@@ -48,6 +55,7 @@ export const submitCodeInBatch = async (submissions) => {
     );
   }
 };
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const pollSubmissionResult = async (tokens) => {
@@ -63,6 +71,9 @@ export const pollSubmissionResult = async (tokens) => {
         tokens: tokens.join(","),
         base64_encoded: false,
       },
+      headers: {
+        Authorization: `Bearer ${process.env.JUDGE0_API_KEY}`,
+      },
     });
 
     const submissions = response.data.submissions;
@@ -74,6 +85,7 @@ export const pollSubmissionResult = async (tokens) => {
     if (allDone) {
       return submissions;
     }
+
     await sleep(1000);
   }
 };

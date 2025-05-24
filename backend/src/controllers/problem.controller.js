@@ -37,14 +37,13 @@ export const createProblem = asyncHandler(async (req, res) => {
 
     const tokens = await submitCodeInBatch(submissions);
     const submissionsResults = await pollSubmissionResult(tokens);
-    submissionsResults.forEach((result) => {
-      console.log(result);
+    for (const result of submissionsResults) {
       if (result.status.id !== 3) {
         return res
           .status(400)
           .json(new ApiResponse(400, { message: "Test case failed" }, null));
       }
-    });
+    }
   }
   // Save the problem to the database
   const savedProblem = await db.problem.create({
@@ -99,7 +98,7 @@ export const getProblemById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const problem = await db.problem.findUnique({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
   if (!problem) {
@@ -116,7 +115,7 @@ export const updateProblemById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const problem = await db.problem.findUnique({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
 
@@ -132,7 +131,7 @@ export const deleteProblemById = asyncHandler(async (req, res) => {
 
   const problem = await db.problem.findUnique({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
 
@@ -142,7 +141,7 @@ export const deleteProblemById = asyncHandler(async (req, res) => {
 
   await db.problem.delete({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
 

@@ -10,7 +10,7 @@ export const getAllSubmissions = asyncHandler(async (req, res) => {
       userId: userId,
     },
   });
-  if (!submissions) {
+  if (!submissions || submissions.length === 0) {
     throw new ApiError(404, "No submissions found", null);
   }
   res
@@ -31,10 +31,10 @@ export const getSubmissionByProblemId = asyncHandler(async (req, res) => {
   const submission = await db.submission.findMany({
     where: {
       userId: userId,
-      problemId: parseInt(problemId),
+      problemId,
     },
   });
-  if (!submission) {
+  if (!submission || submission.length === 0) {
     throw new ApiError(404, "No submission found", null);
   }
   res
@@ -55,9 +55,10 @@ export const getSubmissionCountByProblemId = asyncHandler(async (req, res) => {
   const submissionCount = await db.submission.count({
     where: {
       userId: userId,
-      problemId: parseInt(problemId),
+      problemId,
     },
   });
+  console.log(submissionCount);
   if (!submissionCount) {
     throw new ApiError(404, "No submission found", null);
   }
