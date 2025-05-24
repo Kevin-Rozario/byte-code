@@ -121,7 +121,7 @@ export const executeCode = asyncHandler(async (req, res) => {
       id: savedSubmission.id,
     },
     include: {
-      testCaseResults: true,
+      testCases: true,
     },
   });
 
