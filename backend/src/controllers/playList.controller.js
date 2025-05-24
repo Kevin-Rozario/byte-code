@@ -18,7 +18,7 @@ export const getAllPlaylists = asyncHandler(async (req, res) => {
     },
   });
 
-  if (!playlists) {
+  if (!playlists || playlists.length === 0) {
     throw new ApiError(404, "No playlists found", null);
   }
   res
@@ -36,7 +36,7 @@ export const getPlaylistById = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const playlist = await db.playlist.findUnique({
     where: {
-      id: parseInt(id),
+      id,
     },
     include: {
       problems: {
@@ -47,7 +47,7 @@ export const getPlaylistById = asyncHandler(async (req, res) => {
     },
   });
 
-  if (!playlist) {
+  if (!playlist || playlist.length === 0) {
     throw new ApiError(404, "Playlist not found", null);
   }
 
@@ -93,18 +93,20 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { problemIds } = req.body;
 
-  if (!Array.isArray(problemIds) || problemIds.length == 0) {
+  if (!Array.isArray(problemIds) || problemIds.length === 0) {
     throw new ApiError(400, "Invalid problemIds", null);
   }
 
-  const problemsInPlayList = await db.problemsInPlayList.findMany({
-    data: problemIds.map((problemId) => ({
-      playlistId: parseInt(id),
-      problemId,
-    })),
+  const problemsToInsert = problemIds.map((problemId) => ({
+    playListId: id, // exact field name from your model
+    problemId,
+  }));
+
+  const inserted = await db.problemInPlaylist.createMany({
+    data: problemsToInsert,
   });
 
-  if (!problemsInPlayList) {
+  if (!inserted || inserted.count === 0) {
     throw new ApiError(500, "Failed to add problems to playlist", null);
   }
 
@@ -114,7 +116,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { message: "Problems added to playlist successfully!" },
-        problemsInPlayList,
+        inserted,
       ),
     );
 });
@@ -123,20 +125,20 @@ export const deleteProblemFromPlaylist = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { problemIds } = req.body;
 
-  if (!Array.isArray(problemIds) || problemIds.length == 0) {
+  if (!Array.isArray(problemIds) || problemIds.length === 0) {
     throw new ApiError(400, "Invalid problemIds", null);
   }
 
-  const problemsInPlayList = await db.problemsInPlayList.deleteMany({
+  const deleted = await db.problemInPlaylist.deleteMany({
     where: {
-      playlistId: parseInt(id),
+      playListId: id, // use exact field name
       problemId: {
         in: problemIds,
       },
     },
   });
 
-  if (!problemsInPlayList) {
+  if (!deleted || deleted.count === 0) {
     throw new ApiError(500, "Failed to delete problems from playlist", null);
   }
 
@@ -146,7 +148,7 @@ export const deleteProblemFromPlaylist = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         { message: "Problems deleted from playlist successfully!" },
-        problemsInPlayList,
+        deleted,
       ),
     );
 });
@@ -156,7 +158,7 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
 
   const playlist = await db.playlist.delete({
     where: {
-      id: parseInt(id),
+      id,
     },
   });
 

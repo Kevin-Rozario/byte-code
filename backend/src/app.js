@@ -25,6 +25,6 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/problems", problemRoutes);
 app.use("/api/v1/code", codeExecuteRoutes);
 app.use("/api/v1/submissions", submissionRoutes);
-app.use("/api/v1/playlist", playListRoutes);
+app.use("/api/v1/playlists", playListRoutes);
 
 export default app;
