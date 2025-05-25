@@ -85,7 +85,7 @@ model Submission {
   stdout        String?
   stderr        String?
   compileOutput String?
-  status        String // Accepted , wrong answer
+  status        String 
   memory        String?
   time          String?
   createdAt     DateTime         @default(now())
