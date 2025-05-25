@@ -276,7 +276,8 @@ const config = {
     db: {
       url: {
         fromEnvVar: "DATABASE_URL",
-        value: "postgresql://admin:admin1234@localhost:5432/byte-code-db",
+        value:
+          "postgresql://bytecode_user:ZG7xGi7jOYoT2RgdLTv9lV557ZvS9NJC@dpg-d0pbc10dl3ps73ake26g-a.singapore-postgres.render.com/bytecode_db",
       },
     },
   },
