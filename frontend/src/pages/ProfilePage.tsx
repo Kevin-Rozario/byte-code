@@ -1,8 +1,21 @@
-import { useState } from 'react';
-import { User, Trophy, Calendar, Mail, Shield, Code, BookOpen, Target, CheckCircle, XCircle, Clock, Play } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  User,
+  Trophy,
+  Calendar,
+  Mail,
+  Shield,
+  Code,
+  BookOpen,
+  Target,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Play,
+} from "lucide-react";
 
 const UserProfilePage = () => {
-  const [activeTab, setActiveTab] = useState('submissions');
+  const [activeTab, setActiveTab] = useState("submissions");
 
   // Mock data based on your database schema
   const userData = {
@@ -17,38 +30,50 @@ const UserProfilePage = () => {
     problemsSolved: 47,
     totalSubmissions: 89,
     totalPlaylists: 3,
-    totalProblemsCreated: 2
+    totalProblemsCreated: 2,
   };
 
   // Mock submissions data
   const submissions = [
     {
       id: "sub1",
-      problem: { title: "Two Sum", difficulty: "EASY" },
+      problem: {
+        title: "Two Sum",
+        difficulty: "EASY",
+        tags: ["Amazon", "Google", "Microsoft"],
+      },
       language: "JavaScript",
       status: "ACCEPTED",
       memory: "42.1 MB",
       time: "68 ms",
-      createdAt: "2024-05-20T10:30:00Z"
+      createdAt: "2024-05-20T10:30:00Z",
     },
     {
-      id: "sub2", 
-      problem: { title: "Binary Tree Inorder", difficulty: "MEDIUM" },
+      id: "sub2",
+      problem: {
+        title: "Binary Tree Inorder",
+        difficulty: "MEDIUM",
+        tags: ["Facebook", "Apple", "Flipkart"],
+      },
       language: "Python",
       status: "WRONG_ANSWER",
       memory: "38.5 MB",
       time: "124 ms",
-      createdAt: "2024-05-19T15:45:00Z"
+      createdAt: "2024-05-19T15:45:00Z",
     },
     {
       id: "sub3",
-      problem: { title: "Merge Intervals", difficulty: "MEDIUM" },
+      problem: {
+        title: "Merge Intervals",
+        difficulty: "MEDIUM",
+        tags: ["Google", "Uber", "LinkedIn"],
+      },
       language: "JavaScript",
       status: "ACCEPTED",
       memory: "45.2 MB",
       time: "92 ms",
-      createdAt: "2024-05-18T09:20:00Z"
-    }
+      createdAt: "2024-05-18T09:20:00Z",
+    },
   ];
 
   // Mock playlists data
@@ -59,7 +84,7 @@ const UserProfilePage = () => {
       description: "Collection of array manipulation problems",
       problemCount: 15,
       createdAt: "2024-04-10T08:00:00Z",
-      updatedAt: "2024-05-15T12:30:00Z"
+      updatedAt: "2024-05-15T12:30:00Z",
     },
     {
       id: "pl2",
@@ -67,7 +92,7 @@ const UserProfilePage = () => {
       description: "Advanced DP problems for interview prep",
       problemCount: 23,
       createdAt: "2024-03-20T14:15:00Z",
-      updatedAt: "2024-05-10T16:45:00Z"
+      updatedAt: "2024-05-10T16:45:00Z",
     },
     {
       id: "pl3",
@@ -75,32 +100,48 @@ const UserProfilePage = () => {
       description: null,
       problemCount: 8,
       createdAt: "2024-05-01T11:20:00Z",
-      updatedAt: "2024-05-18T09:10:00Z"
-    }
+      updatedAt: "2024-05-18T09:10:00Z",
+    },
   ];
 
   // Mock problems solved data
   const problemsSolved = [
     {
       id: "ps1",
-      problem: { title: "Two Sum", difficulty: "EASY" },
-      createdAt: "2024-05-20T10:30:00Z"
+      problem: {
+        title: "Two Sum",
+        difficulty: "EASY",
+        tags: ["Amazon", "Google", "Microsoft"],
+      },
+      createdAt: "2024-05-20T10:30:00Z",
     },
     {
       id: "ps2",
-      problem: { title: "Merge Intervals", difficulty: "MEDIUM" },
-      createdAt: "2024-05-18T09:20:00Z"
+      problem: {
+        title: "Merge Intervals",
+        difficulty: "MEDIUM",
+        tags: ["Google", "Uber", "LinkedIn"],
+      },
+      createdAt: "2024-05-18T09:20:00Z",
     },
     {
       id: "ps3",
-      problem: { title: "Valid Parentheses", difficulty: "EASY" },
-      createdAt: "2024-05-17T14:15:00Z"
+      problem: {
+        title: "Valid Parentheses",
+        difficulty: "EASY",
+        tags: ["Facebook", "Bloomberg", "Spotify"],
+      },
+      createdAt: "2024-05-17T14:15:00Z",
     },
     {
       id: "ps4",
-      problem: { title: "Longest Substring", difficulty: "MEDIUM" },
-      createdAt: "2024-05-16T16:45:00Z"
-    }
+      problem: {
+        title: "Longest Substring",
+        difficulty: "MEDIUM",
+        tags: ["Amazon", "Netflix", "Atlassian"],
+      },
+      createdAt: "2024-05-16T16:45:00Z",
+    },
   ];
 
   const stats = [
@@ -108,61 +149,87 @@ const UserProfilePage = () => {
       icon: Trophy,
       label: "Problems Solved",
       value: userData.problemsSolved,
-      color: "text-purple-400"
+      color: "text-purple-400",
     },
     {
       icon: Code,
       label: "Total Submissions",
       value: userData.totalSubmissions,
-      color: "text-blue-400"
+      color: "text-blue-400",
     },
     {
       icon: BookOpen,
       label: "Playlists Created",
       value: userData.totalPlaylists,
-      color: "text-cyan-400"
+      color: "text-cyan-400",
     },
     {
       icon: Target,
       label: "Problems Created",
       value: userData.totalProblemsCreated,
-      color: "text-purple-400"
-    }
+      color: "text-purple-400",
+    },
   ];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case 'EASY':
-        return 'text-green-400 bg-green-400/10';
-      case 'MEDIUM':
-        return 'text-yellow-400 bg-yellow-400/10';
-      case 'HARD':
-        return 'text-red-400 bg-red-400/10';
+      case "EASY":
+        return "text-green-400 bg-green-400/10";
+      case "MEDIUM":
+        return "text-yellow-400 bg-yellow-400/10";
+      case "HARD":
+        return "text-red-400 bg-red-400/10";
       default:
-        return 'text-slate-400 bg-slate-400/10';
+        return "text-slate-400 bg-slate-400/10";
     }
   };
 
   const getStatusIcon = (status: string) => {
-    return status === 'ACCEPTED' ? 
-      <CheckCircle className="w-4 h-4 text-green-400" /> : 
-      <XCircle className="w-4 h-4 text-red-400" />;
+    return status === "ACCEPTED" ? (
+      <CheckCircle className="w-4 h-4 text-green-400" />
+    ) : (
+      <XCircle className="w-4 h-4 text-red-400" />
+    );
+  };
+
+  const companyColors = {
+    Amazon: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+    Google: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    Microsoft: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
+    Facebook: "bg-blue-600/20 text-blue-300 border-blue-600/30",
+    Apple: "bg-gray-500/20 text-gray-300 border-gray-500/30",
+    Netflix: "bg-red-500/20 text-red-400 border-red-500/30",
+    Uber: "bg-green-500/20 text-green-400 border-green-500/30",
+    LinkedIn: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+    Flipkart: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+    Bloomberg: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    Spotify: "bg-green-400/20 text-green-300 border-green-400/30",
+    Atlassian: "bg-blue-400/20 text-blue-300 border-blue-400/30",
+  } as const;
+
+  type CompanyName = keyof typeof companyColors;
+
+  const getCompanyTagColor = (company: string) => {
+    return (
+      companyColors[company as CompanyName] ||
+      "bg-slate-600/20 text-slate-400 border-slate-600/30"
+    );
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -195,11 +262,13 @@ const UserProfilePage = () => {
                   <Mail className="w-4 h-4" />
                   <span className="text-sm">{userData.email}</span>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  userData.role === 'ADMIN' 
-                    ? 'bg-purple-500/20 text-purple-400' 
-                    : 'bg-blue-500/20 text-blue-400'
-                }`}>
+                <span
+                  className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    userData.role === "ADMIN"
+                      ? "bg-purple-500/20 text-purple-400"
+                      : "bg-blue-500/20 text-blue-400"
+                  }`}
+                >
                   {userData.role}
                 </span>
               </div>
@@ -222,7 +291,9 @@ const UserProfilePage = () => {
                   <stat.icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-slate-200">{stat.value}</p>
+                  <p className="text-2xl font-bold text-slate-200">
+                    {stat.value}
+                  </p>
                   <p className="text-sm text-slate-400">{stat.label}</p>
                 </div>
               </div>
@@ -236,7 +307,7 @@ const UserProfilePage = () => {
             <User className="w-5 h-5 text-purple-400" />
             <span>Account Information</span>
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
@@ -247,7 +318,7 @@ const UserProfilePage = () => {
                   <span className="text-slate-200">{userData.userName}</span>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-1">
                   Email Address
@@ -255,9 +326,13 @@ const UserProfilePage = () => {
                 <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center justify-between">
                   <span className="text-slate-200">{userData.email}</span>
                   {userData.isEmailVerified ? (
-                    <span className="text-green-400 text-sm font-medium">Verified</span>
+                    <span className="text-green-400 text-sm font-medium">
+                      Verified
+                    </span>
                   ) : (
-                    <span className="text-red-400 text-sm font-medium">Unverified</span>
+                    <span className="text-red-400 text-sm font-medium">
+                      Unverified
+                    </span>
                   )}
                 </div>
               </div>
@@ -270,17 +345,21 @@ const UserProfilePage = () => {
                 </label>
                 <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-200">{formatDate(userData.createdAt)}</span>
+                  <span className="text-slate-200">
+                    {formatDate(userData.createdAt)}
+                  </span>
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-slate-400 mb-1">
                   Last Updated
                 </label>
                 <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-200">{formatDate(userData.updateAt)}</span>
+                  <span className="text-slate-200">
+                    {formatDate(userData.updateAt)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -293,17 +372,17 @@ const UserProfilePage = () => {
           <div className="border-b border-slate-700">
             <nav className="flex space-x-8 px-6">
               {[
-                { id: 'submissions', label: 'Recent Submissions', icon: Code },
-                { id: 'playlists', label: 'My Playlists', icon: BookOpen },
-                { id: 'solved', label: 'Problems Solved', icon: Trophy }
+                { id: "submissions", label: "Recent Submissions", icon: Code },
+                { id: "playlists", label: "My Playlists", icon: BookOpen },
+                { id: "solved", label: "Problems Solved", icon: Trophy },
               ].map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center space-x-2 py-4 px-2 border-b-2 font-medium text-sm transition-colors ${
                     activeTab === tab.id
-                      ? 'border-purple-500 text-purple-400'
-                      : 'border-transparent text-slate-400 hover:text-slate-300'
+                      ? "border-purple-500 text-purple-400"
+                      : "border-transparent text-slate-400 hover:text-slate-300"
                   }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -315,20 +394,47 @@ const UserProfilePage = () => {
 
           {/* Tab Content */}
           <div className="p-6">
-            {activeTab === 'submissions' && (
+            {activeTab === "submissions" && (
               <div className="space-y-4">
                 {submissions.map((submission) => (
-                  <div key={submission.id} className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors">
-                    <div className="flex items-center justify-between mb-2">
+                  <div
+                    key={submission.id}
+                    className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(submission.status)}
-                        <h3 className="font-medium text-slate-200">{submission.problem.title}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(submission.problem.difficulty)}`}>
+                        <h3 className="font-medium text-slate-200">
+                          {submission.problem.title}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(submission.problem.difficulty)}`}
+                        >
                           {submission.problem.difficulty}
                         </span>
                       </div>
-                      <span className="text-sm text-slate-400">{formatDateTime(submission.createdAt)}</span>
+                      <span className="text-sm text-slate-400">
+                        {formatDateTime(submission.createdAt)}
+                      </span>
                     </div>
+
+                    {/* Company Tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {submission.problem.tags.slice(0, 3).map((tag, index) => (
+                        <span
+                          key={index}
+                          className={`px-2 py-1 rounded text-xs font-medium border ${getCompanyTagColor(tag)}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {submission.problem.tags.length > 3 && (
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-slate-600/20 text-slate-400 border border-slate-600/30">
+                          +{submission.problem.tags.length - 3} more
+                        </span>
+                      )}
+                    </div>
+
                     <div className="flex items-center space-x-6 text-sm text-slate-400">
                       <span className="flex items-center space-x-1">
                         <Code className="w-3 h-3" />
@@ -339,8 +445,10 @@ const UserProfilePage = () => {
                         <span>{submission.time}</span>
                       </span>
                       <span>{submission.memory}</span>
-                      <span className={`font-medium ${submission.status === 'ACCEPTED' ? 'text-green-400' : 'text-red-400'}`}>
-                        {submission.status.replace('_', ' ')}
+                      <span
+                        className={`font-medium ${submission.status === "ACCEPTED" ? "text-green-400" : "text-red-400"}`}
+                      >
+                        {submission.status.replace("_", " ")}
                       </span>
                     </div>
                   </div>
@@ -348,22 +456,31 @@ const UserProfilePage = () => {
               </div>
             )}
 
-            {activeTab === 'playlists' && (
+            {activeTab === "playlists" && (
               <div className="space-y-4">
                 {playlists.map((playlist) => (
-                  <div key={playlist.id} className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors">
+                  <div
+                    key={playlist.id}
+                    className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
+                  >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-3">
                         <Play className="w-4 h-4 text-purple-400" />
-                        <h3 className="font-medium text-slate-200">{playlist.name}</h3>
+                        <h3 className="font-medium text-slate-200">
+                          {playlist.name}
+                        </h3>
                         <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">
                           {playlist.problemCount} problems
                         </span>
                       </div>
-                      <span className="text-sm text-slate-400">Updated {formatDateTime(playlist.updatedAt)}</span>
+                      <span className="text-sm text-slate-400">
+                        Updated {formatDateTime(playlist.updatedAt)}
+                      </span>
                     </div>
                     {playlist.description && (
-                      <p className="text-sm text-slate-400 mb-2">{playlist.description}</p>
+                      <p className="text-sm text-slate-400 mb-2">
+                        {playlist.description}
+                      </p>
                     )}
                     <div className="text-xs text-slate-500">
                       Created {formatDateTime(playlist.createdAt)}
@@ -373,19 +490,45 @@ const UserProfilePage = () => {
               </div>
             )}
 
-            {activeTab === 'solved' && (
+            {activeTab === "solved" && (
               <div className="space-y-4">
                 {problemsSolved.map((solved) => (
-                  <div key={solved.id} className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors">
-                    <div className="flex items-center justify-between">
+                  <div
+                    key={solved.id}
+                    className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="w-4 h-4 text-green-400" />
-                        <h3 className="font-medium text-slate-200">{solved.problem.title}</h3>
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(solved.problem.difficulty)}`}>
+                        <h3 className="font-medium text-slate-200">
+                          {solved.problem.title}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(solved.problem.difficulty)}`}
+                        >
                           {solved.problem.difficulty}
                         </span>
                       </div>
-                      <span className="text-sm text-slate-400">Solved {formatDateTime(solved.createdAt)}</span>
+                      <span className="text-sm text-slate-400">
+                        Solved {formatDateTime(solved.createdAt)}
+                      </span>
+                    </div>
+
+                    {/* Company Tags */}
+                    <div className="flex flex-wrap gap-2">
+                      {solved.problem.tags.slice(0, 4).map((tag, index) => (
+                        <span
+                          key={index}
+                          className={`px-2 py-1 rounded text-xs font-medium border ${getCompanyTagColor(tag)}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {solved.problem.tags.length > 4 && (
+                        <span className="px-2 py-1 rounded text-xs font-medium bg-slate-600/20 text-slate-400 border border-slate-600/30">
+                          +{solved.problem.tags.length - 4} more
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
