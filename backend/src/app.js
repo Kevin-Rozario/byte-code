@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import rateLimit from "express-rate-limit";
 import ApiResponse from "./utils/apiResponse.util.js";
+import morgan from "morgan";
 
 const app = express();
 const whiteListUrls = process.env.FRONTEND_URLS?.split(",");
@@ -28,6 +29,7 @@ app.use(
     credentials: true,
   }),
 );
+app.use(morgan("combined"));
 
 // rate-limit
 app.use(limiter);
