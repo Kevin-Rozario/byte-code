@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 const app = express();
+const whiteListUrls = process.env.FRONTEND_URLS?.split(",");
 
 // middlewares
 app.use(express.json());
@@ -15,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: whiteListUrls,
     credentials: true,
   }),
 );

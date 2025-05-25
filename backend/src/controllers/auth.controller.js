@@ -136,7 +136,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     subject: "ByteCode Verification Email",
     mailGenContent: emailVerificationMailGenContent({
       userName: createdUser.fullName,
-      verificationUrl: `${process.env.BASE_URL}/api/v1/auth/verify?tkey=${token}`,
+      verificationUrl: `${process.env.BACKEND_URL}/api/v1/auth/verify?tkey=${token}`,
     }),
   };
 
@@ -253,7 +253,7 @@ export const resendVerificationEmail = asyncHandler(async (req, res) => {
     subject: "Resend: ByteCode Verification Email",
     mailGenContent: emailVerificationMailGenContent({
       userName: user.fullName,
-      verificationUrl: `${process.env.BASE_URL}/api/v1/auth/verify?tkey=${token}`,
+      verificationUrl: `${process.env.BACKEND_URL}/api/v1/auth/verify?tkey=${token}`,
     }),
   };
 
@@ -465,7 +465,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
         subject: "ByteCode Verification Email",
         mailGenContent: emailVerificationMailGenContent({
           userName: existingUser.fullName,
-          verificationUrl: `${process.env.BASE_URL}/api/v1/auth/verify?tkey=${token}`,
+          verificationUrl: `${process.env.BACKEND_URL}/api/v1/auth/verify?tkey=${token}`,
         }),
       };
 
@@ -542,7 +542,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     subject: "ByteCode Password Reset Email",
     mailGenContent: passwordResetMailGenContent({
       userName: user.fullName,
-      passwordResetUrl: `${process.env.BASE_URL}/api/v1/auth/reset-password?tkey=${token}`,
+      passwordResetUrl: `${process.env.BACKEND_URL}/api/v1/auth/reset-password?tkey=${token}`,
     }),
   };
 
