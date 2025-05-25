@@ -130,7 +130,7 @@ const UserProfilePage = () => {
     }
   ];
 
-  const getDifficultyColor = (difficulty) => {
+  const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'EASY':
         return 'text-green-400 bg-green-400/10';
@@ -143,13 +143,13 @@ const UserProfilePage = () => {
     }
   };
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     return status === 'ACCEPTED' ? 
       <CheckCircle className="w-4 h-4 text-green-400" /> : 
       <XCircle className="w-4 h-4 text-red-400" />;
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -157,7 +157,7 @@ const UserProfilePage = () => {
     });
   };
 
-  const formatDateTime = (dateString) => {
+  const formatDateTime = (dateString: string) => {
     return new Date(dateString).toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
