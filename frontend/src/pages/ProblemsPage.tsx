@@ -10,9 +10,26 @@ const ProblemsPage = () => {
     getAllProblems();
   }, [getAllProblems]);
 
-  console.log(problems);
+  if (isProblemsLoading) {
+    return <div>Loading...</div>;
+  }
 
-  return <div>ProblemsPage</div>;
+  return (
+    <>
+      {problems.length > 0 ? (
+        <div>
+          {problems.map((problem) => (
+            <div key={problem.id}>
+              <h1>{problem.title}</h1>
+              <p>{problem.description}</p>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>No problems found</div>
+      )}
+    </>
+  );
 };
 
 export default ProblemsPage;

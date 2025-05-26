@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/config/axios";
 import { toast } from "sonner";
 
 interface IProblem {
+  id: string;
   title: string;
   description: string;
   difficulty: string;
