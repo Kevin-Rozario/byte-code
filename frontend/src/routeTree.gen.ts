@@ -19,6 +19,9 @@ import { Route as PlaylistsIndexImport } from './routes/playlists/index'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const ProblemsCreateProblemIndexLazyImport = createFileRoute(
+  '/problems/create-problem/',
+)()
 const AuthSignUpIndexLazyImport = createFileRoute('/auth/sign-up/')()
 const AuthSignInIndexLazyImport = createFileRoute('/auth/sign-in/')()
 const AuthSettingsIndexLazyImport = createFileRoute('/auth/settings/')()
@@ -43,6 +46,15 @@ const PlaylistsIndexRoute = PlaylistsIndexImport.update({
   path: '/playlists/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const ProblemsCreateProblemIndexLazyRoute =
+  ProblemsCreateProblemIndexLazyImport.update({
+    id: '/problems/create-problem/',
+    path: '/problems/create-problem/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/problems/create-problem/index.lazy').then((d) => d.Route),
+  )
 
 const AuthSignUpIndexLazyRoute = AuthSignUpIndexLazyImport.update({
   id: '/auth/sign-up/',
@@ -129,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/problems/create-problem/': {
+      id: '/problems/create-problem/'
+      path: '/problems/create-problem'
+      fullPath: '/problems/create-problem'
+      preLoaderRoute: typeof ProblemsCreateProblemIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -142,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/auth/settings': typeof AuthSettingsIndexLazyRoute
   '/auth/sign-in': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
+  '/problems/create-problem': typeof ProblemsCreateProblemIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -152,6 +172,7 @@ export interface FileRoutesByTo {
   '/auth/settings': typeof AuthSettingsIndexLazyRoute
   '/auth/sign-in': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
+  '/problems/create-problem': typeof ProblemsCreateProblemIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -163,6 +184,7 @@ export interface FileRoutesById {
   '/auth/settings/': typeof AuthSettingsIndexLazyRoute
   '/auth/sign-in/': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up/': typeof AuthSignUpIndexLazyRoute
+  '/problems/create-problem/': typeof ProblemsCreateProblemIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -175,6 +197,7 @@ export interface FileRouteTypes {
     | '/auth/settings'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/problems/create-problem'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -184,6 +207,7 @@ export interface FileRouteTypes {
     | '/auth/settings'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/problems/create-problem'
   id:
     | '__root__'
     | '/'
@@ -193,6 +217,7 @@ export interface FileRouteTypes {
     | '/auth/settings/'
     | '/auth/sign-in/'
     | '/auth/sign-up/'
+    | '/problems/create-problem/'
   fileRoutesById: FileRoutesById
 }
 
@@ -204,6 +229,7 @@ export interface RootRouteChildren {
   AuthSettingsIndexLazyRoute: typeof AuthSettingsIndexLazyRoute
   AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute
   AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute
+  ProblemsCreateProblemIndexLazyRoute: typeof ProblemsCreateProblemIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -214,6 +240,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSettingsIndexLazyRoute: AuthSettingsIndexLazyRoute,
   AuthSignInIndexLazyRoute: AuthSignInIndexLazyRoute,
   AuthSignUpIndexLazyRoute: AuthSignUpIndexLazyRoute,
+  ProblemsCreateProblemIndexLazyRoute: ProblemsCreateProblemIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -232,7 +259,8 @@ export const routeTree = rootRoute
         "/auth/profile/",
         "/auth/settings/",
         "/auth/sign-in/",
-        "/auth/sign-up/"
+        "/auth/sign-up/",
+        "/problems/create-problem/"
       ]
     },
     "/": {
@@ -255,6 +283,9 @@ export const routeTree = rootRoute
     },
     "/auth/sign-up/": {
       "filePath": "auth/sign-up/index.lazy.tsx"
+    },
+    "/problems/create-problem/": {
+      "filePath": "problems/create-problem/index.lazy.tsx"
     }
   }
 }

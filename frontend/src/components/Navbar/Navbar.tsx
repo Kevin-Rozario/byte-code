@@ -118,7 +118,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   {user?.role === "ADMIN" && (
                     <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
-                      <Link to="/" className=" flex w-full">
+                      <Link to="/problems/create-problem" className=" flex w-full">
                         <Code2 className="mr-4 h-4 w-4" />
                         <span>Add Problem</span>
                       </Link>
@@ -250,7 +250,7 @@ const Navbar = () => {
                           </Link>
                           {user?.role === "ADMIN" && (
                             <Link
-                              to="/"
+                              to="/problems/create-problem"
                               className="w-full flex justify-start items-center text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 p-2"
                             >
                               <Code2 className="mr-4 h-4 w-4" />
