@@ -67,17 +67,20 @@ export const loginUser = asyncHandler(async (req, res) => {
     },
   });
 
+  const ACCESS_TOKEN_COOKIE_EXPIRY = 60 * 60 * 1000; // 1 hour
+  const REFRESH_TOKEN_COOKIE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days
+
   const accessTokenCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
-    maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRY,
+    maxAge: ACCESS_TOKEN_COOKIE_EXPIRY,
   };
   const refreshTokenCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
-    maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRY,
+    maxAge: REFRESH_TOKEN_COOKIE_EXPIRY,
   };
 
   res
@@ -374,17 +377,20 @@ export const renewRefreshToken = asyncHandler(async (req, res) => {
     });
 
     // Cookie options
+    const ACCESS_TOKEN_COOKIE_EXPIRY = 60 * 60 * 1000; // 1 hour
+    const REFRESH_TOKEN_COOKIE_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 days
+
     const accessTokenCookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRY,
+      maxAge: ACCESS_TOKEN_COOKIE_EXPIRY,
     };
     const refreshTokenCookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRY,
+      maxAge: REFRESH_TOKEN_COOKIE_EXPIRY,
     };
 
     // Set new tokens in cookies and send response
