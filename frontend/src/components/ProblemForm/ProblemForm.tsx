@@ -674,13 +674,13 @@ const ProblemForm = () => {
 
           {/* Submit Button */}
           <div className="flex justify-end gap-4 pt-6">
-            <Button
+            {/* <Button
               type="button"
               onClick={() => console.log("Draft saved")}
               className="bg-slate-700 text-slate-300 hover:bg-slate-600 border-0"
             >
               Save Draft
-            </Button>
+            </Button> */}
             <Button
               type="submit"
               disabled={isSubmitting}

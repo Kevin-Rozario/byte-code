@@ -67,18 +67,29 @@ export const loginUser = asyncHandler(async (req, res) => {
     },
   });
 
-  const cookieOptions = {
+  const accessTokenCookieOptions = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
+    maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRY,
+  };
+  const refreshTokenCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRY,
   };
 
   res
-    .cookie("accessToken", accessToken, cookieOptions)
-    .cookie("refreshToken", refreshToken, cookieOptions)
+    .cookie("accessToken", accessToken, accessTokenCookieOptions)
+    .cookie("refreshToken", refreshToken, refreshTokenCookieOptions)
     .status(200)
     .json(
-      new ApiResponse(200, { message: "User logged in successfully!" }, loggedInUser),
+      new ApiResponse(
+        200,
+        { message: "User logged in successfully!" },
+        loggedInUser,
+      ),
     );
 });
 
@@ -363,16 +374,23 @@ export const renewRefreshToken = asyncHandler(async (req, res) => {
     });
 
     // Cookie options
-    const cookieOptions = {
+    const accessTokenCookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
+      maxAge: process.env.ACCESS_TOKEN_COOKIE_EXPIRY,
+    };
+    const refreshTokenCookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: process.env.REFRESH_TOKEN_COOKIE_EXPIRY,
     };
 
     // Set new tokens in cookies and send response
     res
-      .cookie("accessToken", newAccessToken, cookieOptions)
-      .cookie("refreshToken", newRefreshToken, cookieOptions)
+      .cookie("accessToken", newAccessToken, accessTokenCookieOptions)
+      .cookie("refreshToken", newRefreshToken, refreshTokenCookieOptions)
       .status(200)
       .json(
         new ApiResponse(
