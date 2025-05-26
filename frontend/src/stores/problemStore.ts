@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axiosInstance from "@/lib/config/axios";
 import { toast } from "sonner";
 
-interface IProblem {
+export interface IProblem {
   id: string;
   title: string;
   description: string;
@@ -21,6 +21,8 @@ interface IProblem {
       explanation?: string;
     };
   };
+  solvedBy: string[];
+  userId: string;
 }
 
 interface IProblemState {

@@ -26,6 +26,9 @@ const AuthSignUpIndexLazyImport = createFileRoute('/auth/sign-up/')()
 const AuthSignInIndexLazyImport = createFileRoute('/auth/sign-in/')()
 const AuthSettingsIndexLazyImport = createFileRoute('/auth/settings/')()
 const AuthProfileIndexLazyImport = createFileRoute('/auth/profile/')()
+const ProblemsProblemIdIndexLazyImport = createFileRoute(
+  '/problems/problem/$id/',
+)()
 
 // Create/Update Routes
 
@@ -88,6 +91,16 @@ const AuthProfileIndexLazyRoute = AuthProfileIndexLazyImport.update({
   import('./routes/auth/profile/index.lazy').then((d) => d.Route),
 )
 
+const ProblemsProblemIdIndexLazyRoute = ProblemsProblemIdIndexLazyImport.update(
+  {
+    id: '/problems/problem/$id/',
+    path: '/problems/problem/$id/',
+    getParentRoute: () => rootRoute,
+  } as any,
+).lazy(() =>
+  import('./routes/problems/problem.$id/index.lazy').then((d) => d.Route),
+)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProblemsCreateProblemIndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/problems/problem/$id/': {
+      id: '/problems/problem/$id/'
+      path: '/problems/problem/$id'
+      fullPath: '/problems/problem/$id'
+      preLoaderRoute: typeof ProblemsProblemIdIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -162,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
   '/problems/create-problem': typeof ProblemsCreateProblemIndexLazyRoute
+  '/problems/problem/$id': typeof ProblemsProblemIdIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -173,6 +194,7 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up': typeof AuthSignUpIndexLazyRoute
   '/problems/create-problem': typeof ProblemsCreateProblemIndexLazyRoute
+  '/problems/problem/$id': typeof ProblemsProblemIdIndexLazyRoute
 }
 
 export interface FileRoutesById {
@@ -185,6 +207,7 @@ export interface FileRoutesById {
   '/auth/sign-in/': typeof AuthSignInIndexLazyRoute
   '/auth/sign-up/': typeof AuthSignUpIndexLazyRoute
   '/problems/create-problem/': typeof ProblemsCreateProblemIndexLazyRoute
+  '/problems/problem/$id/': typeof ProblemsProblemIdIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -198,6 +221,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/problems/create-problem'
+    | '/problems/problem/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -208,6 +232,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/problems/create-problem'
+    | '/problems/problem/$id'
   id:
     | '__root__'
     | '/'
@@ -218,6 +243,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in/'
     | '/auth/sign-up/'
     | '/problems/create-problem/'
+    | '/problems/problem/$id/'
   fileRoutesById: FileRoutesById
 }
 
@@ -230,6 +256,7 @@ export interface RootRouteChildren {
   AuthSignInIndexLazyRoute: typeof AuthSignInIndexLazyRoute
   AuthSignUpIndexLazyRoute: typeof AuthSignUpIndexLazyRoute
   ProblemsCreateProblemIndexLazyRoute: typeof ProblemsCreateProblemIndexLazyRoute
+  ProblemsProblemIdIndexLazyRoute: typeof ProblemsProblemIdIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -241,6 +268,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignInIndexLazyRoute: AuthSignInIndexLazyRoute,
   AuthSignUpIndexLazyRoute: AuthSignUpIndexLazyRoute,
   ProblemsCreateProblemIndexLazyRoute: ProblemsCreateProblemIndexLazyRoute,
+  ProblemsProblemIdIndexLazyRoute: ProblemsProblemIdIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -260,7 +288,8 @@ export const routeTree = rootRoute
         "/auth/settings/",
         "/auth/sign-in/",
         "/auth/sign-up/",
-        "/problems/create-problem/"
+        "/problems/create-problem/",
+        "/problems/problem/$id/"
       ]
     },
     "/": {
@@ -286,6 +315,9 @@ export const routeTree = rootRoute
     },
     "/problems/create-problem/": {
       "filePath": "problems/create-problem/index.lazy.tsx"
+    },
+    "/problems/problem/$id/": {
+      "filePath": "problems/problem.$id/index.lazy.tsx"
     }
   }
 }
