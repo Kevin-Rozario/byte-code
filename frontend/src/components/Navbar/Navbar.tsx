@@ -22,6 +22,8 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const signout = useAuthStore((state) => state.signout);
 
+  console.log("Navbar rendered with user:", user);
+
   const handleSignOut = async () => {
     try {
       await signout();
@@ -116,6 +118,14 @@ const Navbar = () => {
                       Profile
                     </Link>
                   </DropdownMenuItem>
+                  {user?.role === "ADMIN" && (
+                    <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
+                      <Link to="/" className=" flex w-full">
+                        <Code2 className="mr-4 h-4 w-4" />
+                        Add problem
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Settings</span>

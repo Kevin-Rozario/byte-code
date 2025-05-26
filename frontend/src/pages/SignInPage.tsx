@@ -46,7 +46,6 @@ const SignInPage = () => {
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
       await signIn(data);
-      console.log(data); // test purpose only
       form.reset();
       navigate({ to: "/" });
       toast.success("Signed in successfully!");

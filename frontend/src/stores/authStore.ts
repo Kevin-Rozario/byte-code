@@ -53,7 +53,7 @@ const useAuthStore = create<IUserState>()(
         try {
           const response = await axiosInstance.post("/api/v1/auth/login", data);
           if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data.user });
+            set({ isAuthenticated: true, user: response.data.data });
             toast.success("Signed in successfully!");
           }
         } catch (error) {
@@ -88,7 +88,7 @@ const useAuthStore = create<IUserState>()(
             data,
           );
           if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data });
+            set({ isAuthenticated: true, user: response.data.data });
             toast.success("Account created and signed in successfully!");
           }
         } catch (error) {
@@ -147,7 +147,7 @@ const useAuthStore = create<IUserState>()(
         try {
           const response = await axiosInstance.get("/api/v1/auth/profile");
           if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data });
+            set({ isAuthenticated: true, user: response.data.data });
           } else {
             set({ isAuthenticated: false, user: null });
           }
