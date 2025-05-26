@@ -87,8 +87,6 @@ const ProblemTable = ({ problems = mockProblems }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [playlist, setPlaylist] = useState<string[]>([]);
 
-  console.log(problems);
-
   const tableHeads = ["Status", "Title", "Tags", "Difficulty", "Actions"];
 
   const allTags = useMemo(() => {
@@ -159,7 +157,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="w-full max-w-7xl mx-auto px-6 py-8">
-        <div className="mb-10">
+        <div className="mb-5">
           {/* Enhanced Filter Section */}
           <div className="w-full max-w-7xl mx-auto flex justify-between items-end gap-8 p-8 bg-gradient-to-br from-slate-900/80 to-slate-800/60 rounded-2xl border border-slate-700/50 backdrop-blur-sm shadow-2xl">
             {/* Search bar */}
@@ -261,6 +259,21 @@ const ProblemTable = ({ problems = mockProblems }) => {
           </div>
         </div>
 
+        {/* Create Playlist Button*/}
+        <div className="flex justify-end items-center h-12 p-2 mb-5">
+          {playlist.length > 0 && (
+            <Link to="/">
+              <Button
+                type="submit"
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create Playlist
+              </Button>
+            </Link>
+          )}
+        </div>
+
         {/* Enhanced Table */}
         <div className="overflow-x-auto rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-800/70 border border-slate-700/50 backdrop-blur-sm shadow-2xl">
           <Table className="w-full">
@@ -349,17 +362,17 @@ const ProblemTable = ({ problems = mockProblems }) => {
                     </TableCell>
                     <TableCell className="text-center flex gap-3 py-5 px-6">
                       {authUser?.role === "ADMIN" && (
-                        <Button
-                          size="sm"
-                          className="p-2.5 h-auto bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                        <Link
+                          to={"/problems/problem/$id"}
+                          params={{ id: problem.id }}
                         >
-                          <Link
-                            to={"/problems/problem/$id"}
-                            params={{ id: problem.id }}
+                          <Button
+                            size="sm"
+                            className="p-2.5 h-auto bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-lg transition-all duration-200 hover:scale-110"
                           >
                             <PenSquare className="w-4 h-4" />
-                          </Link>
-                        </Button>
+                          </Button>
+                        </Link>
                       )}
                       {authUser?.role === "ADMIN" && (
                         <Button
@@ -370,12 +383,17 @@ const ProblemTable = ({ problems = mockProblems }) => {
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       )}
-                      <Button
-                        size="sm"
-                        className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                      <Link
+                        to="/problems/problem/$id"
+                        params={{ id: problem.id }}
                       >
-                        <PlayCircle className="w-4 h-4" />
-                      </Button>
+                        <Button
+                          size="sm"
+                          className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                        >
+                          <PlayCircle className="w-4 h-4" />
+                        </Button>
+                      </Link>
                       <Button
                         onClick={() =>
                           handleTogglePlaylist(
