@@ -54,9 +54,17 @@ export const loginUser = asyncHandler(async (req, res) => {
   const accessToken = generateAccessToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  await db.user.update({
+  const loggedInUser = await db.user.update({
     where: { id: user.id },
     data: { refreshToken },
+    select: {
+      id: true,
+      email: true,
+      userName: true,
+      fullName: true,
+      isEmailVerified: true,
+      role: true,
+    },
   });
 
   const cookieOptions = {
@@ -70,7 +78,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     .cookie("refreshToken", refreshToken, cookieOptions)
     .status(200)
     .json(
-      new ApiResponse(200, { message: "User logged in successfully!" }, user),
+      new ApiResponse(200, { message: "User logged in successfully!" }, loggedInUser),
     );
 });
 

@@ -2,12 +2,15 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
+import axiosInstance from "@/lib/config/axios";
 
 interface IUser {
   id: string;
   email: string;
   userName: string;
   fullName: string;
+  isEmailVerified: boolean;
+  role: string;
 }
 
 interface IUserState {
@@ -34,15 +37,6 @@ interface ISignup {
   userName: string;
   fullName: string;
 }
-
-const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URI!,
-  headers: {
-    "Content-Type": "application/json",
-    Accept: "application/json",
-  },
-  withCredentials: true,
-});
 
 const useAuthStore = create<IUserState>()(
   persist(
