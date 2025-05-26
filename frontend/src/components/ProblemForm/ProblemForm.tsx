@@ -673,7 +673,7 @@ const ProblemForm = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end gap-4 pt-6">
+          <div className="flex justify-end gap-4">
             {/* <Button
               type="button"
               onClick={() => console.log("Draft saved")}
