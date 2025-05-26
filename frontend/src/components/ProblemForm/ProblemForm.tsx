@@ -24,6 +24,8 @@ import {
 
 import CodeEditor from "../CodeEditor/CodeEditor";
 import { problemSchema } from "@/lib/validations/addProblemSchema";
+import axiosInstance from "@/lib/config/axios";
+import { useNavigate } from "@tanstack/react-router";
 
 type FormFields = z.infer<typeof problemSchema>;
 
@@ -31,6 +33,26 @@ interface Language {
   key: "javascript" | "python" | "java";
   name: string;
   color: string;
+}
+
+interface IPostProblem {
+  title: string;
+  description: string;
+  difficulty: string;
+  constraints: string;
+  hints?: string;
+  editorial?: string;
+  tags: string[];
+  testCases: { input: string; output: string }[];
+  codeSnippets: { [key: string]: string };
+  referenceSolutions: { [key: string]: string };
+  examples: {
+    [key: string]: {
+      input: string;
+      output: string;
+      explanation?: string;
+    };
+  };
 }
 
 // --- Sample Problem Data ---
@@ -45,36 +67,38 @@ const sampleProblem1: FormFields = {
     "This problem is a basic test of integer addition. No complex algorithms or data structures are required. Simply return the sum of 'a' and 'b'.",
   tags: [{ name: "math" }, { name: "arithmetic" }, { name: "integers" }],
   testCases: [
-    { input: "1\n2", output: "3" },
-    { input: "-10\n4", output: "-6" },
-    { input: "0\n0", output: "0" },
-    { input: "500\n-300", output: "200" },
-    { input: "1000\n1000", output: "2000" },
+    { input: "1 2", output: "3" },
+    { input: "-10 4", output: "-6" },
+    { input: "0 0", output: "0" },
+    { input: "500 -300", output: "200" },
+    { input: "1000 1000", output: "2000" },
   ],
   examples: {
     javascript: {
-      input: "1\n2",
+      input: "1 2",
       output: "3",
       explanation: "1 + 2 equals 3.",
     },
     python: {
-      input: "-10\n4",
+      input: "-10 4",
       output: "-6",
       explanation: "-10 + 4 equals -6.",
     },
-    java: { input: "0\n0", output: "0", explanation: "0 + 0 equals 0." },
+    java: { input: "0 0", output: "0", explanation: "0 + 0 equals 0." },
   },
   codeSnippets: {
     javascript:
-      "/**\n * @param {number} a\n * @param {number} b\n * @return {number}\n */\nfunction sum(a, b) {\n  // Write your code here\n  return a + b;\n}",
+      "const fs = require('fs');\n\nfunction addTwoNumbers(a, b) {\n    // Write your code here\n    // Return the sum of a and b\n    return a + b;\n}\n\n// Reading input from stdin (using fs to read all input)\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconst [a, b] = input.split(' ').map(Number);\n\nconsole.log(addTwoNumbers(a, b));",
     python:
-      'def sum(a: int, b: int) -> int:\n    """\n    :param a: int\n    :param b: int\n    :return: int\n    """\n    # Write your code here\n    return a + b',
-    java: "class Solution {\n    /**\n     * Given two integers a and b, return their sum.\n     * @param a The first integer.\n     * @param b The second integer.\n     * @return The sum of a and b.\n     */\n    public int sum(int a, int b) {\n        // Write your code here\n        return a + b;\n    }\n}",
+      "def add_two_numbers(a, b):\n    # Write your code here\n    # Return the sum of a and b\n    return a + b\n\nimport sys\ninput_line = sys.stdin.read()\na, b = map(int, input_line.split())\nprint(add_two_numbers(a, b))",
+    java: "import java.util.Scanner;\n\npublic class Main {\n    public static int addTwoNumbers(int a, int b) {\n        // Write your code here\n        // Return the sum of a and b\n        return a + b;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(addTwoNumbers(a, b));\n    }\n}",
   },
   referenceSolutions: {
-    javascript: "function sum(a, b) {\n  return a + b;\n}",
-    python: "def sum(a, b):\n    return a + b",
-    java: "class Solution {\n    public int sum(int a, int b) {\n        return a + b;\n    }\n}",
+    javascript:
+      "const fs = require('fs');\n\n// Reading input from stdin (using fs to read all input)\nconst input = fs.readFileSync(0, 'utf-8').trim();\nconst [a, b] = input.split(' ').map(Number);\n\nconsole.log(a + b);",
+    python:
+      "import sys\ninput_line = sys.stdin.read()\na, b = map(int, input_line.split())\nprint(a + b)",
+    java: "import java.util.Scanner;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(a + b);\n    }\n}",
   },
 };
 
@@ -129,6 +153,8 @@ const sampleProblem2: FormFields = {
 };
 
 const ProblemForm = () => {
+  const navigate = useNavigate();
+
   const form = useForm<FormFields>({
     resolver: zodResolver(problemSchema),
     defaultValues: {
@@ -188,9 +214,35 @@ const ProblemForm = () => {
     { key: "java", name: "Java", color: "text-red-400" },
   ];
 
-  const onSubmit = (data: FormFields): void => {
-    console.log("Form submitted:", data);
-    // Handle form submission, e.g., send data to an API
+  const onSubmit = async (data: FormFields) => {
+    const postData: IPostProblem = {
+      title: data.title,
+      description: data.description,
+      difficulty: data.difficulty,
+      constraints: data.constraints,
+      hints: data.hints,
+      editorial: data.editorial,
+      testCases: data.testCases,
+      tags: data.tags.map((tag) => tag.name),
+      examples: data.examples,
+      codeSnippets: data.codeSnippets,
+      referenceSolutions: data.referenceSolutions,
+    };
+
+    try {
+      const response = await axiosInstance.post(
+        "/api/v1/problems/create-problem",
+        postData,
+      );
+      console.log("Response:", response.data); // test purpose only
+      if (response.status === 201 && response.data) {
+        navigate({ to: "/problems" });
+      }
+    } catch (error: any) {
+      console.error("Error creating problem:", error);
+    } finally {
+      form.reset();
+    }
   };
 
   // Loads a sample problem into the form.
