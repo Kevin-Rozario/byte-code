@@ -193,12 +193,9 @@ const ProblemForm = () => {
     // Handle form submission, e.g., send data to an API
   };
 
-  /**
-   * Loads a sample problem into the form.
-   * @param problem The sample problem object to load.
-   */
+  // Loads a sample problem into the form.
   const loadSampleProblem = (problem: FormFields) => {
-    form.reset(problem); // Resets the form with the new data
+    form.reset(problem);
   };
 
   return (
