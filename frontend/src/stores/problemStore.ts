@@ -1,17 +1,25 @@
 import { create } from "zustand";
 import axiosInstance from "@/lib/config/axios";
 import { toast } from "sonner";
-import type { I } from "node_modules/framer-motion/dist/types.d-CtuPurYT";
 
 interface IProblem {
-  id: string;
   title: string;
   description: string;
   difficulty: string;
+  constraints: string;
+  hints?: string;
+  editorial?: string;
   tags: string[];
-  creator: string;
-  createdAt: Date;
-  updatedAt: Date;
+  testCases: { input: string; output: string }[];
+  codeSnippets: { [key: string]: string };
+  referenceSolutions: { [key: string]: string };
+  examples: {
+    [key: string]: {
+      input: string;
+      output: string;
+      explanation?: string;
+    };
+  };
 }
 
 interface IProblemState {
