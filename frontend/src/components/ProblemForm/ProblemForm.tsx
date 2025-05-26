@@ -1,5 +1,5 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { Plus, X, Code, CheckCircle } from "lucide-react";
+import { Plus, X, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
