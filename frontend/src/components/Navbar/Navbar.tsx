@@ -22,8 +22,6 @@ const Navbar = () => {
   const user = useAuthStore((state) => state.user);
   const signout = useAuthStore((state) => state.signout);
 
-  console.log("Navbar rendered with user:", user);
-
   const handleSignOut = async () => {
     try {
       await signout();
@@ -115,20 +113,22 @@ const Navbar = () => {
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
                     <Link to="/auth/profile" className=" flex w-full">
                       <User className="mr-4 h-4 w-4" />
-                      Profile
+                      <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
                   {user?.role === "ADMIN" && (
                     <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
                       <Link to="/" className=" flex w-full">
                         <Code2 className="mr-4 h-4 w-4" />
-                        Add problem
+                        <span>Add Problem</span>
                       </Link>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
+                    <Link to="/auth/settings" className=" flex w-full">
+                      <Settings className="mr-4 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-slate-700/50" />
                   <DropdownMenuItem
@@ -241,29 +241,38 @@ const Navbar = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200"
+                          <Link
+                            to="/auth/profile"
+                            className="w-full flex justify-start items-center text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 p-2"
                           >
-                            <User className="mr-2 h-4 w-4" />
-                            Profile
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200"
+                            <User className="mr-4 h-4 w-4" />
+                            <span>Profile</span>
+                          </Link>
+                          {user?.role === "ADMIN" && (
+                            <Link
+                              to="/"
+                              className="w-full flex justify-start items-center text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 p-2"
+                            >
+                              <Code2 className="mr-4 h-4 w-4" />
+                              <span>Add Problem</span>
+                            </Link>
+                          )}
+                          <Link
+                            to="/auth/settings"
+                            className="w-full flex justify-start items-center text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 p-2"
                           >
-                            <Settings className="mr-2 h-4 w-4" />
-                            Settings
-                          </Button>
+                            <Settings className="mr-4 h-4 w-4" />
+                            <span>Settings</span>
+                          </Link>
                           <Button
                             variant="ghost"
-                            className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors duration-200"
+                            className="w-full flex justify-start items-center text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors duration-200"
                             onClick={() => {
                               handleSignOut();
                               setIsMobileMenuOpen(false);
                             }}
                           >
-                            <LogOut className="mr-2 h-4 w-4" />
+                            <LogOut className="mr-4 h-4 w-4" />
                             Sign out
                           </Button>
                         </div>
