@@ -118,7 +118,10 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   {user?.role === "ADMIN" && (
                     <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
-                      <Link to="/problems/create-problem" className=" flex w-full">
+                      <Link
+                        to="/problems/create-problem"
+                        className=" flex w-full"
+                      >
                         <Code2 className="mr-4 h-4 w-4" />
                         <span>Add Problem</span>
                       </Link>

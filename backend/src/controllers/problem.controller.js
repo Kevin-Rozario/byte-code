@@ -107,7 +107,11 @@ export const getProblemById = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(
-      new ApiResponse(200, { message: "Problem fetched successfully" }, problem),
+      new ApiResponse(
+        200,
+        { message: "Problem fetched successfully" },
+        problem,
+      ),
     );
 });
 
