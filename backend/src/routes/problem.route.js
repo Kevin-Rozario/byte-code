@@ -25,6 +25,6 @@ router
 router
   .route("/delete-problem/:id")
   .delete(authMiddleware, authAdminCheck, deleteProblemById);
-router.route("/get-solved-problem").get(authMiddleware, getSolvedProblems);
+router.route("/get-solved-problems").get(authMiddleware, getSolvedProblems);
 
 export default router;
