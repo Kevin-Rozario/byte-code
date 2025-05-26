@@ -4,7 +4,7 @@ import ProblemsTable from "@/components/ProblemsTable/ProblemTable";
 import { useProblemStore } from "@/stores/problemStore";
 
 const ProblemsPage = () => {
-  const problems = useProblemStore((state) => state.problems);
+//   const problems = useProblemStore((state) => state.problems);
   const getAllProblems = useProblemStore((state) => state.getAllProblems);
 
   useEffect(() => {
