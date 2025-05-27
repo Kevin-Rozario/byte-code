@@ -1,49 +1,41 @@
 import { Editor } from "@monaco-editor/react";
+import { Settings } from "lucide-react";
 
 interface CodeEditorProps {
   value: string;
   onChange: (value: string) => void;
   language: string;
-  height?: string;
+  className?: string;
 }
 
 const CodeEditor = ({
   value,
   onChange,
   language,
-  height = "300px",
+  className = "",
 }: CodeEditorProps) => {
   return (
-    <div className="relative border border-slate-600 bg-slate-900 rounded-xl overflow-hidden shadow-lg">
-      {/* Language label */}
-      <div className="absolute top-2 right-2 z-10">
-        <span className="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded-full font-mono tracking-wide shadow">
-          {language.toUpperCase()}
-        </span>
+    <div
+      className={`bg-slate-950 border border-slate-700 rounded-lg overflow-hidden ${className}`}
+    >
+      <div className="bg-slate-900 px-4 py-2 border-b border-slate-700 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-red-500"></div>
+            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          </div>
+          <span className="text-sm text-slate-400 ml-2">{language}</span>
+        </div>
+        <Settings className="w-4 h-4 text-slate-400" />
       </div>
-
       <Editor
-        height={height}
+        height={"500px"}
+        className="w-full bg-slate-950 text-slate-200 p-4 font-mono text-sm resize-none outline-none min-h-[400px]"
         language={language}
         value={value}
-        onChange={(v) => onChange(v || "")}
+        onChange={(e) => onChange(e.target.value)}
         theme="vs-dark"
-        options={{
-          minimap: { enabled: false },
-          fontSize: 14,
-          fontFamily: "Fira Code, Menlo, monospace",
-          scrollBeyondLastLine: false,
-          wordWrap: "on",
-          automaticLayout: true,
-          lineNumbers: "on",
-          roundedSelection: true,
-          renderLineHighlight: "line",
-          tabSize: 2,
-          scrollbar: {
-            verticalScrollbarSize: 6,
-            horizontalScrollbarSize: 6,
-          },
-        }}
       />
     </div>
   );

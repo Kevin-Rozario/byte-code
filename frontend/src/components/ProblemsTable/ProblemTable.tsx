@@ -44,51 +44,53 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useAuthStore } from "@/stores/authStore";
+import { type IProblem } from "@/stores/problemStore";
 
 // Mock data for demonstration
-const mockProblems = [
-  {
-    id: "1",
-    title: "Two Sum",
-    tags: ["Array", "Hash Table"],
-    difficulty: "EASY",
-    solvedBy: ["user1", "user2"],
-  },
-  {
-    id: "2",
-    title: "Longest Substring Without Repeating Characters",
-    tags: ["String", "Sliding Window", "Hash Table"],
-    difficulty: "MEDIUM",
-    solvedBy: [],
-  },
-  {
-    id: "3",
-    title: "Merge k Sorted Lists",
-    tags: ["Linked List", "Divide and Conquer", "Heap"],
-    difficulty: "HARD",
-    solvedBy: ["user1"],
-  },
-  {
-    id: "4",
-    title: "Valid Parentheses",
-    tags: ["String", "Stack"],
-    difficulty: "EASY",
-    solvedBy: ["user1", "user2"],
-  },
-  {
-    id: "5",
-    title: "Maximum Subarray",
-    tags: ["Array", "Dynamic Programming"],
-    difficulty: "MEDIUM",
-    solvedBy: [],
-  },
-];
+// const mockProblems = [
+//   {
+//     id: "1",
+//     title: "Two Sum",
+//     tags: ["Array", "Hash Table"],
+//     difficulty: "EASY",
+//     solvedBy: ["user1", "user2"],
+//   },
+//   {
+//     id: "2",
+//     title: "Longest Substring Without Repeating Characters",
+//     tags: ["String", "Sliding Window", "Hash Table"],
+//     difficulty: "MEDIUM",
+//     solvedBy: [],
+//   },
+//   {
+//     id: "3",
+//     title: "Merge k Sorted Lists",
+//     tags: ["Linked List", "Divide and Conquer", "Heap"],
+//     difficulty: "HARD",
+//     solvedBy: ["user1"],
+//   },
+//   {
+//     id: "4",
+//     title: "Valid Parentheses",
+//     tags: ["String", "Stack"],
+//     difficulty: "EASY",
+//     solvedBy: ["user1", "user2"],
+//   },
+//   {
+//     id: "5",
+//     title: "Maximum Subarray",
+//     tags: ["Array", "Dynamic Programming"],
+//     difficulty: "MEDIUM",
+//     solvedBy: [],
+//   },
+// ];
 
 // const mockUser = { id: "user1", role: "ADMIN" };
-const mockUser: { id: string; role: string } | null = null;
+// const mockUser: { id: string; role: string } | null = null;
 
-const ProblemTable = ({ problems = mockProblems }) => {
-  const authUser = mockUser;
+const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
+  const authUser = useAuthStore((state) => state.user);
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState("All Tags");
   const [difficulty, setDifficulty] = useState("All Difficulties");
@@ -315,7 +317,8 @@ const ProblemTable = ({ problems = mockProblems }) => {
                   >
                     <TableCell className="font-medium py-5 px-6">
                       <div className="flex items-center">
-                        {problem.solvedBy.includes(authUser?.id) ? (
+                        {authUser?.id &&
+                        problem.solvedBy.includes(authUser.id) ? (
                           <div className="relative">
                             <CheckCircle className="w-6 h-6 text-emerald-400 drop-shadow-lg" />
                             <div className="absolute inset-0 w-6 h-6 bg-emerald-400/20 rounded-full blur-sm animate-pulse"></div>
@@ -458,7 +461,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
                               )}
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>
+                          <TooltipContent side="bottom">
                             {playList.includes(problem.id)
                               ? "Remove from playlist"
                               : "Add to playlist"}

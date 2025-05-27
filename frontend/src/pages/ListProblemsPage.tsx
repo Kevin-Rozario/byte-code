@@ -5,7 +5,7 @@ import { useProblemStore } from "@/stores/problemStore";
 import Navbar from "@/components/Navbar/Navbar";
 
 const ListProblemsPage = () => {
-  //   const problems = useProblemStore((state) => state.problems);
+  const problems = useProblemStore((state) => state.problems);
   const getAllProblems = useProblemStore((state) => state.getAllProblems);
 
   useEffect(() => {
@@ -35,8 +35,7 @@ const ListProblemsPage = () => {
             </div>
           </div>
         </div>
-        {/* <ProblemsTable problems={problems} /> */}
-        <ProblemsTable />
+        <ProblemsTable problems={problems} />
       </div>
     </>
   );
