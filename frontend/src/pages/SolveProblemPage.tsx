@@ -35,179 +35,58 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import CodeEditor from "@/components/CodeEditor/CodeEditor";
-
-interface IProblem {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-  constraints: string;
-  hints?: string;
-  testCases: { input: string; output: string }[];
-  codeSnippets: { [key: string]: string };
-  examples: {
-    [key: string]: {
-      input: string;
-      output: string;
-      explanation?: string;
-    };
-  };
-}
-
-// Keeping mock data for authenticated user as it's relevant for UI display
-const authUser = {
-  id: "user1",
-  role: "ADMIN",
-  userName: "JohnDoe",
-};
-
-// Mock data - extended test cases for demonstration
-const mockProblem: IProblem = {
-  id: "1",
-  title: "Two Sum",
-  description:
-    "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would be exactly one solution, and you may not use the same element twice. You can return the answer in any order.",
-  difficulty: "Easy",
-  constraints:
-    "• 2 <= nums.length <= 10^4\n• -10^9 <= nums[i] <= 10^9\n• -10^9 <= target <= 10^9\n• Only one valid answer exists.",
-  hints:
-    "A really brute force way would be to search for all possible pairs of numbers but that would be too slow. Again, the best way to approach this problem is to think about the complement of each number.",
-  testCases: [
-    { input: "[2,7,11,15]\n9", output: "[0,1]" },
-    { input: "[3,2,4]\n6", output: "[1,2]" },
-    { input: "[3,3]\n6", output: "[0,1]" },
-    { input: "[1,8,7,6,5]\n13", output: "[1,3]" },
-    { input: "[10,20,30,40]\n50", output: "[0,3]" },
-    { input: "[-1,-2,-3,-4,-5]\n-8", output: "[2,4]" },
-    { input: "[1,2,3,4,5,6,7,8,9,10]\n15", output: "[4,9]" },
-    {
-      input: "[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]\n35",
-      output: "[14,19]",
-    },
-  ],
-  codeSnippets: {
-    javascript:
-      "/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nvar twoSum = function(nums, target) {\n    // Your code here\n};",
-    python:
-      "class Solution:\n    def twoSum(self, nums: List[int], target: int) -> List[int]:\n        # Your code here\n        pass",
-    cpp: "class Solution {\npublic:\n    vector<int> twoSum(vector<int>& nums, int target) {\n        // Your code here\n    }\n};",
-  },
-  examples: {
-    "1": {
-      input: "nums = [2,7,11,15], target = 9",
-      output: "[0,1]",
-      explanation: "Because nums[0] + nums[1] == 9, we return [0, 1].",
-    },
-    "2": {
-      input: "nums = [3,2,4], target = 6",
-      output: "[1,2]",
-      explanation: "Because nums[1] + nums[2] == 6, we return [1, 2].",
-    },
-  },
-};
+import {
+  useProblemStore,
+  type IProblem,
+  type ITestCase,
+} from "@/stores/problemStore";
+import { useAuthStore } from "@/stores/authStore";
+import { Route } from "@/routes/problems/problem.$id.lazy";
 
 const SolveProblemPage = () => {
-  const [problem] = useState<IProblem>(mockProblem);
-  const [code, setCode] = useState<string>("");
+  const authUser = useAuthStore((state) => state.user);
+  const { id } = Route.useParams();
+  const problem = useProblemStore<IProblem | null>((state) => state.problem);
+  const isProblemLoading = useProblemStore<boolean>(
+    (state) => state.isProblemLoading,
+  );
+  const getProblemById = useProblemStore((state) => state.getProblemById);
+  const [code, setCode] = useState("");
+  const [activeTab, setActiveTab] = useState<string>("Description");
   const [selectedLanguage, setSelectedLanguage] =
     useState<string>("javascript");
-  const [testResults, setTestResults] = useState<
-    Array<{
-      status: "passed" | "failed" | "pending";
-      input: string;
-      output: string;
-      expected: string;
-    }>
-  >([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [testCases, setTestCases] = useState<ITestCase[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-  const [selectedTestCase, setSelectedTestCase] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Added state for mock submissions to demonstrate overflow handling
-  const [submissions, setSubmissions] = useState<
-    Array<{
-      id: string;
-      status: "Accepted" | "Wrong Answer";
-      language: string;
-      runtime: string;
-      memory: string;
-      timestamp: Date;
-    }>
-  >([]);
-
-  const handleLanguageChange = (language: string) => {
-    setSelectedLanguage(language);
-    setCode(problem?.codeSnippets[language] || "");
-  };
-
-  const handleRunCode = async () => {
-    setIsRunning(true);
-    // Simulate API call or code execution
-    setTimeout(() => {
-      // Simulate results for the currently selected test case
-      const currentTestCase = problem.testCases[selectedTestCase];
-      const simulatedResults = [
-        {
-          status: Math.random() > 0.3 ? "passed" : "failed", // Random pass/fail
-          input: currentTestCase.input,
-          output:
-            Math.random() > 0.5 ? currentTestCase.output : "[Incorrect Output]", // Simulate incorrect output sometimes
-          expected: currentTestCase.output,
-        },
-      ];
-      setTestResults(simulatedResults);
-      setIsRunning(false);
-    }, 1500); // Shorter timeout for faster feedback
-  };
-
-  const handleSubmitCode = async () => {
-    setIsSubmitting(true);
-    // Simulate API call or code execution for all test cases
-    setTimeout(() => {
-      // Simulate results for all test cases on submission
-      const allTestResults = problem.testCases.map((tc, index) => {
-        const passed = Math.random() > 0.2; // 80% chance to pass on submit
-        return {
-          status: passed ? "passed" : "failed",
-          input: tc.input,
-          output: passed ? tc.output : "[Wrong Output]",
-          expected: tc.output,
-        };
-      });
-
-      const overallStatus: "Accepted" | "Wrong Answer" = allTestResults.every(
-        (r) => r.status === "passed",
-      )
-        ? "Accepted"
-        : "Wrong Answer";
-
-      const newSubmission = {
-        id: `sub_${Date.now()}`,
-        status: overallStatus,
-        language: selectedLanguage,
-        runtime: `${Math.floor(Math.random() * (150 - 50 + 1)) + 50} ms`,
-        memory: `${(Math.random() * (50 - 20) + 20).toFixed(1)} MB`,
-        timestamp: new Date(),
-      };
-
-      setSubmissions((prev) => [newSubmission, ...prev]); // Add new submission to the top
-      setTestResults(allTestResults); // Display full results after submission
-      setIsSubmitting(false);
-
-      if (overallStatus === "Accepted") {
-        alert("Code submitted successfully and Accepted!");
-      } else {
-        alert("Code submitted. Some test cases failed!");
-      }
-    }, 2500);
-  };
+  useEffect(() => {
+    getProblemById(id);
+  }, [getProblemById, id]);
 
   useEffect(() => {
     if (problem) {
-      setCode(problem.codeSnippets[selectedLanguage] || "");
-      setTestResults([]);
+      setCode(problem?.codeSnippets?.[selectedLanguage] || "");
+      setTestCases(
+        problem?.testCases.map((testCase) => ({
+          input: testCase.input,
+          output: testCase.output,
+        })) || [],
+      );
     }
   }, [problem, selectedLanguage]);
+
+  const handleLanguageChange = (language: string) => {
+    setSelectedLanguage(language);
+    setCode(problem?.codeSnippets?.[language] || "");
+  };
+
+  const handleRunCode = () => {
+    console.log("Running code:", code);
+  };
+
+  const handleSubmitCode = () => {
+    console.log("Submitting code:", code);
+  };
 
   const getDifficultyBadge = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
@@ -242,19 +121,6 @@ const SolveProblemPage = () => {
     }
   };
 
-  const formatTimeAgo = (date: Date): string => {
-    const now = new Date();
-    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-    if (seconds < 60) return `${seconds} secs ago`;
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes} min ago`;
-    const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours} hours ago`;
-    const days = Math.floor(hours / 24);
-    return `${days} days ago`;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex flex-col">
       {/* Header */}
@@ -285,9 +151,9 @@ const SolveProblemPage = () => {
                   </span>
                   <span className="flex items-center gap-1">
                     <User2 className="w-3 h-3" />
-                    {authUser.userName}
+                    {authUser?.userName}
                   </span>
-                  {getDifficultyBadge(problem.difficulty)}
+                  {getDifficultyBadge(problem?.difficulty || "")}
                 </div>
               </div>
             </div>
@@ -306,7 +172,7 @@ const SolveProblemPage = () => {
                   <SelectItem
                     key={language}
                     value={language}
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     {language.charAt(0).toUpperCase() + language.slice(1)}
                   </SelectItem>

@@ -47,48 +47,6 @@ import { Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 import { type IProblem } from "@/stores/problemStore";
 
-// Mock data for demonstration
-// const mockProblems = [
-//   {
-//     id: "1",
-//     title: "Two Sum",
-//     tags: ["Array", "Hash Table"],
-//     difficulty: "EASY",
-//     solvedBy: ["user1", "user2"],
-//   },
-//   {
-//     id: "2",
-//     title: "Longest Substring Without Repeating Characters",
-//     tags: ["String", "Sliding Window", "Hash Table"],
-//     difficulty: "MEDIUM",
-//     solvedBy: [],
-//   },
-//   {
-//     id: "3",
-//     title: "Merge k Sorted Lists",
-//     tags: ["Linked List", "Divide and Conquer", "Heap"],
-//     difficulty: "HARD",
-//     solvedBy: ["user1"],
-//   },
-//   {
-//     id: "4",
-//     title: "Valid Parentheses",
-//     tags: ["String", "Stack"],
-//     difficulty: "EASY",
-//     solvedBy: ["user1", "user2"],
-//   },
-//   {
-//     id: "5",
-//     title: "Maximum Subarray",
-//     tags: ["Array", "Dynamic Programming"],
-//     difficulty: "MEDIUM",
-//     solvedBy: [],
-//   },
-// ];
-
-// const mockUser = { id: "user1", role: "ADMIN" };
-// const mockUser: { id: string; role: string } | null = null;
-
 const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const authUser = useAuthStore((state) => state.user);
   const [search, setSearch] = useState("");

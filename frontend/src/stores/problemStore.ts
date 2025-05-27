@@ -25,6 +25,11 @@ export interface IProblem {
   userId: string;
 }
 
+export interface ITestCase {
+  input: string;
+  output: string;
+}
+
 interface IProblemState {
   problems: IProblem[] | [];
   solvedProblems: IProblem[] | [];
