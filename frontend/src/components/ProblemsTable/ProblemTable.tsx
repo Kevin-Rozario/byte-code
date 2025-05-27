@@ -85,10 +85,7 @@ const mockProblems = [
 ];
 
 // const mockUser = { id: "user1", role: "ADMIN" };
-const mockUser: { id: string | null; role: string | null } = {
-  id: null,
-  role: null,
-};
+const mockUser: { id: string; role: string } | null = null;
 
 const ProblemTable = ({ problems = mockProblems }) => {
   const authUser = mockUser;
