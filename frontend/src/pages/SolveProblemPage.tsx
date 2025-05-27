@@ -44,6 +44,8 @@ import { useAuthStore } from "@/stores/authStore";
 import { useExecuteStore } from "@/stores/executeStore";
 import { Route } from "@/routes/problems/problem.$id.lazy";
 import { getLanguageId } from "@/lib/utils/language";
+import SubmissionResult from "@/components/SubmissionResult/SubmissionResult";
+// import Submissions from "@/components/Submissions/Submissions";
 
 const SolveProblemPage = () => {
   const authUser = useAuthStore((state) => state.user);
@@ -115,6 +117,17 @@ const SolveProblemPage = () => {
 
   const handleSubmitCode = () => {
     console.log("Submitting code:", code);
+  };
+
+  const prepareSubmissionForResult = () => {
+    if (!submission?.testCases) return null;
+    const testCases = submission.testCases.map((testCase) => ({
+      ...testCase,
+      stdin: problem?.testCases.find((tc) => tc.output === testCase.expected)
+        ?.input,
+    }));
+
+    return testCases;
   };
 
   const getDifficultyBadge = (difficulty: string) => {
@@ -485,136 +498,14 @@ const SolveProblemPage = () => {
 
                 <TabsContent value="result" className="flex-1 mt-0">
                   {/* This div controls the scrollable area for results */}
-                  <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
-                    <div className="space-y-4">
-                      {/* {testResults.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-32 text-slate-400">
-                          <TestTube className="w-8 h-8 mb-2 opacity-50" />
-                          <p className="text-sm">
-                            Run your code to see results
-                          </p>
-                        </div>
-                      ) : (
-                        testResults.map((result, index) => (
-                          <Card
-                            key={index}
-                            className="p-4 bg-slate-800 border-slate-700"
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <h4 className="font-medium text-slate-200">
-                                Test Case {index + 1}
-                              </h4>
-                              <div className="flex items-center gap-2">
-                                {result.status === "passed" && (
-                                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
-                                )}
-                                {result.status === "failed" && (
-                                  <XCircle className="w-4 h-4 text-red-400" />
-                                )}
-                                <Badge
-                                  className={
-                                    result.status === "passed"
-                                      ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-0"
-                                      : "bg-gradient-to-r from-red-500 to-purple-500 text-white border-0"
-                                  }
-                                >
-                                  {result.status}
-                                </Badge>
-                              </div>
-                            </div>
-                            <div className="space-y-3 text-sm">
-                              <div>
-                                <span className="font-medium text-slate-400">
-                                  Input:
-                                </span>
-                                <div className="mt-1 p-2 bg-slate-900 border border-slate-600 rounded text-xs font-mono text-slate-300">
-                                  {result.input}
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <span className="font-medium text-slate-400">
-                                    Your Output:
-                                  </span>
-                                  <div className="mt-1 p-2 bg-slate-900 border border-slate-600 rounded text-xs font-mono text-purple-400">
-                                    {result.output}
-                                  </div>
-                                </div>
-                                <div>
-                                  <span className="font-medium text-slate-400">
-                                    Expected:
-                                  </span>
-                                  <div className="mt-1 p-2 bg-slate-900 border border-slate-600 rounded text-xs font-mono text-cyan-400">
-                                    {result.expected}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </Card>
-                        ))
-                      )} */}
-                    </div>
-                  </div>
+                  <SubmissionResult
+                    testResults={prepareSubmissionForResult()}
+                  />
                 </TabsContent>
 
                 <TabsContent value="submissions" className="flex-1 mt-0">
                   {/* This div controls the scrollable area for submissions */}
-                  <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
-                    <div className="space-y-4">
-                      {/* {submissions.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-32 text-slate-400">
-                          <Award className="w-8 h-8 mb-2 opacity-50" />
-                          <p className="text-sm">No submissions yet.</p>
-                        </div>
-                      ) : (
-                        submissions.map((submission) => (
-                          <Card
-                            key={submission.id}
-                            className="p-4 bg-slate-800 border-slate-700"
-                          >
-                            <div className="flex items-center justify-between mb-3">
-                              <div className="flex items-center gap-2">
-                                {submission.status === "Accepted" ? (
-                                  <CheckCircle2 className="w-4 h-4 text-cyan-400" />
-                                ) : (
-                                  <XCircle className="w-4 h-4 text-red-400" />
-                                )}
-                                <span className="font-medium text-slate-200">
-                                  {submission.status}
-                                </span>
-                              </div>
-                              <span className="text-sm text-slate-400">
-                                {formatTimeAgo(submission.timestamp)}
-                              </span>
-                            </div>
-                            <div className="grid grid-cols-3 gap-4 text-sm">
-                              <div>
-                                <span className="text-slate-400">
-                                  Language:
-                                </span>
-                                <p className="font-medium text-slate-200">
-                                  {submission.language.charAt(0).toUpperCase() +
-                                    submission.language.slice(1)}
-                                </p>
-                              </div>
-                              <div>
-                                <span className="text-slate-400">Runtime:</span>
-                                <p className="font-medium text-purple-400">
-                                  {submission.runtime}
-                                </p>
-                              </div>
-                              <div>
-                                <span className="text-slate-400">Memory:</span>
-                                <p className="font-medium text-cyan-400">
-                                  {submission.memory}
-                                </p>
-                              </div>
-                            </div>
-                          </Card>
-                        ))
-                      )} */}
-                    </div>
-                  </div>
+                  {/* <Submissions submissions={submission} /> */}
                 </TabsContent>
               </Tabs>
             </Card>

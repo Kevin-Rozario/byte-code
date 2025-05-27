@@ -276,7 +276,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                     <TableCell className="font-medium py-5 px-6">
                       <div className="flex items-center">
                         {authUser?.id &&
-                        problem.solvedBy.includes(authUser.id) ? (
+                        problem.solvedBy?.includes(authUser.id) ? (
                           <div className="relative">
                             <CheckCircle className="w-6 h-6 text-emerald-400 drop-shadow-lg" />
                             <div className="absolute inset-0 w-6 h-6 bg-emerald-400/20 rounded-full blur-sm animate-pulse"></div>

@@ -25,7 +25,7 @@ export interface ITestCaseOutput {
   updatedAt: Date;
 }
 
-interface IExecuteOutput {
+export interface IExecuteOutput {
   id: string;
   userId: string;
   problemId: string;
@@ -36,8 +36,8 @@ interface IExecuteOutput {
   stderr: string | null;
   compileOutput: string | null;
   status: string;
-  memory: string[];
-  time: string[];
+  memory: string;
+  time: string;
   createdAt: Date;
   updatedAt: Date;
   testCases: ITestCaseOutput[];
