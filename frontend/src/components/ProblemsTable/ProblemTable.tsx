@@ -165,7 +165,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
     <div className="min-h-screen bg-slate-950 text-slate-200">
       <div className="w-full max-w-7xl mx-auto px-6 py-8">
         <div className="mb-5">
-          {/* Enhanced Filter Section */}
+          {/* Filter Section */}
           <div className="w-full max-w-7xl mx-auto flex justify-between items-end gap-8 p-8 bg-gradient-to-br from-slate-900/80 to-slate-800/60 rounded-2xl border border-slate-700/50 backdrop-blur-sm shadow-2xl">
             {/* Search bar */}
             <div className="grid w-full max-w-sm items-center gap-3">
@@ -199,13 +199,13 @@ const ProblemTable = ({ problems = mockProblems }) => {
                 <SelectContent className="bg-slate-800 border-slate-600 rounded-xl">
                   <SelectItem
                     value="All Difficulties"
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     All Difficulties
                   </SelectItem>
                   <SelectItem
                     value="EASY"
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     <div className="flex items-center gap-2">
                       <Zap className="w-3 h-3 text-emerald-400" />
@@ -214,7 +214,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
                   </SelectItem>
                   <SelectItem
                     value="MEDIUM"
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     <div className="flex items-center gap-2">
                       <Target className="w-3 h-3 text-amber-400" />
@@ -223,7 +223,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
                   </SelectItem>
                   <SelectItem
                     value="HARD"
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     <div className="flex items-center gap-2">
                       <TrendingUp className="w-3 h-3 text-red-400" />
@@ -247,7 +247,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
                 <SelectContent className="bg-slate-800 border-slate-600 rounded-xl">
                   <SelectItem
                     value="All Tags"
-                    className="text-slate-200 focus:bg-slate-700"
+                    className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                   >
                     All Tags
                   </SelectItem>
@@ -255,7 +255,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
                     <SelectItem
                       key={tag}
                       value={tag}
-                      className="text-slate-200 focus:bg-slate-700"
+                      className="text-slate-200 focus:bg-purple-700/40 focus:text-white"
                     >
                       {tag}
                     </SelectItem>
@@ -281,7 +281,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
           )}
         </div>
 
-        {/* Enhanced Table */}
+        {/* Table */}
         <div className="overflow-x-auto rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-800/70 border border-slate-700/50 backdrop-blur-sm shadow-2xl">
           <Table className="w-full">
             <TableCaption className="text-slate-400 text-base py-6 bg-slate-800/40 border-t border-slate-700/50">
@@ -486,7 +486,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
           </Table>
         </div>
 
-        {/* Enhanced Pagination */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-8 px-6 py-5 bg-gradient-to-r from-slate-900/80 to-slate-800/60 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
             <div className="flex items-center justify-between">
