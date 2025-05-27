@@ -18,6 +18,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -77,7 +84,7 @@ const mockProblems = [
   },
 ];
 
-const mockUser = { id: "user1", role: "USER" };
+const mockUser = { id: "user1", role: "ADMIN" };
 
 const ProblemTable = ({ problems = mockProblems }) => {
   const authUser = mockUser;
@@ -362,58 +369,96 @@ const ProblemTable = ({ problems = mockProblems }) => {
                     </TableCell>
                     <TableCell className="text-center flex gap-3 py-5 px-6">
                       {authUser?.role === "ADMIN" && (
-                        <Link
-                          to={"/problems/problem/$id"}
-                          params={{ id: problem.id }}
-                        >
-                          <Button
-                            size="sm"
-                            className="p-2.5 h-auto bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-lg transition-all duration-200 hover:scale-110"
-                          >
-                            <PenSquare className="w-4 h-4" />
-                          </Button>
-                        </Link>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Link
+                                to={"/problems/problem/$id"}
+                                params={{ id: problem.id }}
+                              >
+                                <Button
+                                  size="sm"
+                                  className="p-2.5 h-auto bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                                >
+                                  <PenSquare className="w-4 h-4" />
+                                </Button>
+                              </Link>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">
+                              <p>Edit Problem</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                       {authUser?.role === "ADMIN" && (
-                        <Button
-                          onClick={() => handleDeleteProblem(problem.id)}
-                          size="sm"
-                          className="p-2.5 h-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-red-500/40 hover:border-red-500/60 rounded-lg transition-all duration-200 hover:scale-110"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                onClick={() => handleDeleteProblem(problem.id)}
+                                size="sm"
+                                className="p-2.5 h-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-red-500/40 hover:border-red-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom">
+                              <p>Delete Problem</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
-                      <Link
-                        to="/problems/problem/$id"
-                        params={{ id: problem.id }}
-                      >
-                        <Button
-                          size="sm"
-                          className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
-                        >
-                          <PlayCircle className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                      <Button
-                        onClick={() =>
-                          handleTogglePlayList(
-                            problem.id,
-                            playList.includes(problem.id),
-                          )
-                        }
-                        size="sm"
-                        className={`p-2.5 h-auto border rounded-lg transition-all duration-200 hover:scale-110 ${
-                          playList.includes(problem.id)
-                            ? "bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border-red-500/40 hover:border-red-500/60"
-                            : "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 hover:text-emerald-300 border-emerald-500/40 hover:border-emerald-500/60"
-                        }`}
-                      >
-                        {playList.includes(problem.id) ? (
-                          <MinusCircle className="w-4 h-4" />
-                        ) : (
-                          <PlusCircle className="w-4 h-4" />
-                        )}
-                      </Button>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Link
+                              to="/problems/problem/$id"
+                              params={{ id: problem.id }}
+                            >
+                              <Button
+                                size="sm"
+                                className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
+                              >
+                                <PlayCircle className="w-4 h-4" />
+                              </Button>
+                            </Link>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">
+                            <p>Solve Problem</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              onClick={() =>
+                                handleTogglePlayList(
+                                  problem.id,
+                                  playList.includes(problem.id),
+                                )
+                              }
+                              size="sm"
+                              className={`p-2.5 h-auto border rounded-lg transition-all duration-200 hover:scale-110 ${
+                                playList.includes(problem.id)
+                                  ? "bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border-red-500/40 hover:border-red-500/60"
+                                  : "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 hover:text-emerald-300 border-emerald-500/40 hover:border-emerald-500/60"
+                              }`}
+                            >
+                              {playList.includes(problem.id) ? (
+                                <MinusCircle className="w-4 h-4" />
+                              ) : (
+                                <PlusCircle className="w-4 h-4" />
+                              )}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {playList.includes(problem.id)
+                              ? "Remove from playlist"
+                              : "Add to playlist"}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </TableCell>
                   </TableRow>
                 )))
