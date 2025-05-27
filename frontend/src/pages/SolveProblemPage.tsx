@@ -18,7 +18,7 @@ import {
   Zap,
   TrendingUp,
   Files,
-  ArrowLeft,
+  ArrowLeftCircle,
 } from "lucide-react";
 
 import {
@@ -45,6 +45,8 @@ import { useExecuteStore } from "@/stores/executeStore";
 import { Route } from "@/routes/problems/problem.$id.lazy";
 import { getLanguageId } from "@/lib/utils/language";
 import SubmissionResult from "@/components/SubmissionResult/SubmissionResult";
+import { type ISubmissionResultProps } from "@/components/SubmissionResult/SubmissionResult";
+import { Link } from "@tanstack/react-router";
 // import Submissions from "@/components/Submissions/Submissions";
 
 const SolveProblemPage = () => {
@@ -121,13 +123,15 @@ const SolveProblemPage = () => {
 
   const prepareSubmissionForResult = () => {
     if (!submission?.testCases) return null;
-    const testCases = submission.testCases.map((testCase) => ({
-      ...testCase,
-      stdin: problem?.testCases.find((tc) => tc.output === testCase.expected)
-        ?.input,
-    }));
+    const finalTestCases: ISubmissionResultProps[] = submission.testCases.map(
+      (testCase) => ({
+        ...testCase,
+        stdin:
+          testCases.find((tc) => tc.output === testCase.expected)?.input ?? "",
+      }),
+    );
 
-    return testCases;
+    return finalTestCases;
   };
 
   const getDifficultyBadge = (difficulty: string) => {
@@ -169,14 +173,16 @@ const SolveProblemPage = () => {
       <header className="sticky top-0 z-50 w-full border-b border-slate-700 bg-slate-900/80 backdrop-blur supports-[backdrop-filter]:bg-slate-900/80 h-18 flex items-center">
         <div className="container flex items-center justify-between mx-auto">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="gap-2 text-slate-200 hover:text-white hover:bg-slate-800"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Problems
-            </Button>
+            <Link to="/problems">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2 text-slate-200 hover:text-white hover:bg-slate-800"
+              >
+                <ArrowLeftCircle className="w-6 h-6" />
+                Back to Problems
+              </Button>
+            </Link>
             <div className="w-px h-6 bg-slate-600"></div>
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-purple-400/10 to-blue-400/10 rounded-lg border border-purple-400/20">

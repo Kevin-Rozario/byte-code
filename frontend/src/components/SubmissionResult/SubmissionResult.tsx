@@ -8,7 +8,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 
-interface SubmissionResultProps {
+export interface ISubmissionResultProps {
   id: string;
   submissionId: string;
   testCase: number;
@@ -28,7 +28,7 @@ interface SubmissionResultProps {
 const SubmissionResult = ({
   testResults,
 }: {
-  testResults: SubmissionResultProps[];
+  testResults: ISubmissionResultProps[] | null;
 }) => {
   return (
     <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">

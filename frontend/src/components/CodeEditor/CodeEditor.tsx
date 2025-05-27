@@ -31,7 +31,7 @@ const CodeEditor = ({
       </div>
       <Editor
         height={"500px"}
-        className="w-full bg-slate-950 text-slate-200 p-4 font-mono text-sm resize-none outline-none min-h-[400px]"
+        className="w-full bg-slate-950 text-slate-200 font-mono text-sm resize-none outline-none min-h-[400px]"
         language={language}
         value={value}
         onChange={(e) => onChange(e.target.value)}
