@@ -84,7 +84,11 @@ const mockProblems = [
   },
 ];
 
-const mockUser = { id: "user1", role: "ADMIN" };
+// const mockUser = { id: "user1", role: "ADMIN" };
+const mockUser: { id: string | null; role: string | null } = {
+  id: null,
+  role: null,
+};
 
 const ProblemTable = ({ problems = mockProblems }) => {
   const authUser = mockUser;
@@ -135,6 +139,11 @@ const ProblemTable = ({ problems = mockProblems }) => {
   };
 
   const handleTogglePlayList = (id: string, isInPlayList: boolean) => {
+    if (!authUser) {
+      console.log("You must be logged in to add to play list");
+      return;
+    }
+
     const updatedPlayList = [...playList];
     if (isInPlayList) {
       const index = updatedPlayList.indexOf(id);
