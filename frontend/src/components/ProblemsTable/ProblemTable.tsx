@@ -85,7 +85,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
   const [selectedTags, setSelectedTags] = useState("All Tags");
   const [difficulty, setDifficulty] = useState("All Difficulties");
   const [currentPage, setCurrentPage] = useState(1);
-  const [playlist, setPlaylist] = useState<string[]>([]);
+  const [playList, setPlayList] = useState<string[]>([]);
 
   const tableHeads = ["Status", "Title", "Tags", "Difficulty", "Actions"];
 
@@ -127,18 +127,18 @@ const ProblemTable = ({ problems = mockProblems }) => {
     console.log("Deleting problem with ID:", id);
   };
 
-  const handleTogglePlaylist = (id: string, isInPlaylist: boolean) => {
-    const updatedPlaylist = [...playlist];
-    if (isInPlaylist) {
-      const index = updatedPlaylist.indexOf(id);
+  const handleTogglePlayList = (id: string, isInPlayList: boolean) => {
+    const updatedPlayList = [...playList];
+    if (isInPlayList) {
+      const index = updatedPlayList.indexOf(id);
       if (index !== -1) {
-        updatedPlaylist.splice(index, 1);
+        updatedPlayList.splice(index, 1);
       }
     } else {
-      updatedPlaylist.push(id);
+      updatedPlayList.push(id);
     }
-    setPlaylist(updatedPlaylist);
-    console.log(updatedPlaylist);
+    setPlayList(updatedPlayList);
+    console.log(updatedPlayList);
   };
 
   const getDifficultyIcon = (difficulty: string) => {
@@ -261,7 +261,7 @@ const ProblemTable = ({ problems = mockProblems }) => {
 
         {/* Create Playlist Button*/}
         <div className="flex justify-end items-center h-12 p-2 mb-5">
-          {playlist.length > 0 && (
+          {playList.length > 0 && (
             <Link to="/">
               <Button
                 type="submit"
@@ -396,19 +396,19 @@ const ProblemTable = ({ problems = mockProblems }) => {
                       </Link>
                       <Button
                         onClick={() =>
-                          handleTogglePlaylist(
+                          handleTogglePlayList(
                             problem.id,
-                            playlist.includes(problem.id),
+                            playList.includes(problem.id),
                           )
                         }
                         size="sm"
                         className={`p-2.5 h-auto border rounded-lg transition-all duration-200 hover:scale-110 ${
-                          playlist.includes(problem.id)
+                          playList.includes(problem.id)
                             ? "bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border-red-500/40 hover:border-red-500/60"
                             : "bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 hover:text-emerald-300 border-emerald-500/40 hover:border-emerald-500/60"
                         }`}
                       >
-                        {playlist.includes(problem.id) ? (
+                        {playList.includes(problem.id) ? (
                           <MinusCircle className="w-4 h-4" />
                         ) : (
                           <PlusCircle className="w-4 h-4" />
