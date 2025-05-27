@@ -1,11 +1,19 @@
-import { useAuthStore } from "@/stores/authStore";
+// import { useAuthStore } from "@/stores/authStore";
 import { useNavigate } from "@tanstack/react-router";
-import React from "react";
+
+const authUser = {
+  id: "1",
+  email: "j3Yt8@example.com",
+  role: "ADMIN",
+  isEmailVerified: true,
+  fullName: "test",
+  userName: "test",
+};
 
 const SolveProblemPage = () => {
-  const authUser = useAuthStore((state) => state.user);
+  // const authUser = useAuthStore((state) => state.user);
   const navigate = useNavigate();
-  return <>{authUser ? "" : navigate({ to: "/auth/sign-in" })}</>;
+  return <>{authUser ? "hello" : navigate({ to: "/auth/sign-in" })}</>;
 };
 
 export default SolveProblemPage;

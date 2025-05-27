@@ -127,12 +127,12 @@ const Navbar = () => {
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
+                  {/* <DropdownMenuItem className="text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 cursor-pointer">
                     <Link to="/auth/settings" className=" flex w-full">
                       <Settings className="mr-4 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   <DropdownMenuSeparator className="bg-slate-700/50" />
                   <DropdownMenuItem
                     className="text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors duration-200 cursor-pointer"
