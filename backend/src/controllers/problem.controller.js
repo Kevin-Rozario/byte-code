@@ -5,6 +5,7 @@ import {
 } from "../config/judge0.config.js";
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import ApiResponse from "../utils/apiResponse.util.js";
+import ApiError from "../utils/apiError.util.js";
 import db from "../config/db.config.js";
 
 export const createProblem = asyncHandler(async (req, res) => {
@@ -71,15 +72,25 @@ export const createProblem = asyncHandler(async (req, res) => {
 });
 
 export const getAllProblems = asyncHandler(async (req, res) => {
-  const problems = await db.problem.findMany({
-    include: {
-      solvedBy: {
-        where: {
-          userId: req.user.id,
+  let problems = [];
+  if (!req.user) {
+    problems = await db.problem.findMany({
+      include: {
+        solvedBy: false,
+      },
+    });
+  } else {
+    problems = await db.problem.findMany({
+      include: {
+        solvedBy: {
+          where: {
+            userId: req.user.id,
+          },
         },
       },
-    },
-  });
+    });
+  }
+
   if (!problems) {
     throw new ApiError(404, "No problems found", null);
   }
