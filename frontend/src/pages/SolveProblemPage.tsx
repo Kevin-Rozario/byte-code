@@ -7,14 +7,14 @@ import {
   BookOpen,
   Trophy,
   TestTube,
-  CheckCircle2,
-  XCircle,
+  // CheckCircle2,
+  // XCircle,
   Send,
   Lightbulb,
   Target,
   Info,
   History,
-  Award,
+  // Award,
   Zap,
   TrendingUp,
   Files,
@@ -41,23 +41,26 @@ import {
   type ITestCase,
 } from "@/stores/problemStore";
 import { useAuthStore } from "@/stores/authStore";
+import { useExecuteStore } from "@/stores/executeStore";
 import { Route } from "@/routes/problems/problem.$id.lazy";
+import { getLanguageId } from "@/lib/utils/language";
 
 const SolveProblemPage = () => {
   const authUser = useAuthStore((state) => state.user);
   const { id } = Route.useParams();
   const problem = useProblemStore<IProblem | null>((state) => state.problem);
-  const isProblemLoading = useProblemStore<boolean>(
-    (state) => state.isProblemLoading,
-  );
+  // const isProblemLoading = useProblemStore<boolean>(
+  //   (state) => state.isProblemLoading,
+  // );
   const getProblemById = useProblemStore((state) => state.getProblemById);
   const [code, setCode] = useState("");
-  const [activeTab, setActiveTab] = useState<string>("Description");
   const [selectedLanguage, setSelectedLanguage] =
     useState<string>("javascript");
   const [testCases, setTestCases] = useState<ITestCase[]>([]);
-  const [isRunning, setIsRunning] = useState(false);
+  const isExecuting = useExecuteStore((state) => state.isExecuting);
+  const executeProblem = useExecuteStore((state) => state.executeCode);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const submission = useExecuteStore((state) => state.submission);
 
   useEffect(() => {
     getProblemById(id);
@@ -75,13 +78,39 @@ const SolveProblemPage = () => {
     }
   }, [problem, selectedLanguage]);
 
+  useEffect(() => {
+    if (submission) {
+      console.log("Submission data received:", submission);
+    } else {
+      console.log("No submission data received.");
+    }
+  }, [submission]);
+
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
     setCode(problem?.codeSnippets?.[language] || "");
   };
 
-  const handleRunCode = () => {
-    console.log("Running code:", code);
+  const handleRunCode = (e) => {
+    e.preventDefault();
+    try {
+      const languageId = getLanguageId(selectedLanguage);
+      const stdin = problem?.testCases.map((testCase) => testCase.input) || [];
+      const expectedOutputs =
+        problem?.testCases.map((testCase) => testCase.output) || [];
+      const problemId = problem?.id ?? "";
+      const sourceCode = code;
+
+      executeProblem({
+        sourceCode,
+        languageId,
+        stdin,
+        expectedOutputs,
+        problemId,
+      });
+    } catch (err) {
+      console.error("Error setting up code execution:", err);
+    }
   };
 
   const handleSubmitCode = () => {
@@ -182,12 +211,12 @@ const SolveProblemPage = () => {
 
             <Button
               onClick={handleRunCode}
-              disabled={isRunning}
+              disabled={isExecuting}
               variant="outline"
               className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
             >
               <Play className="w-4 h-4 mr-2" />
-              {isRunning ? "Running..." : "Run"}
+              {isExecuting ? "Executing..." : "Execute Code"}
             </Button>
 
             <Button
@@ -401,7 +430,7 @@ const SolveProblemPage = () => {
                   <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-2">
-                        {problem.testCases.map((_, index) => (
+                        {/* {problem?.testCases.map((_, index) => (
                           <Button
                             key={index}
                             variant={
@@ -417,35 +446,35 @@ const SolveProblemPage = () => {
                           >
                             Case {index + 1}
                           </Button>
-                        ))}
+                        ))} */}
                       </div>
 
                       <div className="space-y-4">
                         <div>
                           <label className="text-sm font-medium mb-2 block text-slate-400">
-                            Input:
+                            Input
                           </label>
                           <Card className="p-3 bg-slate-800 border-slate-700">
                             <code className="text-sm whitespace-pre-wrap font-mono text-purple-400">
-                              {
+                              {/* {
                                 problem.testCases[
                                   selectedTestCase
                                 ]?.input.split("\n")[0]
-                              }
+                              } */}
                             </code>
                           </Card>
                         </div>
                         <div>
                           <label className="text-sm font-medium mb-2 block text-slate-400">
-                            target =
+                            Expected Output
                           </label>
                           <Card className="p-3 bg-slate-800 border-slate-700">
                             <code className="text-sm whitespace-pre-wrap font-mono text-cyan-400">
-                              {
+                              {/* {
                                 problem.testCases[
                                   selectedTestCase
                                 ]?.input.split("\n")[1]
-                              }
+                              } */}
                             </code>
                           </Card>
                         </div>
@@ -458,7 +487,7 @@ const SolveProblemPage = () => {
                   {/* This div controls the scrollable area for results */}
                   <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                     <div className="space-y-4">
-                      {testResults.length === 0 ? (
+                      {/* {testResults.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-32 text-slate-400">
                           <TestTube className="w-8 h-8 mb-2 opacity-50" />
                           <p className="text-sm">
@@ -523,7 +552,7 @@ const SolveProblemPage = () => {
                             </div>
                           </Card>
                         ))
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </TabsContent>
@@ -532,7 +561,7 @@ const SolveProblemPage = () => {
                   {/* This div controls the scrollable area for submissions */}
                   <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                     <div className="space-y-4">
-                      {submissions.length === 0 ? (
+                      {/* {submissions.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-32 text-slate-400">
                           <Award className="w-8 h-8 mb-2 opacity-50" />
                           <p className="text-sm">No submissions yet.</p>
@@ -583,7 +612,7 @@ const SolveProblemPage = () => {
                             </div>
                           </Card>
                         ))
-                      )}
+                      )} */}
                     </div>
                   </div>
                 </TabsContent>

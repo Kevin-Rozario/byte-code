@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import axiosInstance from "@/lib/config/axios";
 
-interface IExecuteInput {
+export interface IExecuteInput {
   sourceCode: string;
-  languageId: number;
-  stdin: string;
-  expectedOutputs: string;
+  languageId: number | undefined;
+  stdin: string[];
+  expectedOutputs: string[];
   problemId: string;
 }
 
-interface ITestCaseOutput {
+export interface ITestCaseOutput {
   id: string;
   submissionId: string;
   testCase: number;
@@ -46,12 +46,15 @@ interface IExecuteOutput {
 interface IExecuteStore {
   isExecuting: boolean;
   submission: IExecuteOutput | null;
+  error: string | null;
   executeCode: (input: IExecuteInput) => Promise<void>;
 }
 
 export const useExecuteStore = create<IExecuteStore>((set) => ({
   isExecuting: false,
   submission: null,
+  error: null,
+
   executeCode: async ({
     sourceCode,
     languageId,
@@ -59,34 +62,28 @@ export const useExecuteStore = create<IExecuteStore>((set) => ({
     expectedOutputs,
     problemId,
   }: IExecuteInput) => {
+    set({ isExecuting: true, error: null, submission: null });
+
     try {
-      set({ isExecuting: true });
-
-      // print for test purpose
-      console.log(
-        "Submission:",
-        JSON.stringify({
-          sourceCode,
-          languageId,
-          stdin,
-          expectedOutputs,
-          problemId,
-        }),
-      );
-
-      const reponse = await axiosInstance.post("/api/v1/code/execute", {
+      const response = await axiosInstance.post<{
+        data: { submission: IExecuteOutput };
+      }>("/api/v1/code/execute", {
         sourceCode,
         languageId,
         stdin,
         expectedOutputs,
         problemId,
       });
-      if (reponse.status === 200 && reponse.data) {
-        set({ submission: reponse.data.data });
+
+      if (response.status === 200 && response.data?.data?.submission) {
+        set({ submission: response.data.data.submission });
+      } else {
+        set({ error: "Execution failed: No submission data received." });
       }
-      set({ submission: reponse.data.data });
     } catch (error) {
       console.error("Error executing code:", error);
+    } finally {
+      set({ isExecuting: false });
     }
   },
 }));
