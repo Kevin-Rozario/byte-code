@@ -1,9 +1,6 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
+import SolveProblemPageRouteComponent from "@/pages/SolveProblemPage";
 
 export const Route = createLazyFileRoute("/problems/problem/$id/")({
-  component: RouteComponent,
+  component: SolveProblemPageRouteComponent,
 });
-
-function RouteComponent() {
-  return <div>Hello "/problems/problem/$id/"!</div>;
-}

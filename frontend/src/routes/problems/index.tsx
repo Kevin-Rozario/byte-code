@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ProblemsPageRouteComponent from "@/pages/ProblemsPage";
+import ListProblemsPageRouteComponent from "@/pages/ListProblemsPage";
 
 export const Route = createFileRoute("/problems/")({
-  component: ProblemsPageRouteComponent,
+  component: ListProblemsPageRouteComponent,
 });
