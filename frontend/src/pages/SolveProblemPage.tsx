@@ -46,23 +46,25 @@ import { Route } from "@/routes/problems/problem.$id.lazy";
 import { getLanguageId } from "@/lib/utils/language";
 import SubmissionResult from "@/components/SubmissionResult/SubmissionResult";
 import { type ISubmissionResultProps } from "@/components/SubmissionResult/SubmissionResult";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 // import Submissions from "@/components/Submissions/Submissions";
 
 const SolveProblemPage = () => {
   const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const { id } = Route.useParams();
   const problem = useProblemStore<IProblem | null>((state) => state.problem);
   // const isProblemLoading = useProblemStore<boolean>(
   //   (state) => state.isProblemLoading,
   // );
   const getProblemById = useProblemStore((state) => state.getProblemById);
+  const isExecuting = useExecuteStore((state) => state.isExecuting);
+  const executeProblem = useExecuteStore((state) => state.executeCode);
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [selectedLanguage, setSelectedLanguage] =
     useState<string>("javascript");
   const [testCases, setTestCases] = useState<ITestCase[]>([]);
-  const isExecuting = useExecuteStore((state) => state.isExecuting);
-  const executeProblem = useExecuteStore((state) => state.executeCode);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submission = useExecuteStore((state) => state.submission);
 
@@ -167,6 +169,10 @@ const SolveProblemPage = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return navigate({ to: "/auth/sign-in" });
+  }
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex flex-col">
       {/* Header */}
