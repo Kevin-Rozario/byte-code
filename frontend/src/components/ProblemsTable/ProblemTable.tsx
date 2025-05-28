@@ -100,7 +100,6 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
 
   const handleSolveProblem = (id: string) => {
     if (!authUser) {
-      console.log("You must be logged in to solve a problem");
       toast.error("You must be logged in to solve a problem");
       return;
     }
@@ -109,7 +108,6 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
 
   const handleTogglePlayList = (id: string, isInPlayList: boolean) => {
     if (!authUser) {
-      console.log("You must be logged in to add to play list");
       toast.error("You must be logged in to add to play list");
       return;
     }
