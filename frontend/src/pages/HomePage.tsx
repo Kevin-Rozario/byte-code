@@ -1,8 +1,8 @@
-import React from "react";
 import HeroSection from "@/blocks/HeroSection";
 import FeatureSection from "@/blocks/FeaturesSection";
 import TestimonialsSection from "@/blocks/TestimonialsSection";
 import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/blocks/Footer";
 
 const HomePage = () => {
   return (
@@ -12,6 +12,7 @@ const HomePage = () => {
       <HeroSection />
       <FeatureSection />
       <TestimonialsSection />
+      <Footer />
     </>
   );
 };
