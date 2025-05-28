@@ -1,10 +1,12 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Code2, BookOpen, CheckCircle, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "@tanstack/react-router";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section
       className={cn(
@@ -62,29 +64,54 @@ const HeroSection = () => {
         </motion.p>
 
         {/* Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="flex flex-col sm:flex-row justify-center gap-4"
-        >
-          <Button
-            variant="default"
-            size="lg"
-            className={cn(
-              "bg-gradient-to-r from-purple-600 to-blue-600",
-              "hover:from-purple-500 hover:to-blue-500",
-              "text-white font-semibold rounded-full px-8 py-3",
-              "transition-all duration-300 shadow-lg hover:shadow-purple-500/50",
-              "flex items-center gap-2",
-            )}
-            onClick={() => {
-              window.location.href = "/start-coding";
-            }}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            Start Coding <ArrowRight className="h-5 w-5" />
-          </Button>
-        </motion.div>
+            <Button
+              variant="default"
+              size="lg"
+              className={cn(
+                "bg-gradient-to-r from-purple-600 to-blue-600",
+                "hover:from-purple-500 hover:to-blue-500",
+                "text-white font-semibold rounded-full px-8 py-3",
+                "transition-all duration-300 shadow-lg hover:shadow-purple-500/50",
+                "flex items-center gap-2",
+              )}
+              onClick={() => {
+                navigate({ to: "/problems" });
+              }}
+            >
+              Explore Problems
+            </Button>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-col sm:flex-row justify-center gap-4"
+          >
+            <Button
+              variant="default"
+              size="lg"
+              className={cn(
+                "bg-gradient-to-r from-purple-600 to-blue-600",
+                "hover:from-purple-500 hover:to-blue-500",
+                "text-white font-semibold rounded-full px-8 py-3",
+                "transition-all duration-300 shadow-lg hover:shadow-purple-500/50",
+                "flex items-center gap-2",
+              )}
+              onClick={() => {
+                navigate({ to: "/auth/sign-up" });
+              }}
+            >
+              Start Coding <ArrowRight className="h-5 w-5" />
+            </Button>
+          </motion.div>
+        </div>
 
         {/* Feature Highlights */}
         <motion.div
