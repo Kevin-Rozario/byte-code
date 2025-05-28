@@ -65,20 +65,13 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
-          if (axios.isAxiosError(error) && error.response) {
-            toast.error(
-              error.response.data.message ||
-                "An error occurred during sign in.",
-            );
-          } else {
-            toast.error(
-              "Failed to sign in. Please check your network connection.",
-            );
-          }
+          console.error("Error signing in:", error);
+          toast.error("Failed to sign in.");
         } finally {
           set({ isSigningIn: false, isLoadingAuth: false });
         }
       },
+
       signup: async (data: ISignup) => {
         set({ isSigningUp: true, isLoadingAuth: true });
         try {
@@ -97,23 +90,8 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
-          if (axios.isAxiosError(error)) {
-            const axiosError = error;
-            if (axiosError.response && axiosError.response.data) {
-              toast.error(
-                (axiosError.response.data as any).message ||
-                  "Unable to sign up. Please try again!",
-              );
-            } else if (axiosError.request) {
-              toast.error(
-                "No response from server. Please check your internet connection.",
-              );
-            } else {
-              toast.error("An unexpected error occurred during sign-up.");
-            }
-          } else {
-            toast.error("An unknown error occurred.");
-          }
+          console.error("Error signing up:", error);
+          toast.error("Failed to sign up.");
         } finally {
           set({ isSigningUp: false, isLoadingAuth: false });
         }
@@ -128,19 +106,8 @@ const useAuthStore = create<IUserState>()(
             toast.success("Signed out successfully!");
           }
         } catch (error) {
-          if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response && axiosError.response.data) {
-              toast.error(
-                (axiosError.response.data as any).message ||
-                  "Unable to sign out. Please try again!",
-              );
-            } else {
-              toast.error("An error occurred during sign-out.");
-            }
-          } else {
-            toast.error("An unknown error occurred.");
-          }
+          console.error("Error signing out:", error);
+          toast.error("Failed to sign out.");
         } finally {
           set({ isSigningOut: false, isLoadingAuth: false });
         }
@@ -157,6 +124,7 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
+          console.error("Error getting current user:", error);
         } finally {
           set({ isLoadingAuth: false });
         }

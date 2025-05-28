@@ -337,14 +337,14 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                             MEDIUM
                           </div>
                         </Badge>
-                      ) : (
+                      ) : problem.difficulty === "HARD" ? (
                         <Badge className="bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30 px-3 py-2 text-xs font-semibold rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer">
                           <div className="flex items-center gap-1.5">
                             {getDifficultyIcon(problem.difficulty)}
                             HARD
                           </div>
                         </Badge>
-                      )}
+                      ) : null}
                     </TableCell>
                     <TableCell className="text-center flex gap-3 py-5 px-6">
                       {authUser?.role === "ADMIN" && (
