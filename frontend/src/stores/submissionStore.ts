@@ -13,8 +13,8 @@ export interface ISubmission {
   stderr: string;
   compileOuput: string;
   status: string;
-  memory: string[] | null;
-  time: string[] | null;
+  memory: string | null;
+  time: string | null;
   createdAt: string;
   updatedAt: string;
 }

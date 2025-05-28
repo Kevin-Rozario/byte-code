@@ -429,17 +429,10 @@ const SolveProblemPage = () => {
               {/* Submissions */}
               <TabsContent value="submissions" className="flex-1 mt-0">
                 <div className="flex flex-col items-center justify-center h-full text-slate-400">
-                  {submissionsForProblemByUser.length === 0 ? (
-                    <>
-                      <CheckCircle className="w-12 h-12 mb-4 opacity-50" />
-                      <p className="font-medium">Your Submissions</p>
-                      <p className="text-sm">View your previous submissions</p>
-                    </>
-                  ) : (
-                    <>
-                      <Submissions submissions={submissionsForProblemByUser} />
-                    </>
-                  )}
+                  <Submissions
+                    submissions={submissionsForProblemByUser}
+                    isLoading={isSubmissonsLoading}
+                  />
                 </div>
               </TabsContent>
 
