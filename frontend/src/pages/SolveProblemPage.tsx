@@ -51,6 +51,7 @@ import TestCaseResults, {
 import { Link } from "@tanstack/react-router";
 import { useSubmissionStore } from "@/stores/submissionStore";
 import Submissions from "@/components/Submissions/Submissions";
+import toast from "react-hot-toast";
 
 const SolveProblemPage = () => {
   const authUser = useAuthStore((state) => state.user);
@@ -86,7 +87,6 @@ const SolveProblemPage = () => {
     useState<string>("javascript");
   const [testCases, setTestCases] = useState<ITestCase[]>([]);
   const [selectedTestCase, setSelectedTestCase] = useState<number>(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const submission = useExecuteStore((state) => state.submission);
 
   useEffect(() => {
@@ -121,6 +121,12 @@ const SolveProblemPage = () => {
 
   const handleRunCode = (e) => {
     e.preventDefault();
+
+    if (!authUser) {
+      toast.error("Please sign in to submit your code.");
+      return;
+    }
+
     try {
       const languageId = getLanguageId(selectedLanguage);
       const stdin = problem?.testCases.map((testCase) => testCase.input) || [];
@@ -139,10 +145,6 @@ const SolveProblemPage = () => {
     } catch (err) {
       console.error("Error setting up code execution:", err);
     }
-  };
-
-  const handleSubmitCode = () => {
-    console.log("Submitting code:", code);
   };
 
   const handleGetSubmission = (id: string) => {
@@ -263,19 +265,10 @@ const SolveProblemPage = () => {
               onClick={handleRunCode}
               disabled={isExecuting}
               variant="outline"
-              className="border-green-700 bg-green-700 text-slate-200 hover:bg-green-600 hover:text-white"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
             >
               <Play className="w-4 h-4 mr-1" />
               {isExecuting ? "Executing..." : "Execute"}
-            </Button>
-
-            <Button
-              onClick={handleSubmitCode}
-              disabled={isSubmitting}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
-            >
-              <Send className="w-4 h-4 mr-1" />
-              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </div>
         </div>
@@ -478,7 +471,7 @@ const SolveProblemPage = () => {
             <Card className="flex-1 bg-slate-900/80 border-slate-700 flex flex-col">
               <Tabs defaultValue="testcase" className="flex-1 flex flex-col">
                 <CardHeader className="pb-3">
-                  <TabsList className="grid w-full grid-cols-3 bg-slate-800 border-slate-700">
+                  <TabsList className="grid w-full grid-cols-2 bg-slate-800 border-slate-700">
                     <TabsTrigger
                       value="testcase"
                       className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
@@ -492,13 +485,6 @@ const SolveProblemPage = () => {
                     >
                       <Trophy className="w-4 h-4" />
                       Result
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="submissions"
-                      className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
-                    >
-                      <History className="w-4 h-4" />
-                      Submissions
                     </TabsTrigger>
                   </TabsList>
                 </CardHeader>
@@ -560,11 +546,6 @@ const SolveProblemPage = () => {
                 <TabsContent value="result" className="flex-1 mt-0">
                   {/* This div controls the scrollable area for results */}
                   <TestCaseResults testResults={prepareSubmissionForResult()} />
-                </TabsContent>
-
-                <TabsContent value="submissions" className="flex-1 mt-0">
-                  {/* This div controls the scrollable area for submissions */}
-                  {/* <Submissions submissions={submission} /> */}
                 </TabsContent>
               </Tabs>
             </Card>

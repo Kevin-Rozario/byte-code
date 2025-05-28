@@ -78,7 +78,7 @@ export const useExecuteStore = create<IExecuteStore>((set) => ({
 
       if (response.status === 200 && response.data?.data?.submission) {
         set({ submission: response.data.data.submission });
-        toast.success("Code executed successfully!");
+        toast.success("Code submitted successfully!");
       } else {
         set({ error: "Execution failed: No submission data received." });
         toast.error("Execution failed: No submission data received.");
