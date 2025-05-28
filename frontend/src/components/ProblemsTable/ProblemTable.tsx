@@ -280,7 +280,6 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
             </TableHeader>
             <TableBody>
               {paginatedProblems.length > 0 ? (
-                (console.log(paginatedProblems),
                 paginatedProblems.map((problem) => (
                   <TableRow
                     key={problem.id}
@@ -437,7 +436,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                       </TooltipProvider>
                     </TableCell>
                   </TableRow>
-                )))
+                ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-16">

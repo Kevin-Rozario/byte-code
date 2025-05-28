@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "@/lib/config/axios";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 export interface IProblem {
   id: string;
