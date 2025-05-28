@@ -57,13 +57,11 @@ const useProblemStore = create<IProblemState>()((set) => ({
       );
       if (response.status === 200 && response.data) {
         set({ problems: response.data.data });
-        toast.success(
-          response.data.message || "Problems fetched successfully.",
-        );
+        toast.success("Problems fetched successfully.");
       }
     } catch (error: any) {
       console.error("Error fetching problems:", error);
-      toast.error(error.message || "Failed to fetch problems.");
+      toast.error("Failed to fetch problems.");
     } finally {
       set({ isProblemsLoading: false });
     }
@@ -77,11 +75,11 @@ const useProblemStore = create<IProblemState>()((set) => ({
       );
       if (response.status === 200 && response.data) {
         set({ problem: response.data.data });
-        toast.success(response.data.message || "Problem fetched successfully.");
+        toast.success("Problem fetched successfully.");
       }
     } catch (error: any) {
       console.error("Error fetching problem:", error);
-      toast.error(error.message || "Failed to fetch problem.");
+      toast.error("Failed to fetch problem.");
     } finally {
       set({ isProblemLoading: false });
     }
@@ -95,13 +93,11 @@ const useProblemStore = create<IProblemState>()((set) => ({
       );
       if (response.status === 200 && response.data) {
         set({ solvedProblems: response.data.data });
-        toast.success(
-          response.data.message || "Solved problems fetched successfully.",
-        );
+        toast.success("Solved problems fetched successfully.");
       }
     } catch (error: any) {
       console.error("Error fetching solved problems:", error);
-      toast.error(error.message || "Failed to fetch solved problems.");
+      toast.error("Failed to fetch solved problems.");
     } finally {
       set({ isProblemsLoading: false });
     }

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axiosInstance from "@/lib/config/axios";
+import toast from "react-hot-toast";
 
 export interface IExecuteInput {
   sourceCode: string;
@@ -77,11 +78,14 @@ export const useExecuteStore = create<IExecuteStore>((set) => ({
 
       if (response.status === 200 && response.data?.data?.submission) {
         set({ submission: response.data.data.submission });
+        toast.success("Code executed successfully!");
       } else {
         set({ error: "Execution failed: No submission data received." });
+        toast.error("Execution failed: No submission data received.");
       }
     } catch (error) {
       console.error("Error executing code:", error);
+      toast.error("Failed to execute code.");
     } finally {
       set({ isExecuting: false });
     }

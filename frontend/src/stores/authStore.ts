@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import axios, { AxiosError } from "axios";
 import axiosInstance from "@/lib/config/axios";
 import toast from "react-hot-toast";
 
