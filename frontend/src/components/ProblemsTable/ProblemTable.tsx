@@ -43,7 +43,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 import { type IProblem } from "@/stores/problemStore";
 import toast from "react-hot-toast";
@@ -55,6 +55,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const [difficulty, setDifficulty] = useState("All Difficulties");
   const [currentPage, setCurrentPage] = useState(1);
   const [playList, setPlayList] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const tableHeads = ["Status", "Title", "Tags", "Difficulty", "Actions"];
 
@@ -86,6 +87,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
 
   const itemsPerPage = 5;
   const totalPages = Math.ceil(filteredProblems.length / itemsPerPage);
+
   const paginatedProblems = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredProblems.slice(start, start + itemsPerPage);
@@ -94,6 +96,15 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const handleDeleteProblem = (id: string) => {
     // Delete problem
     console.log("Deleting problem with ID:", id);
+  };
+
+  const handleSolveProblem = (id: string) => {
+    if (!authUser) {
+      console.log("You must be logged in to solve a problem");
+      toast.error("You must be logged in to solve a problem");
+      return;
+    }
+    navigate({ to: "/problems/problem/$id", params: { id } });
   };
 
   const handleTogglePlayList = (id: string, isInPlayList: boolean) => {
@@ -380,17 +391,13 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link
-                              to="/problems/problem/$id"
-                              params={{ id: problem.id }}
+                            <Button
+                              size="sm"
+                              onClick={() => handleSolveProblem(problem.id)}
+                              className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
                             >
-                              <Button
-                                size="sm"
-                                className="p-2.5 h-auto bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 hover:text-purple-300 border border-purple-500/40 hover:border-purple-500/60 rounded-lg transition-all duration-200 hover:scale-110"
-                              >
-                                <PlayCircle className="w-4 h-4" />
-                              </Button>
-                            </Link>
+                              <PlayCircle className="w-4 h-4" />
+                            </Button>
                           </TooltipTrigger>
                           <TooltipContent side="bottom">
                             <p>Solve Problem</p>
