@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import {
   Clock,
   Code,
@@ -79,6 +79,17 @@ const SolveProblemPage = () => {
   const [activeTab, setActiveTab] = useState<string>("testcase");
   const submission = useExecuteStore((state) => state.submission);
 
+  // Add this after your existing state declarations
+  const memoizedSubmissions = useMemo(() => {
+    return submissionsForProblemByUser;
+  }, [submissionsForProblemByUser]);
+
+  const shouldFetchSubmissions = useMemo(() => {
+    return (
+      !submissionsForProblemByUser || submissionsForProblemByUser.length === 0
+    );
+  }, [submissionsForProblemByUser]);
+
   useEffect(() => {
     getProblemById(id);
     getSubmissionsCountForProblem(id);
@@ -103,12 +114,6 @@ const SolveProblemPage = () => {
       console.log("No submission data received.");
     }
   }, [submission]);
-
-  useEffect(() => {
-    if (submission && !isExecuting) {
-      setActiveTab("result");
-    }
-  }, [submission, isExecuting]);
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
@@ -143,9 +148,21 @@ const SolveProblemPage = () => {
     }
   };
 
-  const handleGetSubmission = (id: string) => {
-    getSubmissionsForProblemByUser(id);
-  };
+  const handleGetSubmission = useCallback(
+    (id: string) => {
+      getSubmissionsForProblemByUser(id);
+    },
+    [getSubmissionsForProblemByUser],
+  );
+
+  useEffect(() => {
+    if (submission && !isExecuting) {
+      setActiveTab("result");
+      if (submission.status === "ACCEPTED") {
+        handleGetSubmission(problem?.id || "");
+      }
+    }
+  }, [submission, isExecuting, problem?.id, handleGetSubmission]);
 
   const prepareSubmissionForResult = () => {
     if (!submission?.testCases) return null;
@@ -184,7 +201,7 @@ const SolveProblemPage = () => {
         return (
           <Badge className="bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30 px-2 py-1 text-xs font-semibold rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer">
             <div className="flex items-center gap-1.5">
-              <TrendingUp className="w-3 h-3" />; HARD
+              <TrendingUp className="w-3 h-3" /> HARD
             </div>
           </Badge>
         );
@@ -294,7 +311,11 @@ const SolveProblemPage = () => {
                   </TabsTrigger>
                   <TabsTrigger
                     value="submissions"
-                    onClick={() => handleGetSubmission(problem?.id || "")}
+                    onClick={() => {
+                      if (shouldFetchSubmissions) {
+                        handleGetSubmission(problem?.id || "");
+                      }
+                    }}
                     className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
                   >
                     <CheckCircle className="w-4 h-4" />
@@ -426,7 +447,7 @@ const SolveProblemPage = () => {
               <TabsContent value="submissions" className="flex-1 mt-0">
                 <div className="h-[calc(100vh-220px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                   <Submissions
-                    submissions={submissionsForProblemByUser}
+                    submissions={memoizedSubmissions}
                     isLoading={isSubmissonsLoading}
                   />
                 </div>
