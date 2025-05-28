@@ -25,7 +25,7 @@ export interface ISubmissionResultProps {
   updatedAt: Date;
 }
 
-const SubmissionResult = ({
+const TestCaseResults = ({
   testResults,
 }: {
   testResults: ISubmissionResultProps[] | null;
@@ -98,4 +98,4 @@ const SubmissionResult = ({
   );
 };
 
-export default SubmissionResult;
+export default TestCaseResults;

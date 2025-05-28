@@ -23,6 +23,8 @@ export interface IProblem {
   };
   solvedBy: string[];
   userId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ITestCase {

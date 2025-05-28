@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Clock,
   Code,
-  User2,
   Play,
   BookOpen,
   Trophy,
@@ -19,6 +18,8 @@ import {
   TrendingUp,
   Files,
   ArrowLeftCircle,
+  Users,
+  CheckCircle,
 } from "lucide-react";
 
 import {
@@ -44,10 +45,12 @@ import { useAuthStore } from "@/stores/authStore";
 import { useExecuteStore } from "@/stores/executeStore";
 import { Route } from "@/routes/problems/problem.$id.lazy";
 import { getLanguageId } from "@/lib/utils/language";
-import SubmissionResult from "@/components/SubmissionResult/SubmissionResult";
-import { type ISubmissionResultProps } from "@/components/SubmissionResult/SubmissionResult";
+import TestCaseResults, {
+  type ISubmissionResultProps,
+} from "@/components/TestCaseResults/TestCaseResults";
 import { Link } from "@tanstack/react-router";
-// import Submissions from "@/components/Submissions/Submissions";
+import { useSubmissionStore } from "@/stores/submissionStore";
+import Submissions from "@/components/Submissions/Submissions";
 
 const SolveProblemPage = () => {
   const authUser = useAuthStore((state) => state.user);
@@ -59,16 +62,37 @@ const SolveProblemPage = () => {
   const getProblemById = useProblemStore((state) => state.getProblemById);
   const isExecuting = useExecuteStore((state) => state.isExecuting);
   const executeProblem = useExecuteStore((state) => state.executeCode);
+  const isSubmissonsLoading = useSubmissionStore((state) => state.isLoading);
+  const submissionsByUser = useSubmissionStore(
+    (state) => state.submissionsByUser,
+  );
+  const submissionsForProblemByUser = useSubmissionStore(
+    (state) => state.submissionsForProblemByUser,
+  );
+  const submissionsCountForProblem = useSubmissionStore(
+    (state) => state.submissionsCountForProblem,
+  );
+  const getSubmissionsByUser = useSubmissionStore(
+    (state) => state.getSubmissionsByUser,
+  );
+  const getSubmissionsForProblemByUser = useSubmissionStore(
+    (state) => state.getSubmissionsForProblemByUser,
+  );
+  const getSubmissionsCountForProblem = useSubmissionStore(
+    (state) => state.getSubmissionsCountForProblem,
+  );
   const [code, setCode] = useState("");
   const [selectedLanguage, setSelectedLanguage] =
     useState<string>("javascript");
   const [testCases, setTestCases] = useState<ITestCase[]>([]);
+  const [selectedTestCase, setSelectedTestCase] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submission = useExecuteStore((state) => state.submission);
 
   useEffect(() => {
     getProblemById(id);
-  }, [getProblemById, id]);
+    getSubmissionsCountForProblem(id);
+  }, [getProblemById, getSubmissionsCountForProblem, id]);
 
   useEffect(() => {
     if (problem) {
@@ -119,6 +143,10 @@ const SolveProblemPage = () => {
 
   const handleSubmitCode = () => {
     console.log("Submitting code:", code);
+  };
+
+  const handleGetSubmission = (id: string) => {
+    getSubmissionsForProblemByUser(id);
   };
 
   const prepareSubmissionForResult = () => {
@@ -194,12 +222,15 @@ const SolveProblemPage = () => {
                 </h1>
                 <div className="flex items-center gap-3 text-sm text-slate-400">
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Updated 2h ago
+                    <Clock className="w-3 h-3 mr-1" />
+                    Updated{" "}
+                    {problem?.updatedAt
+                      ? new Date(problem.updatedAt).toDateString()
+                      : ""}
                   </span>
                   <span className="flex items-center gap-1">
-                    <User2 className="w-3 h-3" />
-                    {authUser?.userName}
+                    <Users className="w-3 h-3 mr-1" />
+                    {submissionsCountForProblem} submissions
                   </span>
                   {getDifficultyBadge(problem?.difficulty || "")}
                 </div>
@@ -232,10 +263,10 @@ const SolveProblemPage = () => {
               onClick={handleRunCode}
               disabled={isExecuting}
               variant="outline"
-              className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white"
+              className="border-green-700 bg-green-700 text-slate-200 hover:bg-green-600 hover:text-white"
             >
-              <Play className="w-4 h-4 mr-2" />
-              {isExecuting ? "Executing..." : "Execute Code"}
+              <Play className="w-4 h-4 mr-1" />
+              {isExecuting ? "Executing..." : "Execute"}
             </Button>
 
             <Button
@@ -243,7 +274,7 @@ const SolveProblemPage = () => {
               disabled={isSubmitting}
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white border-0"
             >
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-4 h-4 mr-1" />
               {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </div>
@@ -257,7 +288,7 @@ const SolveProblemPage = () => {
           <Card className="flex-1 bg-slate-900/80 border-slate-700 flex flex-col">
             <Tabs defaultValue="description" className="flex-1 flex flex-col">
               <CardHeader className="pb-3">
-                <TabsList className="grid w-full grid-cols-3 bg-slate-800 border-slate-700">
+                <TabsList className="grid w-full grid-cols-4 bg-slate-800 border-slate-700">
                   <TabsTrigger
                     value="description"
                     className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
@@ -273,6 +304,14 @@ const SolveProblemPage = () => {
                     Editorial
                   </TabsTrigger>
                   <TabsTrigger
+                    value="submissions"
+                    onClick={() => handleGetSubmission(problem?.id || "")}
+                    className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    Submissions
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="solutions"
                     className="gap-2 text-slate-400 data-[state=active]:text-white data-[state=active]:bg-purple-600"
                   >
@@ -282,6 +321,7 @@ const SolveProblemPage = () => {
                 </TabsList>
               </CardHeader>
 
+              {/* Problem Description */}
               <TabsContent value="description" className="flex-1 mt-0">
                 {/* This div controls the scrollable area for description */}
                 <div className="h-[calc(100vh-220px)] px-6 pb-6 overflow-y-auto no-scrollbar">
@@ -382,6 +422,7 @@ const SolveProblemPage = () => {
                 </div>
               </TabsContent>
 
+              {/* Editorials */}
               <TabsContent value="editorial" className="flex-1 mt-0">
                 <div className="flex flex-col items-center justify-center h-full text-slate-400">
                   <Files className="w-12 h-12 mb-4 opacity-50" />
@@ -392,6 +433,24 @@ const SolveProblemPage = () => {
                 </div>
               </TabsContent>
 
+              {/* Submissions */}
+              <TabsContent value="submissions" className="flex-1 mt-0">
+                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                  {submissionsForProblemByUser.length === 0 ? (
+                    <>
+                      <CheckCircle className="w-12 h-12 mb-4 opacity-50" />
+                      <p className="font-medium">Your Submissions</p>
+                      <p className="text-sm">View your previous submissions</p>
+                    </>
+                  ) : (
+                    <>
+                      <Submissions submissions={submissionsForProblemByUser} />
+                    </>
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* Solutions */}
               <TabsContent value="solutions" className="flex-1 mt-0">
                 <div className="flex flex-col items-center justify-center h-full text-slate-400">
                   <Trophy className="w-12 h-12 mb-4 opacity-50" />
@@ -449,7 +508,7 @@ const SolveProblemPage = () => {
                   <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-2">
-                        {/* {problem?.testCases.map((_, index) => (
+                        {problem?.testCases.map((_, index) => (
                           <Button
                             key={index}
                             variant={
@@ -465,7 +524,7 @@ const SolveProblemPage = () => {
                           >
                             Case {index + 1}
                           </Button>
-                        ))} */}
+                        ))}
                       </div>
 
                       <div className="space-y-4">
@@ -475,11 +534,11 @@ const SolveProblemPage = () => {
                           </label>
                           <Card className="p-3 bg-slate-800 border-slate-700">
                             <code className="text-sm whitespace-pre-wrap font-mono text-purple-400">
-                              {/* {
-                                problem.testCases[
+                              {
+                                problem?.testCases[
                                   selectedTestCase
                                 ]?.input.split("\n")[0]
-                              } */}
+                              }
                             </code>
                           </Card>
                         </div>
@@ -489,11 +548,7 @@ const SolveProblemPage = () => {
                           </label>
                           <Card className="p-3 bg-slate-800 border-slate-700">
                             <code className="text-sm whitespace-pre-wrap font-mono text-cyan-400">
-                              {/* {
-                                problem.testCases[
-                                  selectedTestCase
-                                ]?.input.split("\n")[1]
-                              } */}
+                              {problem?.testCases[selectedTestCase]?.output}
                             </code>
                           </Card>
                         </div>
@@ -504,9 +559,7 @@ const SolveProblemPage = () => {
 
                 <TabsContent value="result" className="flex-1 mt-0">
                   {/* This div controls the scrollable area for results */}
-                  <SubmissionResult
-                    testResults={prepareSubmissionForResult()}
-                  />
+                  <TestCaseResults testResults={prepareSubmissionForResult()} />
                 </TabsContent>
 
                 <TabsContent value="submissions" className="flex-1 mt-0">

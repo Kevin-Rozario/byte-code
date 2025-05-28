@@ -1,23 +1,8 @@
-import { type IExecuteOutput } from "@/stores/executeStore";
+import { type ISubmission } from "@/stores/submissionStore";
 import { Award, CheckCircle2, XCircle } from "lucide-react";
 import { Card } from "../ui/card";
-const Submissions = ({ submissions }: { submissions: IExecuteOutput[] }) => {
-  const formatTimeAgo = (date: Date) => {
-    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (seconds < 60) {
-      return `${seconds} seconds ago`;
-    } else if (seconds < 3600) {
-      const minutes = Math.floor(seconds / 60);
-      return `${minutes} minutes ago`;
-    } else if (seconds < 86400) {
-      const hours = Math.floor(seconds / 3600);
-      return `${hours} hours ago`;
-    } else {
-      const days = Math.floor(seconds / 86400);
-      return `${days} days ago`;
-    }
-  };
 
+const Submissions = ({ submissions }: { submissions: ISubmission[] }) => {
   return (
     <div className="h-[calc(50vh-280px)] px-6 pb-6 overflow-y-auto no-scrollbar">
       <div className="space-y-4">
