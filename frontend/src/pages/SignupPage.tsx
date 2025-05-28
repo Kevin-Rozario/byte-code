@@ -28,12 +28,13 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 type FormFields = z.infer<typeof signupSchema>;
 
 const SignUpPage = () => {
   const signUp = useAuthStore((state) => state.signup);
+  const isSigningUp = useAuthStore((state) => state.isSigningUp);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const SignUpPage = () => {
       await signUp(finalData);
       form.reset();
       navigate({ to: "/auth/sign-in" });
-      toast.success("Account created and signed in successfully!");
+      toast.success("Account created successfully!");
     } catch (error: any) {
       toast.error(error?.message || "Failed to sign up.");
     }
@@ -142,6 +143,7 @@ const SignUpPage = () => {
                           <div className="relative group">
                             <Input
                               placeholder="johndoe"
+                              disabled={isSigningUp}
                               {...field}
                               className={`w-full px-4 py-2.5 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                                 fieldState.error
@@ -176,6 +178,7 @@ const SignUpPage = () => {
                           <div className="relative group">
                             <Input
                               placeholder="John Doe"
+                              disabled={isSigningUp}
                               {...field}
                               className={`w-full px-4 py-2.5 bg-slate-800/70 border rounded-xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                                 fieldState.error
@@ -212,6 +215,7 @@ const SignUpPage = () => {
                         <div className="relative group">
                           <Input
                             type="email"
+                            disabled={isSigningUp}
                             placeholder="johndoe@example.com"
                             {...field}
                             className={`w-full px-5 py-2.5 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
@@ -248,6 +252,7 @@ const SignUpPage = () => {
                         <div className="relative group">
                           <Input
                             type={showPassword ? "text" : "password"}
+                            disabled={isSigningUp}
                             placeholder="Enter your password"
                             {...field}
                             className={`w-full px-5 py-2.5 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
@@ -298,6 +303,7 @@ const SignUpPage = () => {
                         <div className="relative group">
                           <Input
                             type={showConfirmPassword ? "text" : "password"}
+                            disabled={isSigningUp}
                             placeholder="Confirm your password"
                             {...field}
                             className={`w-full px-5 py-2.5 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
@@ -336,12 +342,12 @@ const SignUpPage = () => {
 
                 <Button
                   type="submit"
-                  disabled={form.formState.isSubmitting}
+                  disabled={isSigningUp}
                   className="w-full relative py-3 px-6 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 hover:from-purple-500 hover:via-blue-500 hover:to-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden mt-6" // Reduced mt-8 to mt-6
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   <div className="relative flex items-center justify-center gap-2">
-                    {form.formState.isSubmitting ? (
+                    {isSigningUp ? (
                       <>
                         <Loader2 className="h-5 w-5 animate-spin" />
                         <span>Creating Account...</span>

@@ -26,12 +26,13 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 type FormFields = z.infer<typeof signinSchema>;
 
 const SignInPage = () => {
   const signIn = useAuthStore((state) => state.signin);
+  const isSigningIn = useAuthStore((state) => state.isSigningIn);
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -111,6 +112,7 @@ const SignInPage = () => {
                       <FormControl>
                         <Input
                           type="email"
+                          disabled={isSigningIn}
                           placeholder="johndoe@example.com"
                           className={`w-full px-5 py-4 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                             form.formState.errors.identifier
@@ -138,6 +140,7 @@ const SignInPage = () => {
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
+                            disabled={isSigningIn}
                             placeholder="Enter your password"
                             className={`w-full px-5 py-4 pr-14 bg-slate-800/70 border rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 transition-all duration-300 ${
                               form.formState.errors.password
@@ -178,7 +181,7 @@ const SignInPage = () => {
 
                 <Button
                   type="submit"
-                  disabled={form.formState.isSubmitting}
+                  disabled={isSigningIn}
                   className="w-full relative py-4 px-6 bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-600 hover:from-purple-500 hover:via-blue-500 hover:to-cyan-500 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none group overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

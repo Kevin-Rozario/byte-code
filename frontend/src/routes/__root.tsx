@@ -1,10 +1,12 @@
 import { createRootRoute, Outlet, Link } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { Toaster } from "react-hot-toast";
 
 export const Route = createRootRoute({
   component: () => (
     <>
       <Outlet />
+      <Toaster />
       <TanStackRouterDevtools initialIsOpen={false} position="bottom-right" />
     </>
   ),

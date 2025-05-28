@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import axios, { AxiosError } from "axios";
-import { toast } from "sonner";
 import axiosInstance from "@/lib/config/axios";
+import toast from "react-hot-toast";
 
 interface IUser {
   id: string;
@@ -52,34 +52,33 @@ const useAuthStore = create<IUserState>()(
         set({ isSigningIn: true, isLoadingAuth: true });
         try {
           const response = await axiosInstance.post("/api/v1/auth/login", data);
-          if (response.status === 200 && response.data) {
+
+          if (response.status === 200 && response.data.data) {
             set({ isAuthenticated: true, user: response.data.data });
             toast.success("Signed in successfully!");
+          } else {
+            set({ isAuthenticated: false, user: null });
+            toast.error(
+              response.data.message ||
+                "Unable to sign in. Please check your credentials!",
+            );
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
-          if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response && axiosError.response.data) {
-              toast.error(
-                (axiosError.response.data as any).message ||
-                  "Unable to sign in. Please check your credentials!",
-              );
-            } else if (axiosError.request) {
-              toast.error(
-                "No response from server. Please check your internet connection.",
-              );
-            } else {
-              toast.error("An unexpected error occurred during sign-in.");
-            }
+          if (axios.isAxiosError(error) && error.response) {
+            toast.error(
+              error.response.data.message ||
+                "An error occurred during sign in.",
+            );
           } else {
-            toast.error("An unknown error occurred.");
+            toast.error(
+              "Failed to sign in. Please check your network connection.",
+            );
           }
         } finally {
           set({ isSigningIn: false, isLoadingAuth: false });
         }
       },
-
       signup: async (data: ISignup) => {
         set({ isSigningUp: true, isLoadingAuth: true });
         try {
@@ -87,14 +86,19 @@ const useAuthStore = create<IUserState>()(
             "/api/v1/auth/register",
             data,
           );
-          if (response.status === 200 && response.data) {
+          if (response.status === 200 && response.data.data) {
             set({ isAuthenticated: true, user: response.data.data });
-            toast.success("Account created and signed in successfully!");
+            toast.success("Account created successfully!");
+          } else {
+            set({ isAuthenticated: false, user: null });
+            toast.error(
+              "Account created but unable to sign in automatically. Please try signing in.",
+            );
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
           if (axios.isAxiosError(error)) {
-            const axiosError = error as AxiosError;
+            const axiosError = error;
             if (axiosError.response && axiosError.response.data) {
               toast.error(
                 (axiosError.response.data as any).message ||

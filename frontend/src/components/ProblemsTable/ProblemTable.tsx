@@ -46,6 +46,7 @@ import {
 import { Link } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 import { type IProblem } from "@/stores/problemStore";
+import toast from "react-hot-toast";
 
 const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const authUser = useAuthStore((state) => state.user);
@@ -98,6 +99,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const handleTogglePlayList = (id: string, isInPlayList: boolean) => {
     if (!authUser) {
       console.log("You must be logged in to add to play list");
+      toast.error("You must be logged in to add to play list");
       return;
     }
 
