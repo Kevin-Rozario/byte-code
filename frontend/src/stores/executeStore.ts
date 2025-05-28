@@ -51,7 +51,7 @@ interface IExecuteStore {
   executeCode: (input: IExecuteInput) => Promise<void>;
 }
 
-export const useExecuteStore = create<IExecuteStore>((set) => ({
+export const useExecuteStore = create<IExecuteStore>()((set) => ({
   isExecuting: false,
   submission: null,
   error: null,

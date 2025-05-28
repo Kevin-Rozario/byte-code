@@ -45,11 +45,15 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
+import { useActionStore } from "@/stores/actionStore";
 import { type IProblem } from "@/stores/problemStore";
 import toast from "react-hot-toast";
 
 const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authUser = useAuthStore((state) => state.user);
+  const isDeletingState = useActionStore((state) => state.isDeletingProblem);
+  const onDeleteProblem = useActionStore((state) => state.onDeleteProblem);
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState("All Tags");
   const [difficulty, setDifficulty] = useState("All Difficulties");
@@ -94,8 +98,13 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   }, [filteredProblems, currentPage]);
 
   const handleDeleteProblem = (id: string) => {
-    // Delete problem
-    console.log("Deleting problem with ID:", id);
+    if (!isAuthenticated || authUser?.role !== "ADMIN") {
+      toast.error("You must be logged in as admin to delete a problem");
+      return;
+    }
+    if (confirm("Are you sure you want to delete this problem?")) {
+      onDeleteProblem(id);
+    }
   };
 
   const handleSolveProblem = (id: string) => {
@@ -373,6 +382,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                             <TooltipTrigger asChild>
                               <Button
                                 onClick={() => handleDeleteProblem(problem.id)}
+                                disabled={isDeletingState}
                                 size="sm"
                                 className="p-2.5 h-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-red-500/40 hover:border-red-500/60 rounded-lg transition-all duration-200 hover:scale-110"
                               >

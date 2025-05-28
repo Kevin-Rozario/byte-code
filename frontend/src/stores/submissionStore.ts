@@ -29,7 +29,7 @@ interface ISubmissionStore {
   getSubmissionsCountForProblem: (problemId: string) => Promise<void>;
 }
 
-export const useSubmissionStore = create<ISubmissionStore>((set) => ({
+export const useSubmissionStore = create<ISubmissionStore>()((set) => ({
   isLoading: false,
   submissionsByUser: [],
   submissionsForProblemByUser: [],
