@@ -59,8 +59,9 @@ export const useSubmissionStore = create<ISubmissionStore>((set) => ({
     try {
       set({ isLoading: true });
       const response = await axiosInstance.get(
-        `/api/v1/submissions/get-problem/${problemId}`,
+        `/api/v1/submissions/get-submission/${problemId}`,
       );
+      console.log("response", response.data.data);
       if (response.status === 200 && response.data) {
         set({ submissionsForProblemByUser: response.data.data });
         toast.success("Submission fetched successfully.");

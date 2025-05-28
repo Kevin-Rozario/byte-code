@@ -1,6 +1,13 @@
 import { type ISubmission } from "@/stores/submissionStore";
-import { Award, CheckCircle, XCircle } from "lucide-react";
-import { Card } from "../ui/card";
+import {
+  Award,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Zap,
+  HardDrive,
+} from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 const Submissions = ({
   submissions,
@@ -10,140 +17,134 @@ const Submissions = ({
   isLoading: boolean;
 }) => {
   const safeParse = (data: string): string[] | null => {
-    if (typeof data !== "string") {
-      return null;
-    }
+    if (typeof data !== "string") return null;
     try {
       const parsedData = JSON.parse(data);
-      if (
-        Array.isArray(parsedData) &&
+      return Array.isArray(parsedData) &&
         parsedData.every((item) => typeof item === "string")
-      ) {
-        return parsedData;
-      } else {
-        return [];
-      }
-    } catch (error) {
+        ? parsedData
+        : [];
+    } catch {
       return [];
     }
   };
 
-  const calculateAverageMemory = (data: string[] | null): number => {
-    if (!data || data.length === 0) {
-      return 0;
-    }
+  const calculateAverage = (data: string[] | null): number => {
+    if (!data?.length) return 0;
 
-    const numericValues: number[] = [];
-    for (const item of data) {
-      const parts = item.split(" ");
-      if (parts.length > 0) {
-        const value = parseFloat(parts[0]);
-        if (!isNaN(value)) {
-          numericValues.push(value);
-        }
-      }
-    }
+    const values = data
+      .map((item) => parseFloat(item.split(" ")[0]))
+      .filter((val) => !isNaN(val));
 
-    if (numericValues.length === 0) {
-      return 0;
-    }
-
-    const sum = numericValues.reduce((a, b) => a + b, 0);
-    return sum / numericValues.length;
-  };
-
-  const calculateAverageTime = (jsonString: string): number => {
-    const parsedData = safeParse(jsonString);
-
-    if (!parsedData || parsedData.length === 0) {
-      return 0;
-    }
-
-    return calculateAverageMemory(parsedData);
+    return values.length
+      ? values.reduce((a, b) => a + b, 0) / values.length
+      : 0;
   };
 
   const formatTimeAgo = (timestamp: string): string => {
-    const now = new Date();
-    const submissionDate = new Date(timestamp);
-    const timeDiff = now.getTime() - submissionDate.getTime();
-    const minutesAgo = Math.floor(timeDiff / (1000 * 60));
-    return `${minutesAgo} minutes ago`;
+    const minutes = Math.floor(
+      (Date.now() - new Date(timestamp).getTime()) / 60000,
+    );
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
   };
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-32 text-slate-400">
-        <Award className="w-8 h-8 mb-2 opacity-50" />
-        <p className="text-sm">Loading...</p>
+      <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-500 border-t-transparent mb-3"></div>
+        <p className="text-sm font-medium">Loading submissions...</p>
+      </div>
+    );
+  }
+
+  if (submissions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+        <Award className="w-12 h-12 mb-3 opacity-40" />
+        <p className="font-medium text-slate-300">No submissions yet</p>
+        <p className="text-sm text-slate-500 mt-1">
+          Your submissions will appear here
+        </p>
       </div>
     );
   }
 
   return (
-    <>
-      {submissions.length === 0 ? (
-        <>
-          <CheckCircle className="w-12 h-12 mb-4 opacity-50" />
-          <p className="font-medium">No submissions yet.</p>
-        </>
-      ) : (
-        submissions.map((submission) => {
-          const avgMemory = calculateAverageMemory(
-            safeParse(submission.memory || ""),
-          );
-          const avgTime = calculateAverageTime(submission.time || "");
-          return (
-            <Card
-              key={submission.id}
-              className="p-4 bg-slate-800 border-slate-700"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  {submission.status === "Accepted" ? (
-                    <CheckCircle className="w-4 h-4 text-emerald-400 drop-shadow-lg mr-2 ml-2" />
-                  ) : (
-                    <XCircle className="w-4 h-4 text-red-400 drop-shadow-lg mr-2 ml-2" />
-                  )}
+    <div className="space-y-3 w-full">
+      {submissions.map((submission) => {
+        const avgMemory = calculateAverage(safeParse(submission.memory || ""));
+        const avgTime = calculateAverage(safeParse(submission.time || ""));
+        const isAccepted = submission.status === "ACCEPTED";
+
+        return (
+          <Card
+            key={submission.id}
+            className={`p-4 border transition-all duration-200 hover:shadow-lg ${
+              isAccepted
+                ? "bg-emerald-950/20 border-emerald-800/30 hover:border-emerald-700/50"
+                : "bg-red-950/20 border-red-800/30 hover:border-red-700/50"
+            }`}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                {isAccepted ? (
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-red-400" />
+                )}
+                <div>
                   <span
-                    className={
-                      submission.status === "Accepted"
-                        ? "text-emerald-400"
-                        : "text-red-400"
-                    }
+                    className={`font-semibold ${
+                      isAccepted ? "text-emerald-400" : "text-red-400"
+                    }`}
                   >
                     {submission.status}
                   </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-slate-400 bg-slate-800 px-2 py-1 rounded">
+                      {submission.language.toUpperCase()}
+                    </span>
+                  </div>
                 </div>
-                <span className="text-sm text-slate-400">
+              </div>
+              <div className="text-right">
+                <div className="flex items-center gap-1 text-slate-400 text-sm">
+                  <Clock className="w-3 h-3" />
                   {formatTimeAgo(submission.updatedAt)}
-                </span>
+                </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 text-sm">
+            </div>
+
+            {/* Metrics */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex items-center gap-2 p-2 bg-slate-800/50 rounded-lg">
+                <Zap className="w-4 h-4 text-purple-400" />
                 <div>
-                  <span className="text-slate-400">Language:</span>
-                  <p className="font-medium text-slate-200">
-                    {submission.language.charAt(0).toUpperCase() +
-                      submission.language.slice(1)}
-                  </p>
-                </div>
-                <div>
-                  <span className="text-slate-400">Runtime:</span>
-                  <p className="font-medium text-purple-400">
-                    {avgTime} seconds
-                  </p>
-                </div>
-                <div>
-                  <span className="text-slate-400">Memory:</span>
-                  <p className="font-medium text-cyan-400">
-                    {avgMemory} kilobytes
+                  <p className="text-xs text-slate-400">Runtime</p>
+                  <p className="font-mono text-sm text-purple-400">
+                    {avgTime > 0 ? `${avgTime.toFixed(3)}s` : "N/A"}
                   </p>
                 </div>
               </div>
-            </Card>
-          );
-        })
-      )}
-    </>
+
+              <div className="flex items-center gap-2 p-2 bg-slate-800/50 rounded-lg">
+                <HardDrive className="w-4 h-4 text-cyan-400" />
+                <div>
+                  <p className="text-xs text-slate-400">Memory</p>
+                  <p className="font-mono text-sm text-cyan-400">
+                    {avgMemory > 0 ? `${avgMemory.toFixed(1)} KB` : "N/A"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        );
+      })}
+    </div>
   );
 };
 

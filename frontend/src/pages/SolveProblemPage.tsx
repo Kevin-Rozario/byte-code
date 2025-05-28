@@ -6,14 +6,9 @@ import {
   BookOpen,
   Trophy,
   TestTube,
-  // CheckCircle2,
-  // XCircle,
-  Send,
   Lightbulb,
   Target,
   Info,
-  History,
-  // Award,
   Zap,
   TrendingUp,
   Files,
@@ -64,17 +59,11 @@ const SolveProblemPage = () => {
   const isExecuting = useExecuteStore((state) => state.isExecuting);
   const executeProblem = useExecuteStore((state) => state.executeCode);
   const isSubmissonsLoading = useSubmissionStore((state) => state.isLoading);
-  const submissionsByUser = useSubmissionStore(
-    (state) => state.submissionsByUser,
-  );
   const submissionsForProblemByUser = useSubmissionStore(
     (state) => state.submissionsForProblemByUser,
   );
   const submissionsCountForProblem = useSubmissionStore(
     (state) => state.submissionsCountForProblem,
-  );
-  const getSubmissionsByUser = useSubmissionStore(
-    (state) => state.getSubmissionsByUser,
   );
   const getSubmissionsForProblemByUser = useSubmissionStore(
     (state) => state.getSubmissionsForProblemByUser,
@@ -87,6 +76,7 @@ const SolveProblemPage = () => {
     useState<string>("javascript");
   const [testCases, setTestCases] = useState<ITestCase[]>([]);
   const [selectedTestCase, setSelectedTestCase] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<string>("testcase");
   const submission = useExecuteStore((state) => state.submission);
 
   useEffect(() => {
@@ -113,6 +103,12 @@ const SolveProblemPage = () => {
       console.log("No submission data received.");
     }
   }, [submission]);
+
+  useEffect(() => {
+    if (submission && !isExecuting) {
+      setActiveTab("result");
+    }
+  }, [submission, isExecuting]);
 
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
@@ -428,7 +424,7 @@ const SolveProblemPage = () => {
 
               {/* Submissions */}
               <TabsContent value="submissions" className="flex-1 mt-0">
-                <div className="flex flex-col items-center justify-center h-full text-slate-400">
+                <div className="h-[calc(100vh-220px)] px-6 pb-6 overflow-y-auto no-scrollbar">
                   <Submissions
                     submissions={submissionsForProblemByUser}
                     isLoading={isSubmissonsLoading}
@@ -462,7 +458,11 @@ const SolveProblemPage = () => {
 
             {/* Test Cases & Results */}
             <Card className="flex-1 bg-slate-900/80 border-slate-700 flex flex-col">
-              <Tabs defaultValue="testcase" className="flex-1 flex flex-col">
+              <Tabs
+                defaultValue={activeTab}
+                onValueChange={setActiveTab}
+                className="flex-1 flex flex-col"
+              >
                 <CardHeader className="pb-3">
                   <TabsList className="grid w-full grid-cols-2 bg-slate-800 border-slate-700">
                     <TabsTrigger
