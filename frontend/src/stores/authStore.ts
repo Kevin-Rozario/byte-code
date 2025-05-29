@@ -14,6 +14,11 @@ interface IUser {
   updatedAt: string;
 }
 
+interface IUpdateProfile {
+  userName: string;
+  fullName: string;
+}
+
 interface IUserState {
   isAuthenticated: boolean;
   user: IUser | null;
@@ -24,7 +29,7 @@ interface IUserState {
   signin: (data: ISignin) => Promise<void>;
   signup: (data: ISignup) => Promise<void>;
   signout: () => Promise<void>;
-  getCurrentUser: () => Promise<void>;
+  updateProfile: ({ userName, fullName }: IUpdateProfile) => Promise<void>;
 }
 
 interface ISignin {
@@ -114,20 +119,19 @@ const useAuthStore = create<IUserState>()(
         }
       },
 
-      getCurrentUser: async () => {
-        set({ isLoadingAuth: true });
+      updateProfile: async ({ userName, fullName }: IUpdateProfile) => {
         try {
-          const response = await axiosInstance.get("/api/v1/auth/profile");
-          if (response.status === 200 && response.data) {
-            set({ isAuthenticated: true, user: response.data.data });
-          } else {
-            set({ isAuthenticated: false, user: null });
+          const response = await axiosInstance.patch("/api/v1/auth/profile", {
+            userName,
+            fullName,
+          });
+          if (response.status === 200 && response.data.data) {
+            set({ user: response.data.data });
+            toast.success("Profile updated successfully!");
           }
         } catch (error) {
-          set({ isAuthenticated: false, user: null });
-          console.error("Error getting current user:", error);
-        } finally {
-          set({ isLoadingAuth: false });
+          console.error("Error updating profile:", error);
+          toast.error(error.message || "Failed to update profile.");
         }
       },
     }),

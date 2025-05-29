@@ -30,6 +30,7 @@ const UserProfilePage = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authUser = useAuthStore((state) => state.user);
   const signout = useAuthStore((state) => state.signout);
+  const updateProfile = useAuthStore((state) => state.updateProfile);
   const solvedProblems = useProblemStore((state) => state.solvedProblems);
   const getSolvedProblems = useProblemStore((state) => state.getSolvedProblems);
   const createdProblemsByAdmin = useProblemStore(
@@ -47,6 +48,8 @@ const UserProfilePage = () => {
   );
   const [activeTab, setActiveTab] = useState("submissions");
   const [editing, setEditing] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [fullName, setFullName] = useState("");
   const navigate = useNavigate();
 
   // Mock data based on your database schema
@@ -222,8 +225,8 @@ const UserProfilePage = () => {
     getCreatedProblemsByAdmin,
   ]);
 
-  const handleEditDetails = () => {
-    console.log("Edit details");
+  const handleEditDetails = async () => {
+    await updateProfile({ userName, fullName });
     setEditing(false);
   };
 
@@ -444,35 +447,29 @@ const UserProfilePage = () => {
                 <Input
                   id="username"
                   disabled={!editing}
+                  onChange={(e) => setUserName(e.target.value)}
                   type="text"
                   className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
                   defaultValue={authUser?.userName}
                 />
               </div>
-
-              <div className="relative">
+            </div>
+            <div className="space-y-4">
+              <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="fullName"
                   className="block text-sm font-medium text-slate-400 mb-1"
                 >
-                  Email Address
+                  Fullname
                 </label>
                 <Input
-                  id="email"
+                  id="fullName"
                   disabled={!editing}
-                  type="email"
+                  onChange={(e) => setFullName(e.target.value)}
+                  type="text"
                   className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
-                  defaultValue={authUser?.email}
+                  defaultValue={authUser?.fullName}
                 />
-                {userData.isEmailVerified ? (
-                  <span className="text-green-400 text-sm font-medium absolute right-3 top-8">
-                    Verified
-                  </span>
-                ) : (
-                  <span className="text-red-400 text-sm font-medium absolute right-3 top-8">
-                    Unverified
-                  </span>
-                )}
               </div>
             </div>
 
@@ -490,6 +487,8 @@ const UserProfilePage = () => {
                 />
                 <Calendar className="w-4 h-4 text-slate-400 absolute right-3 top-8" />
               </div>
+            </div>
+            <div className="space-y-4">
               <div className="relative">
                 <label className="block text-sm font-medium text-slate-400 mb-1">
                   Last Login

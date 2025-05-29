@@ -443,7 +443,7 @@ export const getProfile = asyncHandler(async (req, res) => {
 
 export const updateProfile = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
-  const { fullName, userName, email } = req.body;
+  const { fullName, userName } = req.body;
 
   if (!userId) {
     throw new ApiError(401, "Unauthorised request.");
@@ -478,43 +478,6 @@ export const updateProfile = asyncHandler(async (req, res) => {
     }
   }
 
-  // Update email
-  if (email) {
-    const trimmedEmail = email.trim().toLowerCase();
-    if (trimmedEmail !== existingUser.email) {
-      const existingUserWithEmail = await db.user.findUnique({
-        where: { email: trimmedEmail },
-      });
-      if (existingUserWithEmail) {
-        throw new ApiError(409, "Email already exists!");
-      }
-
-      // Generate new verification token
-      const { token, tokenExpiry } = generateTemporaryToken();
-
-      updateData.email = trimmedEmail;
-      updateData.isEmailVerified = false;
-      updateData.emailVerificationToken = token;
-      updateData.emailVerificationTokenExpiry = tokenExpiry;
-
-      // Send verification email
-      const options = {
-        email: trimmedEmail,
-        subject: "ByteCode Verification Email",
-        mailGenContent: emailVerificationMailGenContent({
-          userName: existingUser.fullName,
-          verificationUrl: `${process.env.BACKEND_URL}/api/v1/auth/verify?tkey=${token}`,
-        }),
-      };
-
-      const emailStatus = await sendEmail(options);
-      if (!emailStatus) {
-        console.error("Failed to send verification email", emailStatus);
-        throw new ApiError(500, "Failed to send verification email.");
-      }
-    }
-  }
-
   const updatedUser = await db.user.update({
     where: { id: userId },
     data: updateData,
@@ -523,9 +486,10 @@ export const updateProfile = asyncHandler(async (req, res) => {
       fullName: true,
       userName: true,
       email: true,
-      dietPreferences: true,
-      allergies: true,
       isEmailVerified: true,
+      createdAt: true,
+      updatedAt: true,
+      role: true,
     },
   });
 
@@ -653,25 +617,4 @@ export const resetPassword = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(200, { message: "Password reset successfully!" }, null),
     );
-});
-
-export const checkUser = asyncHandler(async (req, res) => {
-  const userId = req.user?.id;
-  if (!userId) {
-    throw new ApiError(401, "Unauthorised request");
-  }
-
-  const user = await db.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      userName: true,
-      email: true,
-      fullName: true,
-    },
-  });
-  if (!user) {
-    throw new ApiError(404, "User not found!");
-  }
-  res.status(200).json(new ApiResponse(200, { message: "User found!" }, user));
 });
