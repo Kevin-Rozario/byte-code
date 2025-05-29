@@ -19,7 +19,6 @@ export interface CreatePlayListArgs {
 }
 
 export interface AddToPlayListArgs {
-  problemIds: string[];
   playlistId: string;
 }
 
@@ -73,7 +72,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
     try {
       set({ isPlayListLoading: true });
       const response = await axiosInstance.get("/api/v1/playlists/");
-
+      console.log("response", response.data.data);
       if (response.status === 200 && response.data.data) {
         set({ playLists: response.data.data });
         toast.success("PlayLists fetched successfully.");

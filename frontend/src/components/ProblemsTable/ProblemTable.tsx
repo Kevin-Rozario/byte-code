@@ -161,7 +161,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
 
   const handleAddToPlayList = async (data: AddToPlayListArgs) => {
     try {
-      await addProblemsToPlayList(data.playlistId, data.problemIds);
+      await addProblemsToPlayList(data.playlistId, playList);
       setPlayList([]);
       toast.success("Problems added to playlist successfully!");
     } catch (error) {
@@ -299,15 +299,15 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                 <PlusCircle className="w-4 h-4" />
                 Add to Playlist
               </Button>
-              <Button
-                onClick={() => setIsCreateModalOpen(true)}
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
-              >
-                <Plus className="w-4 h-4" />
-                Create Playlist
-              </Button>
             </>
           )}
+          <Button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
+          >
+            <Plus className="w-4 h-4" />
+            Create Playlist
+          </Button>
         </div>
 
         {/* Table */}
