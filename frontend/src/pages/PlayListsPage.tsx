@@ -17,15 +17,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
-
-// Mock toast for this example
-const toast = {
-  success: (message: string) => console.log("Success:", message),
-  error: (message: string) => console.log("Error:", message),
-};
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "@/stores/authStore";
+import toast from "react-hot-toast";
 
 const PlayListsPage: React.FC = () => {
+  // Authentication State
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  // Playlist Store State and Actions
   const {
     userPlayLists,
     currentPlayList,
@@ -37,9 +37,11 @@ const PlayListsPage: React.FC = () => {
     deletePlayList,
   } = usePlayListStore();
 
+  // Component Local State
   const [selectedPlaylistId, setSelectedPlaylistId] = useState<string | null>(
     null,
   );
+  const navigate = useNavigate();
 
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
@@ -48,16 +50,33 @@ const PlayListsPage: React.FC = () => {
     title: string;
   }>({ isOpen: false, type: "playlist", id: "", title: "" });
 
+  // Effects
   useEffect(() => {
-    getPlayListsByUserId();
-  }, [getPlayListsByUserId]);
+    if (isAuthenticated) {
+      getPlayListsByUserId();
+    } else {
+      toast.error("You must be logged in to view this page.");
+      navigate({ to: "/auth/sign-in" });
+    }
+  }, [isAuthenticated, getPlayListsByUserId, navigate]);
 
+  // Handlers
   const handlePlaylistSelect = async (playlistId: string) => {
-    setSelectedPlaylistId(playlistId);
-    await getPlayListById(playlistId);
+    if (isAuthenticated) {
+      setSelectedPlaylistId(playlistId);
+      await getPlayListById(playlistId);
+    } else {
+      toast.error("Please log in to view playlist details.");
+      navigate({ to: "/auth/sign-in" });
+    }
   };
 
   const handleDeletePlaylist = (playlistId: string, playlistName: string) => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to delete playlists.");
+      navigate({ to: "/auth/sign-in" });
+      return;
+    }
     setDeleteModal({
       isOpen: true,
       type: "playlist",
@@ -67,6 +86,11 @@ const PlayListsPage: React.FC = () => {
   };
 
   const handleDeleteProblem = (problemInPlaylist: any) => {
+    if (!isAuthenticated) {
+      toast.error("Please log in to delete problems.");
+      navigate({ to: "/auth/sign-in" });
+      return;
+    }
     setDeleteModal({
       isOpen: true,
       type: "problem",
@@ -76,6 +100,13 @@ const PlayListsPage: React.FC = () => {
   };
 
   const confirmDelete = async () => {
+    if (!isAuthenticated) {
+      toast.error("You must be logged in to perform this action.");
+      setDeleteModal({ isOpen: false, type: "playlist", id: "", title: "" });
+      navigate({ to: "/auth/sign-in" });
+      return;
+    }
+
     if (deleteModal.type === "playlist") {
       await deletePlayList(deleteModal.id);
       if (selectedPlaylistId === deleteModal.id) {
@@ -86,12 +117,13 @@ const PlayListsPage: React.FC = () => {
         await deleteProblemsFromPlayList(currentPlayList.id, [deleteModal.id]);
         toast.success("Problem removed from playlist");
       } else {
-        toast.error("No playlist selected.");
+        toast.error("No playlist selected to remove problem from.");
       }
     }
     setDeleteModal({ isOpen: false, type: "playlist", id: "", title: "" });
   };
 
+  // Helper Function
   const getDifficultyColor = (difficulty: string | undefined) => {
     if (!difficulty) {
       return "text-slate-400 bg-slate-400/10";
@@ -108,6 +140,27 @@ const PlayListsPage: React.FC = () => {
     }
   };
 
+  // Conditional Rendering: Authentication Check
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex flex-col items-center justify-center p-6 text-center">
+        <h1 className="text-3xl font-bold text-red-400 mb-4">Access Denied</h1>
+        <p className="text-slate-300 mb-6">
+          You must be logged in to view your playlists.
+        </p>
+        <Link to="/auth/sign-in">
+          <Button
+            size="lg"
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+          >
+            Go to Login
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  // Conditional Rendering: Loading Playlists
   if (isPlayListLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 flex items-center justify-center">
@@ -119,14 +172,20 @@ const PlayListsPage: React.FC = () => {
     );
   }
 
+  // Main Component Structure
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Link to="/" className="flex items-center gap-4 text-slate-400">
-            <ArrowLeftCircle className="w-10 h-10" />
-            <span className="">Back to Problems</span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 p-6 flex flex-col">
+      <div className="max-w-7xl mx-auto w-full flex flex-col flex-grow">
+        {/* Header Section */}
+        <div className="mb-8 flex-shrink-0">
+          {" "}
+          {/* flex-shrink-0 ensures header doesn't shrink */}
+          <Link
+            to="/"
+            className="flex items-center gap-4 text-slate-400 hover:text-slate-300 transition-colors"
+          >
+            <ArrowLeftCircle className="w-6 h-6" />
+            <span className="text-lg">Back to Problems</span>
           </Link>
           <div className="mt-4">
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
@@ -138,18 +197,22 @@ const PlayListsPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Playlists Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-6 max-h-screen overflow-y-auto no-scrollbar">
-              <div className="flex items-center justify-between mb-4">
+        {/* Main Content Grid Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow">
+          {/* Playlists Sidebar Section */}
+          <div className="lg:col-span-1 flex flex-col">
+            <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-6 flex-grow overflow-y-auto no-scrollbar">
+              <div className="flex items-center justify-between mb-4 flex-shrink-0">
+                {" "}
+                {/* flex-shrink-0 for heading */}
                 <h2 className="text-xl font-semibold text-slate-200">
                   Playlists
                 </h2>
               </div>
 
               {userPlayLists.length === 0 ? (
-                <div className="text-center py-8">
+                // Centered content when no playlists
+                <div className="flex flex-col items-center justify-center text-center flex-grow">
                   <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                   <p className="text-slate-400 mb-2">No playlists found</p>
                   <p className="text-sm text-slate-500">
@@ -179,7 +242,7 @@ const PlayListsPage: React.FC = () => {
                           <div className="flex items-center gap-4 font-mono text-xs text-purple-400">
                             <span className="flex items-center gap-1">
                               <BookOpen className="w-3 h-3" />
-                              {playlist.problems.length} problems
+                              {(playlist.problems ?? []).length} problems
                             </span>
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3" />
@@ -220,10 +283,11 @@ const PlayListsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Problems Content */}
-          <div className="lg:col-span-2">
+          {/* Problems Content Section */}
+          <div className="lg:col-span-2 flex flex-col">
             {!selectedPlaylistId ? (
-              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-8 text-center">
+              // Centered content when no playlist selected
+              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-8 text-center flex-grow flex flex-col justify-center items-center">
                 <Play className="w-10 h-10 text-slate-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-slate-200 mb-2">
                   Select a Playlist
@@ -233,8 +297,8 @@ const PlayListsPage: React.FC = () => {
                 </p>
               </div>
             ) : currentPlayList ? (
-              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-6">
-                <div className="mb-6">
+              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-6 flex-grow flex flex-col">
+                <div className="mb-6 flex-shrink-0">
                   <h2 className="text-2xl font-bold text-slate-200 mb-2">
                     {currentPlayList.name}
                   </h2>
@@ -245,7 +309,6 @@ const PlayListsPage: React.FC = () => {
                     <span className="flex items-center gap-1">
                       <BookOpen className="w-4 h-4" />
                       {(currentPlayList.problems ?? []).length} problems
-                      problems
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
@@ -256,7 +319,8 @@ const PlayListsPage: React.FC = () => {
                 </div>
 
                 {(currentPlayList.problems ?? []).length === 0 ? (
-                  <div className="text-center py-12">
+                  // Centered content when current playlist has no problems
+                  <div className="flex-grow flex flex-col justify-center items-center text-center py-12">
                     <BookOpen className="w-16 h-16 text-slate-600 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-slate-200 mb-2">
                       No Problems Yet
@@ -266,7 +330,7 @@ const PlayListsPage: React.FC = () => {
                     </p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-4 flex-grow overflow-y-auto no-scrollbar">
                     {currentPlayList.problems.map((problem, index) => (
                       <div
                         key={problem.problem.id}
@@ -319,7 +383,8 @@ const PlayListsPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-8 text-center">
+              // Centered content when loading playlist details
+              <div className="bg-slate-900/80 border border-slate-700 rounded-lg p-8 text-center flex-grow flex flex-col justify-center items-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-400 border-t-transparent mx-auto mb-4"></div>
                 <p className="text-slate-400">Loading playlist details...</p>
               </div>
@@ -328,7 +393,7 @@ const PlayListsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Confirmation Modal Section */}
       <DeleteConfirmModal
         isOpen={deleteModal.isOpen}
         onClose={() =>
