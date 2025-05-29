@@ -1,7 +1,18 @@
 import ProblemForm from "@/components/ProblemForm/ProblemForm";
+import { useAuthStore } from "@/stores/authStore";
+import { useNavigate } from "@tanstack/react-router";
 import { Code } from "lucide-react";
 
 const CreateProblemPage = () => {
+  const authUser = useAuthStore((state) => state.user);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const navigate = useNavigate();
+
+  if (!isAuthenticated || !authUser) {
+    navigate({ to: "/" });
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       {/* Header */}

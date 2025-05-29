@@ -304,6 +304,11 @@ const UserProfilePage = () => {
     });
   };
 
+  if (!isAuthenticated) {
+    navigate({ to: "/auth/sign-in" });
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
       {/* Header */}
