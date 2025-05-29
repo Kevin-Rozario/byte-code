@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/config/axios";
 import toast from "react-hot-toast";
 
 export interface IProblem {
+  problem: any;
   id: string;
   title: string;
   description: string;
