@@ -52,7 +52,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
         },
       );
 
-      if (response.status === 201 && response.data) {
+      if (response.status === 201 && response.data.data) {
         set((state) => ({
           playLists: [...state.playLists, response.data.data],
         }));

@@ -79,10 +79,10 @@ export const createPlaylist = asyncHandler(async (req, res) => {
   }
 
   res
-    .status(200)
+    .status(201)
     .json(
       new ApiResponse(
-        200,
+        201,
         { message: "Playlist created successfully!" },
         playList,
       ),

@@ -149,25 +149,12 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   };
 
   const handleCreatePlayList = async (data: CreatePlayListArgs) => {
-    try {
-      await createPlaylist(data);
-      setPlayList([]);
-      toast.success("Playlist created successfully!");
-    } catch (error) {
-      console.log("Error creating playlist: ", error);
-      toast.error("Failed to create playlist");
-    }
+    await createPlaylist(data);
   };
 
   const handleAddToPlayList = async (data: AddToPlayListArgs) => {
-    try {
-      await addProblemsToPlayList(data.playlistId, playList);
-      setPlayList([]);
-      toast.success("Problems added to playlist successfully!");
-    } catch (error) {
-      console.log("Error adding problems to playlist: ", error);
-      toast.error("Failed to add problems to playlist");
-    }
+    await addProblemsToPlayList(data.playlistId, playList);
+    setPlayList([]);
   };
 
   const getDifficultyIcon = (difficulty: string) => {
