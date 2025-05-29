@@ -27,6 +27,7 @@ interface PlayListState {
   userPlayLists: PlayList[];
   currentPlayList: PlayList | null;
   isPlayListLoading: boolean;
+  isPlayListDeleting: boolean;
   error: string | null;
   createPlayList: (data: CreatePlayListArgs) => Promise<void>;
   getAllPlayLists: () => Promise<void>;
@@ -42,6 +43,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
   userPlayLists: [],
   currentPlayList: null,
   isPlayListLoading: false,
+  isPlayListDeleting: false,
   error: null,
 
   createPlayList: async ({ name, description }: CreatePlayListArgs) => {
@@ -170,7 +172,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
 
   deletePlayList: async (id: string) => {
     try {
-      set({ isPlayListLoading: true });
+      set({ isPlayListDeleting: true });
       const response = await axiosInstance.delete(
         `/api/v1/playlists/delete-playlist/${id}`,
       );
@@ -183,7 +185,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
       console.error("Error deleting PlayList:", error);
       toast.error("Failed to delete PlayList.");
     } finally {
-      set({ isPlayListLoading: false });
+      set({ isPlayListDeleting: false });
     }
   },
 }));

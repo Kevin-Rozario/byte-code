@@ -351,7 +351,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                       </div>
                     </TableCell>
                     <TableCell className="flex gap-2 flex-wrap items-center py-5 px-6">
-                      {problem.tags.map((tag, tagIndex) => (
+                      {problem.tags.slice(0, 4).map((tag, tagIndex) => (
                         <Badge
                           key={tag}
                           className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer ${
@@ -365,6 +365,11 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
                           {tag}
                         </Badge>
                       ))}
+                      {problem.tags.length > 4 && (
+                        <span className="px-3 py-1.5 text-xs font-medium rounded-lg border text-slate-400">
+                          +{problem.tags.length - 4} more
+                        </span>
+                      )}
                     </TableCell>
                     <TableCell className="py-5 px-6">
                       {problem.difficulty === "EASY" ? (

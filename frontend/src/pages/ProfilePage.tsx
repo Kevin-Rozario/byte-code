@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   User,
   Trophy,
@@ -16,7 +16,18 @@ import {
   Pencil,
   Save,
   TrendingUp,
+  Award,
+  ListX,
+  Trash2,
 } from "lucide-react";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/authStore";
 import { useProblemStore } from "@/stores/problemStore";
@@ -40,11 +51,18 @@ const UserProfilePage = () => {
     (state) => state.getCreatedProblems,
   );
   const userFetchedPlayLists = usePlayListStore((state) => state.userPlayLists);
+  const isPlayListDeleting = usePlayListStore(
+    (state) => state.isPlayListDeleting,
+  );
+  const deletePlayList = usePlayListStore((state) => state.deletePlayList);
   const getUserPlayLists = usePlayListStore(
     (state) => state.getPlayListsByUserId,
   );
   const totalSubmissions = useSubmissionStore(
     (state) => state.submissionsByUser,
+  );
+  const getSubmissionsByUser = useSubmissionStore(
+    (state) => state.getSubmissionsByUser,
   );
   const [activeTab, setActiveTab] = useState("submissions");
   const [editing, setEditing] = useState(false);
@@ -53,74 +71,6 @@ const UserProfilePage = () => {
   const navigate = useNavigate();
 
   // Mock submissions data
-
-  // Mock playlists data
-  const playlists = [
-    {
-      id: "pl1",
-      name: "Array Problems",
-      description: "Collection of array manipulation problems",
-      problemCount: 15,
-      createdAt: "2024-04-10T08:00:00Z",
-      updatedAt: "2024-05-15T12:30:00Z",
-    },
-    {
-      id: "pl2",
-      name: "Dynamic Programming",
-      description: "Advanced DP problems for interview prep",
-      problemCount: 23,
-      createdAt: "2024-03-20T14:15:00Z",
-      updatedAt: "2024-05-10T16:45:00Z",
-    },
-    {
-      id: "pl3",
-      name: "Graph Algorithms",
-      description: null,
-      problemCount: 8,
-      createdAt: "2024-05-01T11:20:00Z",
-      updatedAt: "2024-05-18T09:10:00Z",
-    },
-  ];
-
-  // Mock problems solved data
-  const problemsSolved = [
-    {
-      id: "ps1",
-      problem: {
-        title: "Two Sum",
-        difficulty: "EASY",
-        tags: ["Amazon", "Google", "Microsoft"],
-      },
-      createdAt: "2024-05-20T10:30:00Z",
-    },
-    {
-      id: "ps2",
-      problem: {
-        title: "Merge Intervals",
-        difficulty: "MEDIUM",
-        tags: ["Google", "Uber", "LinkedIn"],
-      },
-      createdAt: "2024-05-18T09:20:00Z",
-    },
-    {
-      id: "ps3",
-      problem: {
-        title: "Valid Parentheses",
-        difficulty: "EASY",
-        tags: ["Facebook", "Bloomberg", "Spotify"],
-      },
-      createdAt: "2024-05-17T14:15:00Z",
-    },
-    {
-      id: "ps4",
-      problem: {
-        title: "Longest Substring",
-        difficulty: "MEDIUM",
-        tags: ["Amazon", "Netflix", "Atlassian"],
-      },
-      createdAt: "2024-05-16T16:45:00Z",
-    },
-  ];
 
   const userStats = [
     {
@@ -149,23 +99,31 @@ const UserProfilePage = () => {
     },
   ];
 
+  const memoizedTotalSubmissions = useMemo(() => {
+    return totalSubmissions;
+  }, [totalSubmissions]);
+
+  const memoizedUserFetchedPlayLists = useMemo(() => {
+    return userFetchedPlayLists;
+  }, [userFetchedPlayLists]);
+
+  const memoizedSolvedProblems = useMemo(() => {
+    return solvedProblems;
+  }, [solvedProblems]);
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate({ to: "/auth/sign-in" });
-      return;
-    }
     if (authUser?.role === "ADMIN") {
       getCreatedProblemsByAdmin();
     }
     getSolvedProblems();
     getUserPlayLists();
+    getSubmissionsByUser();
   }, [
     authUser,
-    isAuthenticated,
-    navigate,
     getSolvedProblems,
     getUserPlayLists,
     getCreatedProblemsByAdmin,
+    getSubmissionsByUser,
   ]);
 
   const handleEditDetails = async () => {
@@ -173,9 +131,20 @@ const UserProfilePage = () => {
     setEditing(false);
   };
 
+  if (!isAuthenticated) {
+    navigate({ to: "/auth/sign-in" });
+    return;
+  }
+
   const handleSignOut = async () => {
     await signout();
     navigate({ to: "/" });
+  };
+
+  const handleDeletePlayList = async (playListId: string) => {
+    if (confirm("Are you sure you want to delete this problem?")) {
+      await deletePlayList(playListId);
+    }
   };
 
   const getDifficultyBadge = (difficulty: string) => {
@@ -219,28 +188,29 @@ const UserProfilePage = () => {
     );
   };
 
-  const companyColors = {
-    Amazon: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-    Google: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    Microsoft: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-    Facebook: "bg-blue-600/20 text-blue-300 border-blue-600/30",
-    Apple: "bg-gray-500/20 text-gray-300 border-gray-500/30",
-    Netflix: "bg-red-500/20 text-red-400 border-red-500/30",
-    Uber: "bg-green-500/20 text-green-400 border-green-500/30",
-    LinkedIn: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-    Flipkart: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    Bloomberg: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-    Spotify: "bg-green-400/20 text-green-300 border-green-400/30",
-    Atlassian: "bg-blue-400/20 text-blue-300 border-blue-400/30",
-  } as const;
+  const safeParse = (data: string): string[] | null => {
+    if (typeof data !== "string") return null;
+    try {
+      const parsedData = JSON.parse(data);
+      return Array.isArray(parsedData) &&
+        parsedData.every((item) => typeof item === "string")
+        ? parsedData
+        : [];
+    } catch {
+      return [];
+    }
+  };
 
-  type CompanyName = keyof typeof companyColors;
+  const calculateAverage = (data: string[] | null): number => {
+    if (!data?.length) return 0;
 
-  const getCompanyTagColor = (company: string) => {
-    return (
-      companyColors[company as CompanyName] ||
-      "bg-slate-600/20 text-slate-400 border-slate-600/30"
-    );
+    const values = data
+      .map((item) => parseFloat(item.split(" ")[0]))
+      .filter((val) => !isNaN(val));
+
+    return values.length
+      ? values.reduce((a, b) => a + b, 0) / values.length
+      : 0;
   };
 
   const formatDate = (dateValue?: string) => {
@@ -478,99 +448,131 @@ const UserProfilePage = () => {
           {/* Tab Content */}
           <div className="p-6">
             {activeTab === "submissions" && (
-              <div className="space-y-4">
-                {totalSubmissions.map((submission) => (
-                  <div
-                    key={submission.id}
-                    className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        {getStatusIcon(submission.status)}
-                        <h3 className="font-medium text-slate-200">
-                          {submission.problemId}
-                        </h3>
-                      </div>
-                      <span className="text-sm text-slate-400">
-                        {formatDateTime(submission.createdAt)}
-                      </span>
-                    </div>
-
-                    {/* Company Tags */}
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      {submission.problem.tags.slice(0, 3).map((tag, index) => (
-                        <span
-                          key={index}
-                          className={`px-2 py-1 rounded text-xs font-medium border ${getCompanyTagColor(tag)}`}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                      {submission.problem.tags.length > 3 && (
-                        <span className="px-2 py-1 rounded text-xs font-medium bg-slate-600/20 text-slate-400 border border-slate-600/30">
-                          +{submission.problem.tags.length - 3} more
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center space-x-6 text-sm text-slate-400">
-                      <span className="flex items-center space-x-1">
-                        <Code className="w-3 h-3" />
-                        <span>{submission.language}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <Clock className="w-3 h-3" />
-                        <span>{submission.time}</span>
-                      </span>
-                      <span>{submission.memory}</span>
-                      <span
-                        className={`font-medium ${submission.status === "ACCEPTED" ? "text-green-400" : "text-red-400"}`}
-                      >
-                        {submission.status.replace("_", " ")}
-                      </span>
-                    </div>
+              <div className="space-y-4 max-h-96 overflow-y-auto pr-2 no-scrollbar">
+                {memoizedTotalSubmissions.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <Award className="w-12 h-12 mb-3 opacity-40" />
+                    <p className="font-medium text-slate-300">
+                      No submissions yet
+                    </p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      Your submissions will appear here
+                    </p>
                   </div>
-                ))}
+                )}
+                {memoizedTotalSubmissions.length > 0 &&
+                  totalSubmissions.map((submission) => {
+                    const avgMemory = calculateAverage(
+                      safeParse(submission.memory || ""),
+                    );
+                    const avgTime = calculateAverage(
+                      safeParse(submission.time || ""),
+                    );
+                    return (
+                      <div
+                        key={submission.id}
+                        className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center space-x-3">
+                            {getStatusIcon(submission.status)}
+                            <h3 className="font-medium text-slate-200">
+                              {submission.problemId}
+                            </h3>
+                          </div>
+                          <span className="text-sm text-slate-400">
+                            {formatDateTime(submission.createdAt)}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center space-x-6 text-sm text-slate-400">
+                          <span className="flex items-center space-x-1">
+                            <Code className="w-3 h-3" />
+                            <span>{submission.language}</span>
+                          </span>
+                          <span className="flex items-center space-x-1">
+                            <Clock className="w-3 h-3" />
+                            <span>{avgTime.toFixed(2)} s</span>
+                          </span>
+                          <span>{avgMemory.toFixed(2)} KB</span>
+                          <span
+                            className={`font-medium ${submission.status === "ACCEPTED" ? "text-green-400" : "text-red-400"}`}
+                          >
+                            {submission.status.replace("_", " ")}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             )}
 
             {activeTab === "playlists" && (
-              <div className="space-y-4">
-                {playlists.map((playlist) => (
-                  <div
-                    key={playlist.id}
-                    className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-3">
-                        <Play className="w-4 h-4 text-purple-400" />
-                        <h3 className="font-medium text-slate-200">
-                          {playlist.name}
-                        </h3>
-                        <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-medium">
-                          {playlist.problemCount} problems
+              <div className="space-y-4 max-h-96 overflow-y-auto pr-2 no-scrollbar">
+                {memoizedUserFetchedPlayLists.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <ListX className="w-12 h-12 mb-3 opacity-40" />
+                    <p className="font-medium text-slate-300">
+                      No playlists yet
+                    </p>
+                    <p className="text-sm text-slate-500 mt-1">
+                      Your playlists will appear here
+                    </p>
+                  </div>
+                )}
+                {memoizedUserFetchedPlayLists.length > 0 &&
+                  memoizedUserFetchedPlayLists.map((playlist) => (
+                    <div
+                      key={playlist.id}
+                      className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors relative"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-3">
+                          <Play className="w-4 h-4 text-purple-400" />
+                          <h3 className="font-medium text-slate-200">
+                            {playlist.name}
+                          </h3>
+                          <span className="bg-blue-500/20 text-blue-400 px-2 py-1 text-xs rounded-lg">
+                            {playlist.problems.length} problems
+                          </span>
+                        </div>
+                        <span className="text-sm text-slate-400">
+                          Updated {formatDateTime(playlist.updatedAt)}
                         </span>
                       </div>
-                      <span className="text-sm text-slate-400">
-                        Updated {formatDateTime(playlist.updatedAt)}
-                      </span>
+                      {playlist.description && (
+                        <p className="text-sm text-slate-400 mb-2">
+                          {playlist.description}
+                        </p>
+                      )}
+                      <div className="text-xs text-slate-500">
+                        Created {formatDateTime(playlist.createdAt)}
+                      </div>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              onClick={() => handleDeletePlayList(playlist.id)}
+                              disabled={isPlayListDeleting}
+                              size="sm"
+                              className="p-2.5 h-auto bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 border border-red-500/40 hover:border-red-500/60 rounded-lg transition-all duration-200 hover:scale-110 absolute bottom-4 right-4"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">
+                            <p>Delete Playlist</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
-                    {playlist.description && (
-                      <p className="text-sm text-slate-400 mb-2">
-                        {playlist.description}
-                      </p>
-                    )}
-                    <div className="text-xs text-slate-500">
-                      Created {formatDateTime(playlist.createdAt)}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             )}
 
             {activeTab === "solved" && (
-              <div className="space-y-4">
-                {problemsSolved.map((solved) => (
+              <div className="space-y-4 max-h-96 overflow-y-auto pr-2 no-scrollbar">
+                {memoizedSolvedProblems.map((solved) => (
                   <div
                     key={solved.id}
                     className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
@@ -579,30 +581,34 @@ const UserProfilePage = () => {
                       <div className="flex items-center space-x-3">
                         <CheckCircle className="w-4 h-4 text-green-400" />
                         <h3 className="font-medium text-slate-200">
-                          {solved.problem.title}
+                          {solved.title}
                         </h3>
-                        <span>
-                          {getDifficultyBadge(solved.problem.difficulty)}
-                        </span>
+                        <span>{getDifficultyBadge(solved.difficulty)}</span>
                       </div>
                       <span className="text-sm text-slate-400">
                         Solved {formatDateTime(solved.createdAt)}
                       </span>
                     </div>
 
-                    {/* Company Tags */}
+                    {/* Tags */}
                     <div className="flex flex-wrap gap-2">
-                      {solved.problem.tags.slice(0, 4).map((tag, index) => (
-                        <span
-                          key={index}
-                          className={`px-2 py-1 rounded text-xs font-medium border ${getCompanyTagColor(tag)}`}
+                      {solved.tags.slice(0, 4).map((tag, tagIndex) => (
+                        <Badge
+                          key={tag}
+                          className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer ${
+                            tagIndex % 3 === 0
+                              ? "bg-purple-500/20 text-purple-300 border-purple-500/40 hover:bg-purple-500/30"
+                              : tagIndex % 3 === 1
+                                ? "bg-blue-500/20 text-blue-300 border-blue-500/40 hover:bg-blue-500/30"
+                                : "bg-cyan-500/20 text-cyan-300 border-cyan-500/40 hover:bg-cyan-500/30"
+                          }`}
                         >
                           {tag}
-                        </span>
+                        </Badge>
                       ))}
-                      {solved.problem.tags.length > 4 && (
-                        <span className="px-2 py-1 rounded text-xs font-medium bg-slate-600/20 text-slate-400 border border-slate-600/30">
-                          +{solved.problem.tags.length - 4} more
+                      {solved.tags.length > 4 && (
+                        <span className="px-3 py-1.5 text-xs font-medium rounded-lg border">
+                          +{solved.tags.length - 4} more
                         </span>
                       )}
                     </div>
