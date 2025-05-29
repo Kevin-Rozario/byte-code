@@ -25,9 +25,14 @@ const authMiddleware = async (req, _res, next) => {
   // get tokens
   const { accessToken, refreshToken } = req.cookies;
 
-  // check tokens
-  if (!accessToken || !refreshToken) {
-    throw new ApiError(400, "Access and refresh tokens required!");
+  // check access token
+  if (!accessToken) {
+    throw new ApiError(400, "Access token required!");
+  }
+
+  // check refresh token
+  if (!refreshToken) {
+    throw new ApiError(401, "Refresh token required!");
   }
 
   // verify access token
