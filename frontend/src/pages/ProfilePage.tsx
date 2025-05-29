@@ -19,6 +19,7 @@ import {
   Award,
   ListX,
   Trash2,
+  Home,
 } from "lucide-react";
 
 import {
@@ -33,7 +34,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { useProblemStore } from "@/stores/problemStore";
 import { useSubmissionStore } from "@/stores/submissionStore";
 import { usePlayListStore } from "@/stores/playlistStore";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -69,8 +70,6 @@ const UserProfilePage = () => {
   const [userName, setUserName] = useState("");
   const [fullName, setFullName] = useState("");
   const navigate = useNavigate();
-
-  // Mock submissions data
 
   const userStats = [
     {
@@ -242,6 +241,18 @@ const UserProfilePage = () => {
       <div className="bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-950 border-b border-slate-800">
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="flex items-center space-x-6">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link to="/">
+                    <Home className="w-10 h-10 text-purple-400" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  <p>Home</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {/* Avatar */}
             <div className="relative">
               <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
