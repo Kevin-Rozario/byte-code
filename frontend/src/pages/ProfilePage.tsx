@@ -52,64 +52,7 @@ const UserProfilePage = () => {
   const [fullName, setFullName] = useState("");
   const navigate = useNavigate();
 
-  // Mock data based on your database schema
-  const userData = {
-    id: "123e4567-e89b-12d3-a456-426614174000",
-    userName: "codeMaster2024",
-    email: "john.doe@example.com",
-    fullName: "John Doe",
-    isEmailVerified: true,
-    role: "USER",
-    createdAt: "2024-01-15T10:30:00Z",
-    updateAt: "2024-05-20T14:45:00Z",
-    problemsSolved: 47,
-    totalSubmissions: 89,
-    totalPlaylists: 3,
-    totalProblemsCreated: 2,
-  };
-
   // Mock submissions data
-  const submissions = [
-    {
-      id: "sub1",
-      problem: {
-        title: "Two Sum",
-        difficulty: "EASY",
-        tags: ["Amazon", "Google", "Microsoft"],
-      },
-      language: "JavaScript",
-      status: "ACCEPTED",
-      memory: "42.1 MB",
-      time: "68 ms",
-      createdAt: "2024-05-20T10:30:00Z",
-    },
-    {
-      id: "sub2",
-      problem: {
-        title: "Binary Tree Inorder",
-        difficulty: "MEDIUM",
-        tags: ["Facebook", "Apple", "Flipkart"],
-      },
-      language: "Python",
-      status: "WRONG_ANSWER",
-      memory: "38.5 MB",
-      time: "124 ms",
-      createdAt: "2024-05-19T15:45:00Z",
-    },
-    {
-      id: "sub3",
-      problem: {
-        title: "Merge Intervals",
-        difficulty: "MEDIUM",
-        tags: ["Google", "Uber", "LinkedIn"],
-      },
-      language: "JavaScript",
-      status: "ACCEPTED",
-      memory: "45.2 MB",
-      time: "92 ms",
-      createdAt: "2024-05-18T09:20:00Z",
-    },
-  ];
 
   // Mock playlists data
   const playlists = [
@@ -536,7 +479,7 @@ const UserProfilePage = () => {
           <div className="p-6">
             {activeTab === "submissions" && (
               <div className="space-y-4">
-                {submissions.map((submission) => (
+                {totalSubmissions.map((submission) => (
                   <div
                     key={submission.id}
                     className="bg-slate-800 border border-slate-600 rounded-lg p-4 hover:border-purple-500/50 transition-colors"
@@ -545,11 +488,8 @@ const UserProfilePage = () => {
                       <div className="flex items-center space-x-3">
                         {getStatusIcon(submission.status)}
                         <h3 className="font-medium text-slate-200">
-                          {submission.problem.title}
+                          {submission.problemId}
                         </h3>
-                        <span>
-                          {getDifficultyBadge(submission.problem.difficulty)}
-                        </span>
                       </div>
                       <span className="text-sm text-slate-400">
                         {formatDateTime(submission.createdAt)}
