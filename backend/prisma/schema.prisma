@@ -39,7 +39,7 @@ model User {
   forgotPasswordToken          String?
   forgotPasswordTokenExpiry    DateTime?
   createdAt                    DateTime        @default(now())
-  updateAt                     DateTime        @updatedAt
+  updatedAt                     DateTime        @updatedAt
   Problem                      Problem[]
   submission                   Submission[]
   problemsSolved               ProblemSolved[]

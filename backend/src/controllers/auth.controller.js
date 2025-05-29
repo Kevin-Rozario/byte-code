@@ -64,6 +64,8 @@ export const loginUser = asyncHandler(async (req, res) => {
       fullName: true,
       isEmailVerified: true,
       role: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
@@ -135,6 +137,8 @@ export const registerUser = asyncHandler(async (req, res) => {
       fullName: true,
       isEmailVerified: true,
       role: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
 
@@ -424,6 +428,8 @@ export const getProfile = asyncHandler(async (req, res) => {
       userName: true,
       email: true,
       fullName: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
   if (!foundUser) {
@@ -662,6 +668,7 @@ export const checkUser = asyncHandler(async (req, res) => {
       userName: true,
       email: true,
       fullName: true,
+      
     },
   });
   if (!user) {

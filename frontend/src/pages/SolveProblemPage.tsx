@@ -43,12 +43,13 @@ import { getLanguageId } from "@/lib/utils/language";
 import TestCaseResults, {
   type ISubmissionResultProps,
 } from "@/components/TestCaseResults/TestCaseResults";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useSubmissionStore } from "@/stores/submissionStore";
 import Submissions from "@/components/Submissions/Submissions";
 import toast from "react-hot-toast";
 
 const SolveProblemPage = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authUser = useAuthStore((state) => state.user);
   const { id } = Route.useParams();
   const problem = useProblemStore<IProblem | null>((state) => state.problem);
@@ -78,6 +79,7 @@ const SolveProblemPage = () => {
   const [selectedTestCase, setSelectedTestCase] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<string>("testcase");
   const submission = useExecuteStore((state) => state.submission);
+  const navigate = useNavigate();
 
   // Add this after your existing state declarations
   const memoizedSubmissions = useMemo(() => {
@@ -115,6 +117,27 @@ const SolveProblemPage = () => {
     }
   }, [submission]);
 
+  const handleGetSubmission = useCallback(
+    (id: string) => {
+      getSubmissionsForProblemByUser(id);
+    },
+    [getSubmissionsForProblemByUser],
+  );
+
+  useEffect(() => {
+    if (submission && !isExecuting) {
+      setActiveTab("result");
+      if (submission.status === "ACCEPTED") {
+        handleGetSubmission(problem?.id || "");
+      }
+    }
+  }, [submission, isExecuting, problem?.id, handleGetSubmission]);
+
+  if (!isAuthenticated || !authUser) {
+    navigate({ to: "/" });
+    return;
+  }
+
   const handleLanguageChange = (language: string) => {
     setSelectedLanguage(language);
     setCode(problem?.codeSnippets?.[language] || "");
@@ -147,22 +170,6 @@ const SolveProblemPage = () => {
       console.error("Error setting up code execution:", err);
     }
   };
-
-  const handleGetSubmission = useCallback(
-    (id: string) => {
-      getSubmissionsForProblemByUser(id);
-    },
-    [getSubmissionsForProblemByUser],
-  );
-
-  useEffect(() => {
-    if (submission && !isExecuting) {
-      setActiveTab("result");
-      if (submission.status === "ACCEPTED") {
-        handleGetSubmission(problem?.id || "");
-      }
-    }
-  }, [submission, isExecuting, problem?.id, handleGetSubmission]);
 
   const prepareSubmissionForResult = () => {
     if (!submission?.testCases) return null;

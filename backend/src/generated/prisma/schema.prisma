@@ -39,7 +39,7 @@ model User {
   forgotPasswordToken          String?
   forgotPasswordTokenExpiry    DateTime?
   createdAt                    DateTime        @default(now())
-  updateAt                     DateTime        @updatedAt
+  updatedAt                    DateTime        @updatedAt
   Problem                      Problem[]
   submission                   Submission[]
   problemsSolved               ProblemSolved[]
@@ -85,7 +85,7 @@ model Submission {
   stdout        String?
   stderr        String?
   compileOutput String?
-  status        String // Accepted , wrong answer
+  status        String
   memory        String?
   time          String?
   createdAt     DateTime         @default(now())

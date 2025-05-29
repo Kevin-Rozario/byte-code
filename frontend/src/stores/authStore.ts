@@ -10,6 +10,8 @@ interface IUser {
   fullName: string;
   isEmailVerified: boolean;
   role: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 interface IUserState {

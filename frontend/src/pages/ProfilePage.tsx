@@ -13,6 +13,8 @@ import {
   Clock,
   Play,
   Zap,
+  Pencil,
+  Save,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/authStore";
@@ -21,6 +23,7 @@ import { useSubmissionStore } from "@/stores/submissionStore";
 import { usePlayListStore } from "@/stores/playlistStore";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const UserProfilePage = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -42,6 +45,7 @@ const UserProfilePage = () => {
     (state) => state.submissionsByUser,
   );
   const [activeTab, setActiveTab] = useState("submissions");
+  const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
 
   // Mock data based on your database schema
@@ -217,6 +221,11 @@ const UserProfilePage = () => {
     getCreatedProblemsByAdmin,
   ]);
 
+  const handleEditDetails = () => {
+    console.log("Edit details");
+    setEditing(false);
+  };
+
   const handleSignOut = async () => {
     await signout();
     navigate({ to: "/" });
@@ -287,8 +296,9 @@ const UserProfilePage = () => {
     );
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const formatDate = (dateValue: Date | string | undefined) => {
+    if (!dateValue) return "";
+    return new Date(dateValue).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -352,7 +362,7 @@ const UserProfilePage = () => {
               </div>
               <Button
                 onClick={handleSignOut}
-                className="bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30 px-4 py-2 text-sm rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer"
+                className="bg-red-600 text-white border-red-500/40 hover:bg-red-500/30 px-4 py-2 text-sm rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer"
               >
                 Signout
               </Button>
@@ -394,38 +404,74 @@ const UserProfilePage = () => {
 
         {/* Account Information */}
         <div className="bg-slate-900/80 backdrop-blur border border-slate-700 rounded-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-6 flex items-center space-x-2">
-            <User className="w-5 h-5 text-purple-400" />
-            <span>Account Information</span>
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold mb-6 flex items-center space-x-2">
+              <User className="w-5 h-5 text-purple-400" />
+              <span>Account Information</span>
+            </h2>
+            <div>
+              <Button
+                type="button"
+                hidden={!editing}
+                onClick={handleEditDetails}
+                className="bg-green-600 text-white border-green-500/40 hover:bg-green-500/30 px-4 py-2 text-sm rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer mr-3"
+              >
+                <Save className="w-4 h-4" />
+                Save changes
+              </Button>
+              <Button
+                type="button"
+                disabled={editing}
+                onClick={() => setEditing(true)}
+                className="bg-purple-600 text-white border-purple-500/40 hover:bg-purple-500/30 px-4 py-2 text-sm rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer"
+              >
+                <Pencil className="w-4 h-4" />
+                Edit Details
+              </Button>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-slate-400 mb-1"
+                >
                   Username
                 </label>
-                <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2">
-                  <span className="text-slate-200">{userData.userName}</span>
-                </div>
+                <Input
+                  id="username"
+                  disabled={!editing}
+                  type="text"
+                  className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
+                  defaultValue={authUser?.userName}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-400 mb-1">
+              <div className="relative">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-slate-400 mb-1"
+                >
                   Email Address
                 </label>
-                <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center justify-between">
-                  <span className="text-slate-200">{userData.email}</span>
-                  {userData.isEmailVerified ? (
-                    <span className="text-green-400 text-sm font-medium">
-                      Verified
-                    </span>
-                  ) : (
-                    <span className="text-red-400 text-sm font-medium">
-                      Unverified
-                    </span>
-                  )}
-                </div>
+                <Input
+                  id="email"
+                  disabled={!editing}
+                  type="email"
+                  className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
+                  defaultValue={authUser?.email}
+                />
+                {userData.isEmailVerified ? (
+                  <span className="text-green-400 text-sm font-medium absolute right-3 top-8">
+                    Verified
+                  </span>
+                ) : (
+                  <span className="text-red-400 text-sm font-medium absolute right-3 top-8">
+                    Unverified
+                  </span>
+                )}
               </div>
             </div>
 
@@ -434,6 +480,13 @@ const UserProfilePage = () => {
                 <label className="block text-sm font-medium text-slate-400 mb-1">
                   Member Since
                 </label>
+                <Input
+                  id="email"
+                  value={formatDate(authUser?.createdAt)}
+                  disabled
+                  type="date"
+                  className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
+                />
                 <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-slate-400" />
                   <span className="text-slate-200">
