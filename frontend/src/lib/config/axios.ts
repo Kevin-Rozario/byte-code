@@ -19,13 +19,8 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const refreshToken = localStorage.getItem("refreshToken");
-        const response = await axiosInstance.post(
-          "/api/v1/auth/refresh-token",
-          {
-            refreshToken,
-          },
-        );
+        const response = await axiosInstance.get("/api/v1/auth/refresh-token");
+        console.log("response", response.data.data);
         if (response.status === 200 && response.data.data) {
           return axiosInstance(originalRequest);
         }

@@ -352,7 +352,7 @@ export const renewRefreshToken = asyncHandler(async (req, res) => {
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
     );
-    const userId = decoded?.userId;
+    const userId = decoded?.id;
 
     if (!userId) {
       throw new ApiError(401, "Invalid refresh token!");
