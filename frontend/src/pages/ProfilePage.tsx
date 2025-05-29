@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   User,
   Trophy,
@@ -20,10 +20,12 @@ import { useProblemStore } from "@/stores/problemStore";
 import { useSubmissionStore } from "@/stores/submissionStore";
 import { usePlayListStore } from "@/stores/playlistStore";
 import { useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 const UserProfilePage = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authUser = useAuthStore((state) => state.user);
+  const signout = useAuthStore((state) => state.signout);
   const solvedProblems = useProblemStore((state) => state.solvedProblems);
   const getSolvedProblems = useProblemStore((state) => state.getSolvedProblems);
   const createdProblemsByAdmin = useProblemStore(
@@ -169,15 +171,6 @@ const UserProfilePage = () => {
     },
   ];
 
-  const adminOnlyStats = [
-    {
-      icon: Target,
-      label: "Problems Created",
-      value: createdProblemsByAdmin.length,
-      color: "text-purple-400",
-    },
-  ];
-
   const userStats = [
     {
       icon: Trophy,
@@ -197,6 +190,12 @@ const UserProfilePage = () => {
       value: userFetchedPlayLists.length,
       color: "text-cyan-400",
     },
+    {
+      icon: Target,
+      label: "Problems Created",
+      value: createdProblemsByAdmin.length,
+      color: "text-purple-400",
+    },
   ];
 
   useEffect(() => {
@@ -204,16 +203,24 @@ const UserProfilePage = () => {
       navigate({ to: "/auth/sign-in" });
       return;
     }
+    if (authUser?.role === "ADMIN") {
+      getCreatedProblemsByAdmin();
+    }
     getSolvedProblems();
     getUserPlayLists();
-    getCreatedProblemsByAdmin();
   }, [
+    authUser,
     isAuthenticated,
     navigate,
     getSolvedProblems,
     getUserPlayLists,
     getCreatedProblemsByAdmin,
   ]);
+
+  const handleSignOut = async () => {
+    await signout();
+    navigate({ to: "/" });
+  };
 
   const getDifficultyBadge = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
@@ -316,26 +323,34 @@ const UserProfilePage = () => {
             </div>
 
             {/* User Info */}
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {authUser?.fullName}
-              </h1>
-              <p className="text-slate-400 text-lg">@{authUser?.userName}</p>
-              <div className="flex items-center space-x-4 mt-2">
-                <div className="flex items-center space-x-1 text-slate-400">
-                  <Mail className="w-4 h-4 mr-2" />
-                  <span className="text-sm">{authUser?.email}</span>
+            <div className="flex-1 flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  {authUser?.fullName}
+                </h1>
+                <p className="text-slate-400 text-lg">@{authUser?.userName}</p>
+                <div className="flex items-center space-x-4 mt-2">
+                  <div className="flex items-center space-x-1 text-slate-400">
+                    <Mail className="w-4 h-4 mr-2" />
+                    <span className="text-sm">{authUser?.email}</span>
+                  </div>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      authUser?.role === "ADMIN"
+                        ? "bg-red-500/20 text-red-400"
+                        : "bg-blue-500/20 text-blue-400"
+                    }`}
+                  >
+                    {authUser?.role}
+                  </span>
                 </div>
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    authUser?.role === "ADMIN"
-                      ? "bg-red-500/20 text-red-400"
-                      : "bg-blue-500/20 text-blue-400"
-                  }`}
-                >
-                  {authUser?.role}
-                </span>
               </div>
+              <Button
+                onClick={handleSignOut}
+                className="bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30 px-4 py-2 text-sm rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer"
+              >
+                Signout
+              </Button>
             </div>
           </div>
         </div>
@@ -344,25 +359,32 @@ const UserProfilePage = () => {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {userStats.map((stat, index) => (
-            <div
-              key={index}
-              className="bg-slate-900/80 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-purple-500/50 transition-colors"
-            >
-              <div className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg bg-slate-800 ${stat.color}`}>
-                  <stat.icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-slate-200">
-                    {stat.value}
-                  </p>
-                  <p className="text-sm text-slate-400">{stat.label}</p>
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 ${authUser?.role !== "ADMIN" ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-6 mb-8`}
+        >
+          {userStats.map((stat, index) => {
+            if (authUser?.role !== "ADMIN" && index === 3) {
+              return null;
+            }
+            return (
+              <div
+                key={index}
+                className="bg-slate-900/80 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-purple-500/50 transition-colors"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className={`p-2 rounded-lg bg-slate-800 ${stat.color}`}>
+                    <stat.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-slate-200">
+                      {stat.value}
+                    </p>
+                    <p className="text-sm text-slate-400">{stat.label}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Account Information */}

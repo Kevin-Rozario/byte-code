@@ -116,7 +116,6 @@ const useProblemStore = create<IProblemState>()((set) => ({
       );
       if (response.status === 200 && response.data) {
         set({ createdProblems: response.data.data });
-        toast.success("Created problems fetched successfully.");
       }
     } catch (error: any) {
       console.error("Error fetching created problems:", error);

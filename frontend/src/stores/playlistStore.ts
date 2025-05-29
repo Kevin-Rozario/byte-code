@@ -101,6 +101,7 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
       }
     } catch (error) {
       console.error("Error fetching PlayLists:", error);
+      toast.error("User has no playlists.");
     } finally {
       set({ isPlayListLoading: false });
     }
@@ -167,5 +168,22 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
 
   deleteProblemsFromPlayList: async () => {},
 
-  deletePlayList: async (id: string) => {},
+  deletePlayList: async (id: string) => {
+    try {
+      set({ isPlayListLoading: true });
+      const response = await axiosInstance.delete(
+        `/api/v1/playlists/delete-playlist/${id}`,
+      );
+      if (response.status === 200) {
+        toast.success("PlayList deleted successfully.");
+      } else {
+        toast.error("Failed to delete PlayList.");
+      }
+    } catch (error) {
+      console.error("Error deleting PlayList:", error);
+      toast.error("Failed to delete PlayList.");
+    } finally {
+      set({ isPlayListLoading: false });
+    }
+  },
 }));

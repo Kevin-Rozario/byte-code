@@ -111,6 +111,14 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
     return filteredProblems.slice(start, start + itemsPerPage);
   }, [filteredProblems, currentPage]);
 
+  const handleOnclickCreatePlayList = () => {
+    if (!isAuthenticated || !authUser) {
+      toast.error("You must be logged in to create a playlist");
+      return;
+    }
+    setIsCreateModalOpen(true);
+  };
+
   const handleDeleteProblem = (id: string) => {
     if (!isAuthenticated || authUser?.role !== "ADMIN") {
       toast.error("You must be logged in as admin to delete a problem");
@@ -288,7 +296,7 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
             </>
           )}
           <Button
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={handleOnclickCreatePlayList}
             className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
           >
             <Plus className="w-4 h-4" />

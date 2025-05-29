@@ -183,15 +183,17 @@ export const deleteProblemsFromPlaylist = asyncHandler(async (req, res) => {
 
 export const deletePlaylist = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
 
   const playlist = await db.playlist.delete({
     where: {
       id,
+      userId,
     },
   });
 
   if (!playlist) {
-    throw new ApiError(500, "Failed to delete playlist", null);
+    throw new ApiError(404, "Playlist not found", null);
   }
 
   res
