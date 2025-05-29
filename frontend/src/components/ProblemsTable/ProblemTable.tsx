@@ -145,7 +145,6 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
       updatedPlayList.push(id);
     }
     setPlayList(updatedPlayList);
-    console.log(updatedPlayList);
   };
 
   const handleCreatePlayList = async (data: CreatePlayListArgs) => {

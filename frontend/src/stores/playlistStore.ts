@@ -148,7 +148,5 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
 
   deleteProblemsFromPlayList: async () => {},
 
-  deleteProblemsFromPlayList: async () => {},
-
   deletePlayList: async (id: string) => {},
 }));
