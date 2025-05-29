@@ -89,7 +89,7 @@ export const createPlaylist = asyncHandler(async (req, res) => {
     );
 });
 
-export const addProblemToPlaylist = asyncHandler(async (req, res) => {
+export const addProblemsToPlaylist = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { problemIds } = req.body;
 
@@ -98,7 +98,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   }
 
   const problemsToInsert = problemIds.map((problemId) => ({
-    playListId: id, // exact field name from your model
+    playListId: id,
     problemId,
   }));
 
@@ -121,7 +121,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
     );
 });
 
-export const deleteProblemFromPlaylist = asyncHandler(async (req, res) => {
+export const deleteProblemsFromPlaylist = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { problemIds } = req.body;
 

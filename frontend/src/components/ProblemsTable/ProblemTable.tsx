@@ -42,23 +42,37 @@ import {
   Target,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from "lucide-react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuthStore } from "@/stores/authStore";
 import { useActionStore } from "@/stores/actionStore";
 import { type IProblem } from "@/stores/problemStore";
 import toast from "react-hot-toast";
+import { usePlayListStore } from "@/stores/playlistStore";
+import CreatePlaylistModal from "../CreatePlayListModal/CreatePlayListModal";
+import AddToPlayListModal from "../AddToPlayList/AddToPlayListModal";
+import {
+  type AddToPlayListArgs,
+  type CreatePlayListArgs,
+} from "@/stores/playlistStore";
 
 const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const authUser = useAuthStore((state) => state.user);
   const isDeletingState = useActionStore((state) => state.isDeletingProblem);
   const onDeleteProblem = useActionStore((state) => state.onDeleteProblem);
+  const createPlaylist = usePlayListStore((state) => state.createPlayList);
+  const addProblemsToPlayList = usePlayListStore(
+    (state) => state.addProblemsToPlayList,
+  );
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState("All Tags");
   const [difficulty, setDifficulty] = useState("All Difficulties");
   const [currentPage, setCurrentPage] = useState(1);
   const [playList, setPlayList] = useState<string[]>([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const tableHeads = ["Status", "Title", "Tags", "Difficulty", "Actions"];
@@ -132,6 +146,28 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
     }
     setPlayList(updatedPlayList);
     console.log(updatedPlayList);
+  };
+
+  const handleCreatePlayList = async (data: CreatePlayListArgs) => {
+    try {
+      await createPlaylist(data);
+      setPlayList([]);
+      toast.success("Playlist created successfully!");
+    } catch (error) {
+      console.log("Error creating playlist: ", error);
+      toast.error("Failed to create playlist");
+    }
+  };
+
+  const handleAddToPlayList = async (data: AddToPlayListArgs) => {
+    try {
+      await addProblemsToPlayList(data.playlistId, data.problemIds);
+      setPlayList([]);
+      toast.success("Problems added to playlist successfully!");
+    } catch (error) {
+      console.log("Error adding problems to playlist: ", error);
+      toast.error("Failed to add problems to playlist");
+    }
   };
 
   const getDifficultyIcon = (difficulty: string) => {
@@ -252,18 +288,25 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
           </div>
         </div>
 
-        {/* Create Playlist Button*/}
+        {/* Create and Add to Playlist Buttons*/}
         <div className="flex justify-end items-center h-12 p-2 mb-5">
           {playList.length > 0 && (
-            <Link to="/">
+            <>
               <Button
-                type="submit"
-                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                onClick={() => setIsAddModalOpen(true)}
+                className="bg-slate-600 px-6 py-3 rounded-lg text-slate-200 hover:bg-slate-700 transition-all transform hover:scale-105 mr-4"
               >
                 <PlusCircle className="w-4 h-4" />
+                Add to Playlist
+              </Button>
+              <Button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105"
+              >
+                <Plus className="w-4 h-4" />
                 Create Playlist
               </Button>
-            </Link>
+            </>
           )}
         </div>
 
@@ -527,6 +570,20 @@ const ProblemTable = ({ problems }: { problems: IProblem[] }) => {
           </div>
         )}
       </div>
+
+      {/* Create Playlist Modal */}
+      <CreatePlaylistModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreatePlayList}
+      />
+
+      {/* Add to Playlist Modal */}
+      <AddToPlayListModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddToPlayList}
+      />
     </div>
   );
 };

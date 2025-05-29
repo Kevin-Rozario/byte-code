@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import {
-  addProblemToPlaylist,
+  addProblemsToPlaylist,
   createPlaylist,
   deletePlaylist,
-  deleteProblemFromPlaylist,
+  deleteProblemsFromPlaylist,
   getAllPlaylists,
   getPlaylistById,
 } from "../controllers/playList.controller.js";
@@ -16,8 +16,8 @@ router.route("/playlist/:id").get(authMiddleware, getPlaylistById);
 router.route("/create-playlist").post(authMiddleware, createPlaylist);
 router
   .route("/update-playlist/:id")
-  .post(authMiddleware, addProblemToPlaylist)
-  .delete(authMiddleware, deleteProblemFromPlaylist);
+  .post(authMiddleware, addProblemsToPlaylist)
+  .delete(authMiddleware, deleteProblemsFromPlaylist);
 router.route("/delete-playlist/:id").delete(authMiddleware, deletePlaylist);
 
 export default router;
