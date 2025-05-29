@@ -10,6 +10,7 @@ import {
   updateProblemById,
   deleteProblemById,
   getSolvedProblems,
+  getProblemsCreatedByAdmin,
 } from "../controllers/problem.controller.js";
 
 const router = Router();
@@ -26,5 +27,8 @@ router
   .route("/delete-problem/:id")
   .delete(authMiddleware, authAdminCheck, deleteProblemById);
 router.route("/get-solved-problems").get(authMiddleware, getSolvedProblems);
+router
+  .route("/get-created-problems")
+  .get(authMiddleware, authAdminCheck, getProblemsCreatedByAdmin);
 
 export default router;

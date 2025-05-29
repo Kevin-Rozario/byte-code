@@ -24,12 +24,14 @@ export interface AddToPlayListArgs {
 
 interface PlayListState {
   playLists: PlayList[];
+  userPlayLists: PlayList[];
   currentPlayList: PlayList | null;
   isPlayListLoading: boolean;
   error: string | null;
   createPlayList: (data: CreatePlayListArgs) => Promise<void>;
   getAllPlayLists: () => Promise<void>;
   getPlayListById: (id: string) => Promise<void>;
+  getPlayListsByUserId: () => Promise<void>;
   addProblemsToPlayList: (id: string, problemIds: string[]) => Promise<void>;
   deleteProblemsFromPlayList: () => Promise<void>;
   deletePlayList: (id: string) => Promise<void>;
@@ -37,6 +39,7 @@ interface PlayListState {
 
 export const usePlayListStore = create<PlayListState>()((set, get) => ({
   playLists: [],
+  userPlayLists: [],
   currentPlayList: null,
   isPlayListLoading: false,
   error: null,
@@ -82,6 +85,22 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
     } catch (error) {
       console.error("Error fetching PlayLists:", error);
       toast.error("Failed to fetch PlayLists.");
+    } finally {
+      set({ isPlayListLoading: false });
+    }
+  },
+
+  getPlayListsByUserId: async () => {
+    try {
+      set({ isPlayListLoading: true });
+      const response = await axiosInstance.get(
+        "/api/v1/playlists/user-playlists",
+      );
+      if (response.status === 200 && response.data.data) {
+        set({ userPlayLists: response.data.data });
+      }
+    } catch (error) {
+      console.error("Error fetching PlayLists:", error);
     } finally {
       set({ isPlayListLoading: false });
     }

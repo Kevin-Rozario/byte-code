@@ -34,6 +34,7 @@ export interface ITestCase {
 
 interface IProblemState {
   problems: IProblem[] | [];
+  createdProblems: IProblem[] | [];
   solvedProblems: IProblem[] | [];
   problem: IProblem | null;
   isProblemsLoading: boolean;
@@ -42,11 +43,13 @@ interface IProblemState {
   getAllProblems: () => Promise<void>;
   getProblemById: (id: string) => Promise<void>;
   getSolvedProblems: () => Promise<void>;
+  getCreatedProblems: () => Promise<void>;
 }
 
 const useProblemStore = create<IProblemState>()((set) => ({
   problems: [],
   solvedProblems: [],
+  createdProblems: [],
   problem: null,
   isProblemsLoading: false,
   isProblemLoading: false,
@@ -100,6 +103,24 @@ const useProblemStore = create<IProblemState>()((set) => ({
     } catch (error: any) {
       console.error("Error fetching solved problems:", error);
       toast.error("Failed to fetch solved problems.");
+    } finally {
+      set({ isProblemsLoading: false });
+    }
+  },
+
+  getCreatedProblems: async () => {
+    try {
+      set({ isProblemsLoading: true });
+      const response = await axiosInstance.get(
+        "/api/v1/problems/get-created-problems",
+      );
+      if (response.status === 200 && response.data) {
+        set({ createdProblems: response.data.data });
+        toast.success("Created problems fetched successfully.");
+      }
+    } catch (error: any) {
+      console.error("Error fetching created problems:", error);
+      toast.error("Failed to fetch created problems.");
     } finally {
       set({ isProblemsLoading: false });
     }

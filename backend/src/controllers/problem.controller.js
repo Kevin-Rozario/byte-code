@@ -200,3 +200,25 @@ export const getSolvedProblems = asyncHandler(async (req, res) => {
       ),
     );
 });
+
+export const getProblemsCreatedByAdmin = asyncHandler(async (req, res) => {
+  const problems = await db.problem.findMany({
+    where: {
+      userId: req.user.id,
+    },
+  });
+
+  if (!problems || problems.length === 0) {
+    throw new ApiError(404, "No problems created by admin", null);
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { message: "Problems created by admin fetched successfully" },
+        problems,
+      ),
+    );
+});

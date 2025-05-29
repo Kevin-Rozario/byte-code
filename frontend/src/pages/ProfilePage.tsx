@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   User,
   Trophy,
@@ -12,10 +12,35 @@ import {
   XCircle,
   Clock,
   Play,
+  Zap,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useAuthStore } from "@/stores/authStore";
+import { useProblemStore } from "@/stores/problemStore";
+import { useSubmissionStore } from "@/stores/submissionStore";
+import { usePlayListStore } from "@/stores/playlistStore";
+import { useNavigate } from "@tanstack/react-router";
 
 const UserProfilePage = () => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const authUser = useAuthStore((state) => state.user);
+  const solvedProblems = useProblemStore((state) => state.solvedProblems);
+  const getSolvedProblems = useProblemStore((state) => state.getSolvedProblems);
+  const createdProblemsByAdmin = useProblemStore(
+    (state) => state.createdProblems,
+  );
+  const getCreatedProblemsByAdmin = useProblemStore(
+    (state) => state.getCreatedProblems,
+  );
+  const userFetchedPlayLists = usePlayListStore((state) => state.userPlayLists);
+  const getUserPlayLists = usePlayListStore(
+    (state) => state.getPlayListsByUserId,
+  );
+  const totalSubmissions = useSubmissionStore(
+    (state) => state.submissionsByUser,
+  );
   const [activeTab, setActiveTab] = useState("submissions");
+  const navigate = useNavigate();
 
   // Mock data based on your database schema
   const userData = {
@@ -144,43 +169,82 @@ const UserProfilePage = () => {
     },
   ];
 
-  const stats = [
+  const adminOnlyStats = [
+    {
+      icon: Target,
+      label: "Problems Created",
+      value: createdProblemsByAdmin.length,
+      color: "text-purple-400",
+    },
+  ];
+
+  const userStats = [
     {
       icon: Trophy,
       label: "Problems Solved",
-      value: userData.problemsSolved,
+      value: solvedProblems.length,
       color: "text-purple-400",
     },
     {
       icon: Code,
       label: "Total Submissions",
-      value: userData.totalSubmissions,
+      value: totalSubmissions.length,
       color: "text-blue-400",
     },
     {
       icon: BookOpen,
       label: "Playlists Created",
-      value: userData.totalPlaylists,
+      value: userFetchedPlayLists.length,
       color: "text-cyan-400",
-    },
-    {
-      icon: Target,
-      label: "Problems Created",
-      value: userData.totalProblemsCreated,
-      color: "text-purple-400",
     },
   ];
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "EASY":
-        return "text-green-400 bg-green-400/10";
-      case "MEDIUM":
-        return "text-yellow-400 bg-yellow-400/10";
-      case "HARD":
-        return "text-red-400 bg-red-400/10";
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate({ to: "/auth/sign-in" });
+      return;
+    }
+    getSolvedProblems();
+    getUserPlayLists();
+    getCreatedProblemsByAdmin();
+  }, [
+    isAuthenticated,
+    navigate,
+    getSolvedProblems,
+    getUserPlayLists,
+    getCreatedProblemsByAdmin,
+  ]);
+
+  const getDifficultyBadge = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case "easy":
+        return (
+          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/40 hover:bg-emerald-500/30 px-2 py-1 text-xs rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer">
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-3 h-3" />
+              EASY
+            </div>
+          </Badge>
+        );
+      case "medium":
+        return (
+          <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/40 hover:bg-amber-500/30 px-2 py-1 text-xs rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer">
+            <div className="flex items-center gap-1.5">
+              <Target className="w-3 h-3" />
+              MEDIUM
+            </div>
+          </Badge>
+        );
+      case "hard":
+        return (
+          <Badge className="bg-red-500/20 text-red-400 border-red-500/40 hover:bg-red-500/30 px-2 py-1 text-xs rounded-lg border transition-all duration-200 hover:scale-105 cursor-pointer">
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className="w-3 h-3" /> HARD
+            </div>
+          </Badge>
+        );
       default:
-        return "text-slate-400 bg-slate-400/10";
+        return null;
     }
   };
 
@@ -244,7 +308,7 @@ const UserProfilePage = () => {
               <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center">
                 <User className="w-12 h-12 text-white" />
               </div>
-              {userData.isEmailVerified && (
+              {authUser?.isEmailVerified && (
                 <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center border-2 border-slate-950">
                   <Shield className="w-4 h-4 text-white" />
                 </div>
@@ -254,22 +318,22 @@ const UserProfilePage = () => {
             {/* User Info */}
             <div className="flex-1">
               <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                {userData.fullName}
+                {authUser?.fullName}
               </h1>
-              <p className="text-slate-400 text-lg">@{userData.userName}</p>
+              <p className="text-slate-400 text-lg">@{authUser?.userName}</p>
               <div className="flex items-center space-x-4 mt-2">
                 <div className="flex items-center space-x-1 text-slate-400">
-                  <Mail className="w-4 h-4" />
-                  <span className="text-sm">{userData.email}</span>
+                  <Mail className="w-4 h-4 mr-2" />
+                  <span className="text-sm">{authUser?.email}</span>
                 </div>
                 <span
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    userData.role === "ADMIN"
-                      ? "bg-purple-500/20 text-purple-400"
+                    authUser?.role === "ADMIN"
+                      ? "bg-red-500/20 text-red-400"
                       : "bg-blue-500/20 text-blue-400"
                   }`}
                 >
-                  {userData.role}
+                  {authUser?.role}
                 </span>
               </div>
             </div>
@@ -281,7 +345,7 @@ const UserProfilePage = () => {
       <div className="max-w-4xl mx-auto px-6 py-8">
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
+          {userStats.map((stat, index) => (
             <div
               key={index}
               className="bg-slate-900/80 backdrop-blur border border-slate-700 rounded-lg p-6 hover:border-purple-500/50 transition-colors"
@@ -407,10 +471,8 @@ const UserProfilePage = () => {
                         <h3 className="font-medium text-slate-200">
                           {submission.problem.title}
                         </h3>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(submission.problem.difficulty)}`}
-                        >
-                          {submission.problem.difficulty}
+                        <span>
+                          {getDifficultyBadge(submission.problem.difficulty)}
                         </span>
                       </div>
                       <span className="text-sm text-slate-400">

@@ -62,11 +62,39 @@ export const getPlaylistById = asyncHandler(async (req, res) => {
     );
 });
 
+export const getPlaylistsByUserId = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const playlists = await db.playlist.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      problems: {
+        include: {
+          problem: true,
+        },
+      },
+    },
+  });
+  if (!playlists || playlists.length === 0) {
+    throw new ApiError(404, "No playlists found for this user", null);
+  }
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { message: "Playlists fetched successfully" },
+        playlists,
+      ),
+    );
+});
+
 export const createPlaylist = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
   const userId = req.user.id;
 
-  const playList = await prisma.playlist.create({
+  const playList = await db.playlist.create({
     data: {
       name,
       description,
