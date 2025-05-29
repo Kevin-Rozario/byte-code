@@ -45,14 +45,9 @@ const SignInPage = () => {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      await signIn(data);
-      form.reset();
-      navigate({ to: "/" });
-      toast.success("Signed in successfully!");
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to sign in.");
-    }
+    await signIn(data);
+    form.reset();
+    navigate({ to: "/" });
   };
 
   return (

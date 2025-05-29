@@ -30,8 +30,6 @@ const authMiddleware = async (req, _res, next) => {
     throw new ApiError(401, "You are not authorized to access this route!");
   }
 
-  // check refresh token
-
   // verify access token
   try {
     const decoded = await verifyToken(

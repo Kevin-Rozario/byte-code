@@ -63,14 +63,9 @@ const SignUpPage = () => {
       password: data.password,
     };
 
-    try {
-      await signUp(finalData);
-      form.reset();
-      navigate({ to: "/auth/sign-in" });
-      toast.success("Account created successfully!");
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to sign up.");
-    }
+    await signUp(finalData);
+    form.reset();
+    navigate({ to: "/auth/sign-in" });
   };
 
   return (

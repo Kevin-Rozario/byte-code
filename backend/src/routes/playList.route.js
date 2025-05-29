@@ -14,9 +14,7 @@ const router = Router();
 
 router.route("/").get(authMiddleware, getAllPlaylists);
 router.route("/playlist/:id").get(authMiddleware, getPlaylistById);
-router
-  .route("/user-playlists")
-  .get(authMiddleware, getPlaylistsByUserId);
+router.route("/user-playlists").get(authMiddleware, getPlaylistsByUserId);
 router.route("/create-playlist").post(authMiddleware, createPlaylist);
 router
   .route("/update-playlist/:id")

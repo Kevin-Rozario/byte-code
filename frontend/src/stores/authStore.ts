@@ -10,8 +10,8 @@ interface IUser {
   fullName: string;
   isEmailVerified: boolean;
   role: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface IUserState {
@@ -53,21 +53,20 @@ const useAuthStore = create<IUserState>()(
         set({ isSigningIn: true, isLoadingAuth: true });
         try {
           const response = await axiosInstance.post("/api/v1/auth/login", data);
-
           if (response.status === 200 && response.data.data) {
             set({ isAuthenticated: true, user: response.data.data });
             toast.success("Signed in successfully!");
           } else {
             set({ isAuthenticated: false, user: null });
             toast.error(
-              response.data.message ||
+              error.message ||
                 "Unable to sign in. Please check your credentials!",
             );
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
           console.error("Error signing in:", error);
-          toast.error("Failed to sign in.");
+          toast.error(error.message || "Failed to sign in.");
         } finally {
           set({ isSigningIn: false, isLoadingAuth: false });
         }
@@ -80,19 +79,20 @@ const useAuthStore = create<IUserState>()(
             "/api/v1/auth/register",
             data,
           );
-          if (response.status === 200 && response.data.data) {
+          if (response.status === 201 && response.data.data) {
             set({ isAuthenticated: true, user: response.data.data });
             toast.success("Account created successfully!");
           } else {
             set({ isAuthenticated: false, user: null });
             toast.error(
-              "Account created but unable to sign in automatically. Please try signing in.",
+              error.message ||
+                "Account created but unable to sign in automatically. Please try signing in.",
             );
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
           console.error("Error signing up:", error);
-          toast.error("Failed to sign up.");
+          toast.error(error.message || "Failed to sign up.");
         } finally {
           set({ isSigningUp: false, isLoadingAuth: false });
         }
@@ -108,7 +108,7 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           console.error("Error signing out:", error);
-          toast.error("Failed to sign out.");
+          toast.error(error.message || "Failed to sign out.");
         } finally {
           set({ isSigningOut: false, isLoadingAuth: false });
         }

@@ -15,6 +15,7 @@ import {
   Zap,
   Pencil,
   Save,
+  TrendingUp,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/stores/authStore";
@@ -296,22 +297,22 @@ const UserProfilePage = () => {
     );
   };
 
-  const formatDate = (dateValue: Date | string | undefined) => {
+  const formatDate = (dateValue?: string) => {
     if (!dateValue) return "";
-    return new Date(dateValue).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    const formattedDate = new Date(dateValue).toLocaleDateString();
+    return formattedDate;
   };
 
   const formatDateTime = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-US", {
-      month: "short",
+    const dateTime = new Date(dateString).toLocaleString("en-US", {
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
     });
+    return dateTime;
   };
 
   if (!isAuthenticated) {
@@ -476,35 +477,31 @@ const UserProfilePage = () => {
             </div>
 
             <div className="space-y-4">
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-slate-400 mb-1">
                   Member Since
                 </label>
                 <Input
-                  id="email"
-                  value={formatDate(authUser?.createdAt)}
+                  id="createdAt"
                   disabled
-                  type="date"
+                  type="text"
                   className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
+                  defaultValue={formatDate(authUser?.createdAt)}
                 />
-                <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center space-x-2">
-                  <Calendar className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-200">
-                    {formatDate(userData.createdAt)}
-                  </span>
-                </div>
+                <Calendar className="w-4 h-4 text-slate-400 absolute right-3 top-8" />
               </div>
-
-              <div>
+              <div className="relative">
                 <label className="block text-sm font-medium text-slate-400 mb-1">
-                  Last Updated
+                  Last Login
                 </label>
-                <div className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 flex items-center space-x-2">
-                  <Calendar className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-200">
-                    {formatDate(userData.updateAt)}
-                  </span>
-                </div>
+                <Input
+                  id="createdAt"
+                  disabled
+                  type="text"
+                  className="bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-slate-200"
+                  defaultValue={formatDate(authUser?.updatedAt)}
+                />
+                <Calendar className="w-4 h-4 text-slate-400 absolute right-3 top-8" />
               </div>
             </div>
           </div>
@@ -645,10 +642,8 @@ const UserProfilePage = () => {
                         <h3 className="font-medium text-slate-200">
                           {solved.problem.title}
                         </h3>
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(solved.problem.difficulty)}`}
-                        >
-                          {solved.problem.difficulty}
+                        <span>
+                          {getDifficultyBadge(solved.problem.difficulty)}
                         </span>
                       </div>
                       <span className="text-sm text-slate-400">

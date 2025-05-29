@@ -38,17 +38,17 @@ export const loginUser = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    throw new ApiError(401, "Invalid credentials");
+    throw new ApiError(400, "Invalid credentials");
   }
 
   const isPasswordCorrect = await comparePassword(password, user.password);
 
   if (!isPasswordCorrect) {
-    throw new ApiError(401, "Invalid credentials");
+    throw new ApiError(400, "Invalid credentials");
   }
 
   if (!user.isEmailVerified) {
-    throw new ApiError(401, "Email not verified");
+    throw new ApiError(400, "Email not verified");
   }
 
   const accessToken = generateAccessToken(user);
@@ -418,7 +418,7 @@ export const renewRefreshToken = asyncHandler(async (req, res) => {
 export const getProfile = asyncHandler(async (req, res) => {
   const userId = req.user?.id;
   if (!userId) {
-    throw new ApiError(401, "Unauthorised request");
+    throw new ApiError(404, "Unauthorised request");
   }
 
   const foundUser = await db.user.findUnique({
@@ -668,7 +668,6 @@ export const checkUser = asyncHandler(async (req, res) => {
       userName: true,
       email: true,
       fullName: true,
-      
     },
   });
   if (!user) {
