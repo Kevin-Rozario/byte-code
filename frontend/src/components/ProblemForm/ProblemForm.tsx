@@ -678,7 +678,6 @@ const ProblemForm = () => {
                           value={field.value}
                           onChange={field.onChange}
                           language={lang.key}
-                          height="150px"
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />
@@ -713,7 +712,6 @@ const ProblemForm = () => {
                           value={field.value}
                           onChange={field.onChange}
                           language={lang.key}
-                          height="200px"
                         />
                       </FormControl>
                       <FormMessage className="text-red-400" />

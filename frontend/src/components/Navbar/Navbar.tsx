@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Code2, Menu, X, LogOut, User, Settings } from "lucide-react";
+import { Code2, Menu, X, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -13,8 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuthStore } from "@/stores/authStore";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { toast } from "sonner";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,12 +22,7 @@ const Navbar = () => {
   const signout = useAuthStore((state) => state.signout);
 
   const handleSignOut = async () => {
-    try {
-      await signout();
-      toast.success("Signed out successfully");
-    } catch (error) {
-      toast.error("Failed to sign out");
-    }
+    await signout();
   };
 
   const navLinks = [
@@ -80,11 +74,6 @@ const Navbar = () => {
                     className="relative h-10 w-10 rounded-full border-2 border-transparent hover:border-purple-500/50 transition-all duration-300 group p-0"
                   >
                     <Avatar className="h-9 w-9 ring-2 ring-slate-600 group-hover:ring-purple-500/50 transition-all duration-300">
-                      <AvatarImage
-                        src={user?.avatar}
-                        alt={user?.userName || "User"}
-                        className="object-cover"
-                      />
                       <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white font-semibold text-sm">
                         {user?.userName?.charAt(0)?.toUpperCase() || "U"}
                       </AvatarFallback>
@@ -224,11 +213,6 @@ const Navbar = () => {
                       <div className="space-y-4">
                         <div className="flex items-center space-x-3 p-4 bg-slate-800/30 rounded-lg">
                           <Avatar className="h-10 w-10 ring-2 ring-purple-500/50">
-                            <AvatarImage
-                              src={user?.avatar}
-                              alt={user?.userName || "User"}
-                              className="object-cover"
-                            />
                             <AvatarFallback className="bg-gradient-to-br from-purple-600 to-blue-600 text-white font-semibold">
                               {user?.userName?.charAt(0)?.toUpperCase() || "U"}
                             </AvatarFallback>
@@ -260,13 +244,6 @@ const Navbar = () => {
                               <span>Add Problem</span>
                             </Link>
                           )}
-                          <Link
-                            to="/auth/settings"
-                            className="w-full flex justify-start items-center text-slate-300 hover:text-white hover:bg-slate-800/50 transition-colors duration-200 p-2"
-                          >
-                            <Settings className="mr-4 h-4 w-4" />
-                            <span>Settings</span>
-                          </Link>
                           <Button
                             variant="ghost"
                             className="w-full flex justify-start items-center text-red-400 hover:text-red-300 hover:bg-red-950/30 transition-colors duration-200"

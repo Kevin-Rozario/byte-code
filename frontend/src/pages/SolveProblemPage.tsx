@@ -143,7 +143,7 @@ const SolveProblemPage = () => {
     setCode(problem?.codeSnippets?.[language] || "");
   };
 
-  const handleRunCode = (e) => {
+  const handleRunCode = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!authUser) {

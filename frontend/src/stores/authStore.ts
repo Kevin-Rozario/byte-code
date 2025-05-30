@@ -63,15 +63,16 @@ const useAuthStore = create<IUserState>()(
             toast.success("Signed in successfully!");
           } else {
             set({ isAuthenticated: false, user: null });
-            toast.error(
-              error.message ||
-                "Unable to sign in. Please check your credentials!",
-            );
+            toast.error("Unable to sign in. Please check your credentials!");
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
           console.error("Error signing in:", error);
-          toast.error(error.message || "Failed to sign in.");
+          const errorMessage =
+            typeof error === "object" && error !== null && "message" in error
+              ? (error as { message?: string }).message
+              : undefined;
+          toast.error(errorMessage || "Failed to sign in.");
         } finally {
           set({ isSigningIn: false, isLoadingAuth: false });
         }
@@ -90,14 +91,13 @@ const useAuthStore = create<IUserState>()(
           } else {
             set({ isAuthenticated: false, user: null });
             toast.error(
-              error.message ||
-                "Account created but unable to sign in automatically. Please try signing in.",
+              "Account created but unable to sign in automatically. Please try signing in.",
             );
           }
         } catch (error) {
           set({ isAuthenticated: false, user: null });
           console.error("Error signing up:", error);
-          toast.error(error.message || "Failed to sign up.");
+          toast.error("Failed to sign up.");
         } finally {
           set({ isSigningUp: false, isLoadingAuth: false });
         }
@@ -113,7 +113,7 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           console.error("Error signing out:", error);
-          toast.error(error.message || "Failed to sign out.");
+          toast.error("Failed to sign out.");
         } finally {
           set({ isSigningOut: false, isLoadingAuth: false });
         }
@@ -131,7 +131,7 @@ const useAuthStore = create<IUserState>()(
           }
         } catch (error) {
           console.error("Error updating profile:", error);
-          toast.error(error.message || "Failed to update profile.");
+          toast.error("Failed to update profile.");
         }
       },
     }),

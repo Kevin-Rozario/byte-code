@@ -181,14 +181,11 @@ export const usePlayListStore = create<PlayListState>()((set, get) => ({
   deleteProblemsFromPlayList: async (id: string, problemIds: string[]) => {
     try {
       set({ isPlayListDeleting: true });
-      const response = await axiosInstance.delete(
-        `/api/v1/playlists/update-playlist/${id}`,
-        {
-          data: {
-            problemIds,
-          },
+      await axiosInstance.delete(`/api/v1/playlists/update-playlist/${id}`, {
+        data: {
+          problemIds,
         },
-      );
+      });
       toast.success("Problems deleted from PlayList successfully.");
 
       if (get().currentPlayList?.id === id) {

@@ -1,6 +1,6 @@
 FROM node:23-alpine
 
-WORKDIR /bytecode-backend
+WORKDIR /bytecode-frontend
 
 COPY package*.json ./
 
