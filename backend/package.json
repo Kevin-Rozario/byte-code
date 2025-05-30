@@ -10,7 +10,7 @@
     "seed": "node prisma/seed.js"
   },
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "node src/index.js",
     "prettier": "npx prettier --write .",
     "generate": "npx prisma generate",
     "migrate-dev": "npx prisma migrate dev",
