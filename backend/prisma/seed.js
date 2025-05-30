@@ -1,15 +1,21 @@
 import db from "../src/config/db.config.js";
 import { leetcodeProblems } from "../data/problems.js";
+import { hashPassword } from "../src/utils/passHash.util.js";
 
 async function main() {
   console.log("Start seeding ...");
+
+  const userData = {
+    userName: "dummyadmin",
+    email: "dummy@google.com",
+    password: "dummy@3214",
+    fullName: "Dummy Admin",
+  };
+
+  const hashedPassword = await hashPassword("dummy@3214");
+  userData.password = hashedPassword;
   const user = await db.user.create({
-    data: {
-      userName: "dummyadmin",
-      email: "dummy@google.com",
-      password: "dummy@3214",
-      fullName: "Dummy Admin",
-    },
+    data: userData,
   });
 
   // Prepare problems data with userId
