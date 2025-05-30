@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Star, User, Code, Laptop, Brain } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Testimonial {
   id: number;
@@ -116,6 +117,7 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({
 
 const TestimonialsSection: React.FC = () => {
   const duplicatedTestimonials = [...testimonials, ...testimonials];
+  const navigate = useNavigate();
 
   return (
     <section className="py-20 bg-gradient-to-br from-slate-950 via-purple-950 to-indigo-950 overflow-hidden">
@@ -158,6 +160,9 @@ const TestimonialsSection: React.FC = () => {
 
         <div className="text-center mt-16">
           <motion.button
+            onClick={() => {
+              navigate({ to: "/auth/sign-in" });
+            }}
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-cyan-500 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-purple-500/25"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
