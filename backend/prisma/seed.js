@@ -12,21 +12,24 @@ async function main() {
     },
   });
 
+  // Prepare problems data with userId
+  const problemsData = leetcodeProblems.map((problem) => ({
+    ...problem,
+    userId: user.id,
+  }));
+
   const problems = await db.problem.createMany({
-    where: {
-      userId: user.id,
-    },
-    data: leetcodeProblems,
+    data: problemsData,
   });
   console.log(`Created ${problems.count} problems`);
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await db.$disconnect();
     process.exit(1);
   });
