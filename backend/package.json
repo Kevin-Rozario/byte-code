@@ -6,6 +6,9 @@
   "author": "Kevin Rozario",
   "type": "module",
   "main": "index.js",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "start": "nodemon src/index.js",
     "prettier": "npx prettier --write .",
@@ -13,7 +16,8 @@
     "migrate-dev": "npx prisma migrate dev",
     "migrate-deploy": "npx prisma migrate deploy",
     "push": "npx prisma db push",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "seed": "npx prisma db seed"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",

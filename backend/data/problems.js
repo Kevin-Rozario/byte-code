@@ -1,33 +1,4 @@
-type Difficulty = "EASY" | "MEDIUM" | "HARD";
-
-interface Example {
-  input: string;
-  output: string;
-  explanation: string;
-}
-
-interface ProblemInput {
-  title: string;
-  description: string;
-  difficulty: Difficulty;
-  tags: string[];
-  examples: {
-    [language: string]: Example;
-  };
-  constraints: string;
-  testCases: {
-    input: string;
-    output: string;
-  }[];
-  codeSnippets: {
-    [language: string]: string;
-  };
-  referenceSolutions: {
-    [language: string]: string;
-  };
-}
-
-const leetcodeProblems: ProblemInput[] = [
+export const leetcodeProblems = [
   {
     title: "Two Sum",
     description:
