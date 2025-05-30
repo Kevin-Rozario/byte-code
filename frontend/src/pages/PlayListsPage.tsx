@@ -181,7 +181,7 @@ const PlayListsPage: React.FC = () => {
           {" "}
           {/* flex-shrink-0 ensures header doesn't shrink */}
           <Link
-            to="/"
+            to="/problems"
             className="flex items-center gap-4 text-slate-400 hover:text-slate-300 transition-colors"
           >
             <ArrowLeftCircle className="w-6 h-6" />
