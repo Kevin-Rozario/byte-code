@@ -1,54 +1,82 @@
-# React + TypeScript + Vite
+# Byte Code Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, feature-rich frontend for the Byte Code coding practice platform. This application enables users to solve coding challenges, manage custom playlists, track progress, and more—all with a beautiful, responsive UI.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Interactive Code Editor:** Write, run, and test code directly in the browser using Monaco Editor.
+- **Comprehensive Problem Library:** Browse and filter a wide range of coding problems by difficulty and topic.
+- **Real-time Feedback:** Instantly see results and detailed feedback for code submissions.
+- **Progress Tracking:** Visualize your problem-solving journey and submission history.
+- **Custom Playlists:** Create, manage, and share playlists of coding problems for focused practice or interview prep.
+- **User Authentication:** Secure sign-up, sign-in, and profile management.
+- **Community Solutions:** Explore and learn from solutions shared by other users.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Framework:** React 19, TypeScript
+- **Build Tool:** Vite
+- **Styling:** Tailwind CSS
+- **State Management:** Zustand
+- **Routing:** TanStack Router
+- **UI Components:** Radix UI, Lucide React, custom components
+- **Code Editor:** Monaco Editor
+- **Form Validation:** React Hook Form, Zod
+- **HTTP Client:** Axios
+- **Animations & UX:** Framer Motion, React Hot Toast
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher recommended)
+- npm or yarn
+
+### Installation
+
+```bash
+cd frontend
+npm install
+# or
+yarn install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+npm run dev
+# or
+yarn dev
 ```
+
+The app will be available at `http://localhost:5173` by default.
+
+### Build for Production
+
+```bash
+npm run build
+# or
+yarn build
+```
+
+### Linting & Formatting
+
+```bash
+npm run lint
+npm run prettier
+```
+
+## Project Structure
+
+- `src/pages/` — Main application pages (Home, Problems, Playlists, Profile, etc.)
+- `src/components/` — Reusable UI components and feature modules
+- `src/blocks/` — Landing page and marketing sections
+- `src/stores/` — Zustand state management stores
+- `src/lib/` — Utilities, API config, and validation schemas
+
+## Contributing
+
+Contributions are welcome! Please open issues or pull requests for improvements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License.
